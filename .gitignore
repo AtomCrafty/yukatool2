@@ -1,0 +1,10 @@
+﻿################################################################################
+# Diese .gitignore-Datei wurde von Microsoft(R) Visual Studio automatisch erstellt.
+################################################################################
+
+/src/packages/Newtonsoft.Json.10.0.3
+/src/.vs/yukatool/v15/Server/sqlite3
+/src/Yuka.Cli/bin/Debug
+/src/Yuka.Cli/obj/Debug
+/src/Yuka.Core/bin/Debug
+/src/Yuka.Core/obj/Debug
