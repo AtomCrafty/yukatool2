@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text;
@@ -25,20 +26,28 @@ namespace Yuka.Cli {
 			var srcFs = FileSystem.FromArchive(path);
 			var dstFs = FileSystem.NewFolder(path.WithoutExtension());
 
-			foreach(string file in srcFs.GetFiles("*.ykg")) {
-				Console.WriteLine("Converting " + file);
+			var sw = new Stopwatch();
+			sw.Start();
+			int fileCount = 0;
 
-				using(var srcStream = srcFs.OpenFile(file)) {
-					// read ykg
-					var ykg = FileReader.Decode<Graphic>(file, srcFs);
-					// write png
-					if(ykg != null) FileWriter.Encode(ykg, file, dstFs, FormatPreference.DefaultGraphics);
-					else Console.WriteLine("Skipping file " + file);
-				}
+			foreach(string file in srcFs.GetFiles("*.ykg")) {
+				//Console.WriteLine("Converting " + file);
+				fileCount++;
+
+				// read ykg
+				var ykg = FileReader.Decode<Graphic>(file, srcFs);
+
+				// write png
+				if(ykg != null) FileWriter.Encode(ykg, file, dstFs, FormatPreference.DefaultGraphics);
+				else Console.WriteLine("Skipping file " + file);
 			}
 
 			dstFs.Dispose();
 			srcFs.Dispose();
+
+			sw.Stop();
+			Console.WriteLine($"Converted {fileCount} files in {sw.ElapsedMilliseconds / 1000f:0.##} seconds");
+			Console.ReadKey();
 		}
 
 		public static void ByteStream() {
@@ -69,7 +78,6 @@ namespace Yuka.Cli {
 
 		public static void YkgRead() {
 			var path = "data02/system.ykg";
-			var fs = FileSystem.FromFolder(Path.GetDirectoryName(path));
 
 			using(var s = new FileStream(path, FileMode.Open)) {
 				var reader = new YkgGraphicReader();

@@ -105,10 +105,29 @@ namespace Yuka.IO.Formats {
 						// data is already in the correct format, so no re-encoding is needed
 						using(var s = fs.CreateFile(baseName.WithExtension(Gnp.Extension))) {
 							s.WriteBytes(ykg.ColorData);
-
-							// no alpha channel to save, so we can just return
-							return;
 						}
+
+						// no alpha channel to save, so we can just return
+						if(ykg.AlphaData == null) return;
+
+						if(ykg.AlphaData.StartsWith(Png.Signature)) {
+							// changing the signature is faster than re-encoding the image
+							for(int i = 0; i < Gnp.Signature.Length; i++) {
+								ykg.AlphaData[i] = Gnp.Signature[i];
+							}
+						}
+						if(ykg.AlphaData.StartsWith(Gnp.Signature)) {
+							using(var s = fs.CreateFile(baseName.WithExtension(Gnp.AlphaExtension))) {
+								s.WriteBytes(ykg.AlphaData);
+							}
+						}
+						else {
+							using(var bitmap = FileReader.Decode<Bitmap>("?" + nameof(ykg.AlphaBitmap), ykg.AlphaData)) {
+								Encode(bitmap, baseName.WithExtension(Gnp.AlphaExtension), fs, new FormatPreference(Gnp));
+							}
+						}
+
+						return;
 					}
 				}
 
@@ -130,7 +149,7 @@ namespace Yuka.IO.Formats {
 				}
 				else {
 					// save alpha channel on its own
-					Encode(ykg.AlphaBitmap, baseName.WithExtension(".alpha.ext"), fs, new FormatPreference(Gnp));
+					Encode(ykg.AlphaBitmap, baseName.WithExtension(Gnp.AlphaExtension), fs, new FormatPreference(Gnp));
 				}
 			}
 

@@ -87,21 +87,28 @@ namespace Yuka.IO.Formats {
 
 			if(!ykg.IsDecoded) {
 				if(!Options.MergeAlphaChannelOnExport || ykg.AlphaData == null) {
-					if(ykg.ColorData.StartsWith(Gnp.Signature)) {
-						// changing the signature is faster than re-encoding the image
-						for(int i = 0; i < Bmp.Signature.Length; i++) {
-							ykg.ColorData[i] = Bmp.Signature[i];
-						}
-					}
 					if(ykg.ColorData.StartsWith(Bmp.Signature)) {
 
 						// data is already in the correct format, so no re-encoding is needed
 						using(var s = fs.CreateFile(baseName.WithExtension(Bmp.Extension))) {
 							s.WriteBytes(ykg.ColorData);
-
-							// no alpha channel to save, so we can just return
-							return;
 						}
+
+						// no alpha channel to save, so we can just return
+						if(ykg.AlphaData == null) return;
+
+						if(ykg.AlphaData.StartsWith(Png.Signature)) {
+							using(var s = fs.CreateFile(baseName.WithExtension(Bmp.AlphaExtension))) {
+								s.WriteBytes(ykg.AlphaData);
+							}
+						}
+						else {
+							using(var bitmap = FileReader.Decode<Bitmap>("?" + nameof(ykg.AlphaBitmap), ykg.AlphaData)) {
+								Encode(bitmap, baseName.WithExtension(Png.AlphaExtension), fs, new FormatPreference(Bmp));
+							}
+						}
+
+						return;
 					}
 				}
 

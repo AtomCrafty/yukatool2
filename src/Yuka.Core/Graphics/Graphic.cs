@@ -24,7 +24,7 @@ namespace Yuka.Graphics {
 			Animation = animation;
 		}
 
-		public bool IsDecoded => ColorBitmap != null;
+		public bool IsDecoded => ColorBitmap != null || AlphaBitmap != null;
 
 		public bool Decode() {
 			if(IsDecoded) return false;
