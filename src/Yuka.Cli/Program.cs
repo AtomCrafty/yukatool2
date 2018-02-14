@@ -14,11 +14,21 @@ using Yuka.Util;
 namespace Yuka.Cli {
 	public class Program {
 		public static void Main() {
-			Tests.UnpackGfx();
+			Tests.AlphaCopy2();
 		}
 	}
 
 	public static class Tests {
+
+		public static void AlphaCopy2() {
+			const string path = @"C:\Temp\CopyTest\eff_fire.ykg";
+			string name = Path.GetFileName(path);
+			var fs = FileSystem.FromFile(path);
+
+			var ykg = FileReader.Decode<Graphic>(name, fs);
+			Options.MergeAlphaChannelOnExport = true;
+			FileWriter.Encode(ykg, name, fs, FormatPreference.DefaultGraphics);
+		}
 
 		public static void UnpackGfx() {
 			const string path = @"C:\Temp\CopyTest\data02.ykc";
@@ -97,8 +107,8 @@ namespace Yuka.Cli {
 		}
 
 		public static void Unpack() {
-			string arcPath = @"S:\Games\Visual Novels\Semiramis no Tenbin\data04.ykc";
-			string dirPath = Path.ChangeExtension(Path.GetFileName(arcPath), "");
+			string arcPath = @"C:\Temp\CopyTest\data02.ykc"; //@"S:\Games\Visual Novels\Semiramis no Tenbin\data04.ykc";
+			string dirPath = Path.ChangeExtension(arcPath, "");
 
 			var arc = FileSystem.FromArchive(arcPath);
 			var dir = FileSystem.NewFolder(dirPath);

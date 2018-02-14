@@ -22,6 +22,9 @@ namespace Yuka.Util {
 			int srcStep = Image.GetPixelFormatSize(srcFormat) / 8;
 			int dstStep = Image.GetPixelFormatSize(dstFormat) / 8;
 
+			if(dst.PixelFormat != PixelFormat.Format32bppArgb) throw new ArgumentException("Invalid destination pixel format: " + dst.PixelFormat);
+			if(src.PixelFormat != PixelFormat.Format32bppArgb && src.PixelFormat != PixelFormat.Format24bppRgb) throw new ArgumentException("Invalid source pixel format: " + src.PixelFormat);
+
 			var srcData = src.LockBits(rect, ImageLockMode.ReadOnly, srcFormat);
 			var dstData = dst.LockBits(rect, ImageLockMode.WriteOnly, dstFormat);
 			var srcBits = new byte[Math.Abs(srcData.Stride) * srcData.Height];
@@ -29,12 +32,17 @@ namespace Yuka.Util {
 
 			Marshal.Copy(srcData.Scan0, srcBits, 0, srcBits.Length);
 			Marshal.Copy(dstData.Scan0, dstBits, 0, dstBits.Length);
-
-			// alpha byte is the last one
+			
 			int srcIndex = srcStep - 1;
 			int dstIndex = dstStep - 1;
 			while(srcIndex < srcBits.Length && dstIndex < dstBits.Length) {
-				dstBits[dstIndex] = srcBits[srcIndex];
+
+				if(srcFormat == PixelFormat.Format32bppArgb)
+					// copy alpha byte
+					dstBits[dstIndex] = srcBits[srcIndex];
+				else if(srcFormat == PixelFormat.Format24bppRgb)
+					// source bitmap has no alpha channel; use 255 - grayscale average instead
+					dstBits[dstIndex] = (byte)(255 - (srcBits[srcIndex] + srcBits[srcIndex - 1] + srcBits[srcIndex - 2]) / 3);
 
 				srcIndex += srcStep;
 				dstIndex += dstStep;

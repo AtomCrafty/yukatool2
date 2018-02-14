@@ -75,7 +75,7 @@ namespace Yuka.IO {
 
 		public static FormatPreference Default => new FormatPreference { AllowedFormats = null, PreferredFormat = null, PreferredType = FormatType.None };
 		public static FormatPreference DefaultGraphics => new FormatPreference { AllowedFormats = Format.GraphicsFormats, PreferredFormat = Format.Png };
-		public static FormatPreference DefaultAnimation => new FormatPreference { AllowedFormats = Format.AnimationFormats, PreferredFormat = Format.Ani };
+		public static FormatPreference DefaultAnimation => new FormatPreference { AllowedFormats = Format.AnimationFormats, PreferredFormat = Format.Frm };
 	}
 
 	public enum FormatType {
