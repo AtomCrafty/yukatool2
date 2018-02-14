@@ -24,23 +24,6 @@ namespace Yuka.Graphics {
 			Animation = animation;
 		}
 
-		public bool IsDecoded => ColorBitmap != null || AlphaBitmap != null;
-
-		public bool Decode() {
-			if(IsDecoded) return false;
-
-			Debug.Assert(ColorBitmap == null);
-			Debug.Assert(AlphaBitmap == null);
-
-			if(!ColorData.IsNullOrEmpty()) ColorBitmap = FileReader.Decode<Bitmap>("?" + nameof(ColorData), ColorData);
-			if(!AlphaData.IsNullOrEmpty()) AlphaBitmap = FileReader.Decode<Bitmap>("?" + nameof(AlphaData), AlphaData);
-
-			ColorData = null;
-			AlphaData = null;
-
-			return true;
-		}
-
 		public void MergeChannels() {
 			Decode();
 			if(ColorBitmap.PixelFormat != PixelFormat.Format32bppArgb) {
@@ -55,6 +38,37 @@ namespace Yuka.Graphics {
 			BitmapUtils.CopyAlphaChannel(AlphaBitmap, ColorBitmap);
 			AlphaBitmap?.Dispose();
 			AlphaBitmap = null;
+		}
+
+		#region Decode / Encode
+
+		public bool IsDecoded => ColorBitmap != null || AlphaBitmap != null;
+
+		public void EnsureDecoded() {
+			if(IsDecoded) return;
+
+			Decode();
+		}
+
+		public void EnsureEncoded() {
+			if(!IsDecoded) return;
+
+			Encode();
+		}
+
+		public bool Decode() {
+			if(IsDecoded) return false;
+
+			Debug.Assert(ColorBitmap == null);
+			Debug.Assert(AlphaBitmap == null);
+
+			if(!ColorData.IsNullOrEmpty()) ColorBitmap = FileReader.Decode<Bitmap>("?" + nameof(ColorData), ColorData);
+			if(!AlphaData.IsNullOrEmpty()) AlphaBitmap = FileReader.Decode<Bitmap>("?" + nameof(AlphaData), AlphaData);
+
+			ColorData = null;
+			AlphaData = null;
+
+			return true;
 		}
 
 		public bool Encode(AlphaMode am = AlphaMode.Discard, ColorMode cm = ColorMode.MergePng) {
@@ -108,6 +122,8 @@ namespace Yuka.Graphics {
 
 			return true;
 		}
+
+		#endregion
 	}
 
 	public enum ColorMode {

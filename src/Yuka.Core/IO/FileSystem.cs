@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Yuka.Container;
+using Yuka.Util;
 
 namespace Yuka.IO {
 	public abstract class FileSystem : IDisposable {
@@ -138,6 +139,7 @@ namespace Yuka.IO {
 
 	/// <summary>
 	/// Represents a filtered collection of files in the system's native file system.
+	/// Contains all files with the same base name as the one passed in the constructor.
 	/// Allows creation of new files, which are then added to the collection.
 	/// </summary>
 	public class SingleFileSystem : FolderFileSystem {
@@ -145,7 +147,14 @@ namespace Yuka.IO {
 		public List<string> Files = new List<string>();
 
 		public SingleFileSystem(string path) : base(Path.GetDirectoryName(path)) {
-			Files.Add(Path.GetFileName(path));
+			// add files with same base name to path
+			string name = Path.GetFileName(path);
+			string baseName = Path.GetFileNameWithoutExtension(path) ?? throw new ArgumentNullException(nameof(path));
+			foreach(string file in base.GetFiles()) {
+				if(file.StartsWith(baseName + '.') || file == name /* extensionless files */) {
+					Files.Add(file);
+				}
+			}
 		}
 
 		public override string[] GetFiles(string filter = "*.*") {

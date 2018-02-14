@@ -32,17 +32,21 @@ namespace Yuka.Util {
 
 			Marshal.Copy(srcData.Scan0, srcBits, 0, srcBits.Length);
 			Marshal.Copy(dstData.Scan0, dstBits, 0, dstBits.Length);
-			
+
 			int srcIndex = srcStep - 1;
 			int dstIndex = dstStep - 1;
 			while(srcIndex < srcBits.Length && dstIndex < dstBits.Length) {
 
-				if(srcFormat == PixelFormat.Format32bppArgb)
-					// copy alpha byte
-					dstBits[dstIndex] = srcBits[srcIndex];
-				else if(srcFormat == PixelFormat.Format24bppRgb)
-					// source bitmap has no alpha channel; use 255 - grayscale average instead
-					dstBits[dstIndex] = (byte)(255 - (srcBits[srcIndex] + srcBits[srcIndex - 1] + srcBits[srcIndex - 2]) / 3);
+				switch(srcFormat) {
+					case PixelFormat.Format32bppArgb:
+						// copy alpha byte
+						dstBits[dstIndex] = srcBits[srcIndex];
+						break;
+					case PixelFormat.Format24bppRgb:
+						// source bitmap has no alpha channel; use 255 - grayscale average instead
+						dstBits[dstIndex] = (byte)(255 - (srcBits[srcIndex] + srcBits[srcIndex - 1] + srcBits[srcIndex - 2]) / 3);
+						break;
+				}
 
 				srcIndex += srcStep;
 				dstIndex += dstStep;

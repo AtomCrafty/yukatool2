@@ -124,9 +124,10 @@ namespace Yuka.IO.Formats {
 
 				// the current format is not the requested output format, so we need to re-encode everything
 				ykg.Decode();
-				// decode failed -> don't write any file
 				if(!ykg.IsDecoded) {
 					// TODO Warning
+					Console.WriteLine("Decode failed for graphic: " + baseName);
+					// decode failed -> don't write any file
 					return;
 				}
 			}

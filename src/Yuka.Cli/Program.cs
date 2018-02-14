@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Security.Policy;
 using System.Text;
 using Newtonsoft.Json;
 using Yuka.Container;
@@ -14,14 +15,40 @@ using Yuka.Util;
 namespace Yuka.Cli {
 	public class Program {
 		public static void Main() {
-			Tests.AlphaCopy2();
+			Tests.SemiramisExtract();
 		}
 	}
 
 	public static class Tests {
 
+		public static void SemiramisExtract() {
+			foreach(string arcPath in Directory.GetFiles(@"S:\Games\Visual Novels\Semiramis no Tenbin", "*.ykc")) {
+				var arc = FileSystem.FromArchive(arcPath);
+				var dir = FileSystem.NewFolder(arcPath.WithoutExtension());
+
+				foreach(string file in arc.GetFiles()) {
+					using(Stream source = arc.OpenFile(file), destination = dir.CreateFile(file)) {
+						source.CopyTo(destination);
+					}
+				}
+
+				dir.Dispose();
+				arc.Dispose();
+			}
+		}
+
+		public static void YkgWrite() {
+			const string path = @"C:\Temp\CopyTest\system.png";
+			string name = Path.GetFileName(path);
+			var fs = FileSystem.FromFile(path);
+
+			var ykg = FileReader.Decode<Graphic>(name, fs);
+			// ykg is the only packed format for Yuka.Graphics.Graphic
+			FileWriter.Encode(ykg, "system2.ykg", fs, new FormatPreference(null, FormatType.Packed));
+		}
+
 		public static void AlphaCopy2() {
-			const string path = @"C:\Temp\CopyTest\eff_fire.ykg";
+			const string path = @"C:\Temp\CopyTest\system2.ykg";
 			string name = Path.GetFileName(path);
 			var fs = FileSystem.FromFile(path);
 

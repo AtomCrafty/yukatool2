@@ -22,6 +22,7 @@ namespace Yuka.IO {
 			new FrmAnimationWriter(),
 			new PngGraphicWriter(),
 			new BmpGraphicWriter(),
+			new YkgGraphicWriter(),
 			new GnpGraphicWriter(),
 			new PngBitmapWriter(),
 			new GnpBitmapWriter()

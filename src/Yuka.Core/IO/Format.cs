@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using Yuka.IO.Formats;
+using Yuka.Util;
 
 namespace Yuka.IO {
 	public abstract class Format {
@@ -37,7 +38,7 @@ namespace Yuka.IO {
 		}
 
 		public FormatPreference(Format preferredFormat, FormatType preferredType, params Format[] allowedFormats) {
-			AllowedFormats = allowedFormats;
+			AllowedFormats = allowedFormats.NullIfEmpty();
 			PreferredFormat = preferredFormat;
 			PreferredType = preferredType;
 		}
