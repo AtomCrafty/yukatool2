@@ -26,7 +26,7 @@ namespace Yuka.Graphics {
 
 		public void MergeChannels() {
 			Decode();
-			if(ColorBitmap.PixelFormat != PixelFormat.Format32bppArgb) {
+			if(ColorBitmap != null && ColorBitmap.PixelFormat != PixelFormat.Format32bppArgb) {
 				// make sure cb actually has an alpha channel to copy to
 				var newColor = new Bitmap(ColorBitmap.Width, ColorBitmap.Height, PixelFormat.Format32bppArgb);
 				using(var gr = System.Drawing.Graphics.FromImage(newColor)) {

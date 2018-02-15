@@ -15,7 +15,7 @@ using Yuka.Util;
 namespace Yuka.Cli {
 	public class Program {
 		public static void Main() {
-			Tests.Decompile();
+			Tests.UnpackGfx();
 		}
 	}
 
@@ -64,7 +64,7 @@ namespace Yuka.Cli {
 		}
 
 		public static void UnpackGfx() {
-			const string path = @"C:\Temp\CopyTest\data02.ykc";
+			const string path = "data02.ykc"; //@"C:\Temp\CopyTest\data02.ykc";
 
 			var srcFs = FileSystem.FromArchive(path);
 			var dstFs = FileSystem.NewFolder(path.WithoutExtension());

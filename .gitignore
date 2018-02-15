@@ -2,8 +2,9 @@
 # Diese .gitignore-Datei wurde von Microsoft(R) Visual Studio automatisch erstellt.
 ################################################################################
 
-/src/packages/
+/.vs
 /src/.vs/
+/src/packages/
 /src/Yuka.Cli/bin/
 /src/Yuka.Cli/obj/
 /src/Yuka.Core/bin/
