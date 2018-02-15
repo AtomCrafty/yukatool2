@@ -5,7 +5,6 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Yuka.IO;
-using Yuka.IO.Formats;
 using Yuka.Util;
 
 namespace Yuka.Graphics {

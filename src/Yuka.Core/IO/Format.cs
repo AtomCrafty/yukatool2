@@ -10,13 +10,22 @@ namespace Yuka.IO {
 		public abstract string Extension { get; }
 		public abstract FormatType Type { get; }
 
-		public static readonly AniFormat Ani = new AniFormat();
-		public static readonly FrmFormat Frm = new FrmFormat();
+		#region Format instances
+
+		// graphics
 		public static readonly PngFormat Png = new PngFormat();
 		public static readonly GnpFormat Gnp = new GnpFormat();
 		public static readonly BmpFormat Bmp = new BmpFormat();
 		public static readonly YkgFormat Ykg = new YkgFormat();
+		// animation
+		public static readonly AniFormat Ani = new AniFormat();
+		public static readonly FrmFormat Frm = new FrmFormat();
+		// script
+		public static readonly YksFormat Yks = new YksFormat();
+		// other
 		public static readonly RawFormat Raw = new RawFormat();
+
+		#endregion
 
 		public static Format[] GraphicsFormats = { Png, Bmp, Gnp, Ykg };
 		public static Format[] AnimationFormats = { Ani, Frm };

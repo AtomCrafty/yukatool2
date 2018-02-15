@@ -16,7 +16,7 @@ namespace Yuka.IO.Formats {
 		public readonly string AlphaExtension = ".alpha.png";
 	}
 
-	public class PngGraphicReader : FileReader<Graphic> {
+	public class PngGraphicReader : FileReader<YukaGraphic> {
 
 		public override Format Format => Png;
 
@@ -28,11 +28,11 @@ namespace Yuka.IO.Formats {
 			finally { r.BaseStream.Position = pos; }
 		}
 
-		public override Graphic Read(string name, Stream s) {
+		public override YukaGraphic Read(string name, Stream s) {
 			throw new InvalidOperationException("Cannot read graphic from png stream");
 		}
 
-		public override Graphic Read(string name, FileSystem fs) {
+		public override YukaGraphic Read(string name, FileSystem fs) {
 			// TODO handle pure alpha files
 			if(name.EndsWith(Png.AlphaExtension) && fs.FileExists(name.Substring(0, name.Length - Png.AlphaExtension.Length))) return null;
 
@@ -61,23 +61,23 @@ namespace Yuka.IO.Formats {
 						? Decode<Animation>(frmFileName, fs)
 						: null;
 
-			return new Graphic { ColorData = colorData, AlphaData = alphaData, Animation = animation };
+			return new YukaGraphic { ColorData = colorData, AlphaData = alphaData, Animation = animation };
 		}
 	}
 
-	public class PngGraphicWriter : FileWriter<Graphic> {
+	public class PngGraphicWriter : FileWriter<YukaGraphic> {
 
 		public override Format Format => Png;
 
 		public override bool CanWrite(object obj) {
-			return obj is Graphic;
+			return obj is YukaGraphic;
 		}
 
-		public override void Write(Graphic obj, Stream s) {
+		public override void Write(YukaGraphic obj, Stream s) {
 			throw new InvalidOperationException("Cannot write graphic to png stream");
 		}
 
-		public override void Write(Graphic ykg, string baseName, FileSystem fs) {
+		public override void Write(YukaGraphic ykg, string baseName, FileSystem fs) {
 
 			if(ykg.Animation != null) {
 				Encode(ykg.Animation, baseName, fs, ykg.AnimationExportFormat);

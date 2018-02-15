@@ -3,23 +3,29 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Security.Policy;
 using System.Text;
 using Newtonsoft.Json;
 using Yuka.Container;
 using Yuka.Graphics;
 using Yuka.IO;
 using Yuka.IO.Formats;
+using Yuka.Script;
 using Yuka.Util;
 
 namespace Yuka.Cli {
 	public class Program {
 		public static void Main() {
-			Tests.SemiramisExtract();
+			Tests.Decompile();
 		}
 	}
 
 	public static class Tests {
+
+		public static void Decompile() {
+			const string path = @"S:\Games\Visual Novels\Lover Able\debug.yks";
+
+			var script = FileReader.Decode<YukaScript>(Path.GetFileName(path), FileSystem.FromFile(path));
+		}
 
 		public static void SemiramisExtract() {
 			foreach(string arcPath in Directory.GetFiles(@"S:\Games\Visual Novels\Semiramis no Tenbin", "*.ykc")) {
@@ -42,7 +48,7 @@ namespace Yuka.Cli {
 			string name = Path.GetFileName(path);
 			var fs = FileSystem.FromFile(path);
 
-			var ykg = FileReader.Decode<Graphic>(name, fs);
+			var ykg = FileReader.Decode<YukaGraphic>(name, fs);
 			// ykg is the only packed format for Yuka.Graphics.Graphic
 			FileWriter.Encode(ykg, "system2.ykg", fs, new FormatPreference(null, FormatType.Packed));
 		}
@@ -52,7 +58,7 @@ namespace Yuka.Cli {
 			string name = Path.GetFileName(path);
 			var fs = FileSystem.FromFile(path);
 
-			var ykg = FileReader.Decode<Graphic>(name, fs);
+			var ykg = FileReader.Decode<YukaGraphic>(name, fs);
 			Options.MergeAlphaChannelOnExport = true;
 			FileWriter.Encode(ykg, name, fs, FormatPreference.DefaultGraphics);
 		}
@@ -72,7 +78,7 @@ namespace Yuka.Cli {
 				fileCount++;
 
 				// read ykg
-				var ykg = FileReader.Decode<Graphic>(file, srcFs);
+				var ykg = FileReader.Decode<YukaGraphic>(file, srcFs);
 
 				// write png
 				if(ykg != null) FileWriter.Encode(ykg, file, dstFs, FormatPreference.DefaultGraphics);

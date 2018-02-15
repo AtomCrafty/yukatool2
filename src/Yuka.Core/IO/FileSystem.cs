@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using Yuka.Container;
-using Yuka.Util;
 
 namespace Yuka.IO {
 	public abstract class FileSystem : IDisposable {

@@ -6,7 +6,7 @@ using Yuka.IO;
 using Yuka.Util;
 
 namespace Yuka.Graphics {
-	public class Graphic {
+	public class YukaGraphic {
 
 		public byte[] ColorData, AlphaData;
 		public Bitmap ColorBitmap, AlphaBitmap;
@@ -16,9 +16,9 @@ namespace Yuka.Graphics {
 		public FormatPreference AlphaExportFormat = FormatPreference.DefaultGraphics;
 		public FormatPreference AnimationExportFormat = FormatPreference.DefaultAnimation;
 
-		public Graphic() { }
+		public YukaGraphic() { }
 
-		public Graphic(byte[] colorData, byte[] alphaData, Animation animation) {
+		public YukaGraphic(byte[] colorData, byte[] alphaData, Animation animation) {
 			ColorData = colorData;
 			AlphaData = alphaData;
 			Animation = animation;

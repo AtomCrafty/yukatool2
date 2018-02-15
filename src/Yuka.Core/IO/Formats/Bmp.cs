@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -17,7 +16,7 @@ namespace Yuka.IO.Formats {
 		public readonly string AlphaExtension = ".alpha.bmp";
 	}
 
-	public class BmpGraphicReader : FileReader<Graphic> {
+	public class BmpGraphicReader : FileReader<YukaGraphic> {
 
 		public override Format Format => Bmp;
 
@@ -29,11 +28,11 @@ namespace Yuka.IO.Formats {
 			finally { r.BaseStream.Position = pos; }
 		}
 
-		public override Graphic Read(string name, Stream s) {
+		public override YukaGraphic Read(string name, Stream s) {
 			throw new InvalidOperationException("Cannot read graphic from bmp stream");
 		}
 
-		public override Graphic Read(string name, FileSystem fs) {
+		public override YukaGraphic Read(string name, FileSystem fs) {
 			// TODO handle pure alpha files
 			if(name.EndsWith(Bmp.AlphaExtension) && fs.FileExists(name.Substring(0, name.Length - Bmp.AlphaExtension.Length))) return null;
 
@@ -62,23 +61,23 @@ namespace Yuka.IO.Formats {
 						? Decode<Animation>(frmFileName, fs)
 						: null;
 
-			return new Graphic { ColorData = colorData, AlphaData = alphaData, Animation = animation };
+			return new YukaGraphic { ColorData = colorData, AlphaData = alphaData, Animation = animation };
 		}
 	}
 
-	public class BmpGraphicWriter : FileWriter<Graphic> {
+	public class BmpGraphicWriter : FileWriter<YukaGraphic> {
 
 		public override Format Format => Bmp;
 
 		public override bool CanWrite(object obj) {
-			return obj is Graphic;
+			return obj is YukaGraphic;
 		}
 
-		public override void Write(Graphic obj, Stream s) {
+		public override void Write(YukaGraphic obj, Stream s) {
 			throw new InvalidOperationException("Cannot write graphic to bmp stream");
 		}
 
-		public override void Write(Graphic ykg, string baseName, FileSystem fs) {
+		public override void Write(YukaGraphic ykg, string baseName, FileSystem fs) {
 
 			// write animaton data
 			if(ykg.Animation != null) {

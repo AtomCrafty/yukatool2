@@ -49,7 +49,7 @@
     <Compile Include="IO\FileWriter.cs" />
     <Compile Include="IO\FileReader.cs" />
     <Compile Include="IO\FileSystem.cs" />
-    <Compile Include="Graphics\Graphic.cs" />
+    <Compile Include="Graphics\YukaGraphic.cs" />
     <Compile Include="Container\Archive.cs" />
     <Compile Include="Container\ArchiveFile.cs" />
     <Compile Include="Container\ArchiveHelpers.cs" />
@@ -59,8 +59,12 @@
     <Compile Include="IO\Formats\Png.cs" />
     <Compile Include="IO\Formats\Ani.cs" />
     <Compile Include="IO\Formats\Raw.cs" />
+    <Compile Include="IO\Formats\Yks.cs" />
     <Compile Include="IO\Formats\Ykg.cs" />
+    <Compile Include="Script\YukaScript.cs" />
     <Compile Include="IO\Options.cs" />
+    <Compile Include="Script\Decompiler.cs" />
+    <Compile Include="Script\Syntax\SyntaxNode.cs" />
     <Compile Include="Util\BitmapUtils.cs" />
     <Compile Include="Util\Helpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -70,5 +74,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

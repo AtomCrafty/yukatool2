@@ -17,7 +17,7 @@ namespace Yuka.IO.Formats {
 	}
 
 	// useless, since we usually don't read gnp files from disk
-	public class GnpGraphicReader : FileReader<Graphic> {
+	public class GnpGraphicReader : FileReader<YukaGraphic> {
 
 		public override Format Format => Gnp;
 
@@ -29,11 +29,11 @@ namespace Yuka.IO.Formats {
 			finally { r.BaseStream.Position = pos; }
 		}
 
-		public override Graphic Read(string name, Stream s) {
+		public override YukaGraphic Read(string name, Stream s) {
 			throw new InvalidOperationException("Cannot read graphic from gnp stream");
 		}
 
-		public override Graphic Read(string name, FileSystem fs) {
+		public override YukaGraphic Read(string name, FileSystem fs) {
 			// TODO handle pure alpha files
 			if(name.EndsWith(Gnp.AlphaExtension) && fs.FileExists(name.Substring(0, name.Length - Gnp.AlphaExtension.Length))) return null;
 
@@ -69,24 +69,24 @@ namespace Yuka.IO.Formats {
 						? Decode<Animation>(frmFileName, fs)
 						: null;
 
-			return new Graphic { ColorData = colorData, AlphaData = alphaData, Animation = animation };
+			return new YukaGraphic { ColorData = colorData, AlphaData = alphaData, Animation = animation };
 		}
 	}
 
 	// useless, since we usually don't write gnp files to disk
-	public class GnpGraphicWriter : FileWriter<Graphic> {
+	public class GnpGraphicWriter : FileWriter<YukaGraphic> {
 
 		public override Format Format => Gnp;
 
 		public override bool CanWrite(object obj) {
-			return obj is Graphic;
+			return obj is YukaGraphic;
 		}
 
-		public override void Write(Graphic obj, Stream s) {
+		public override void Write(YukaGraphic obj, Stream s) {
 			throw new InvalidOperationException("Cannot write graphic to gnp stream");
 		}
 
-		public override void Write(Graphic ykg, string baseName, FileSystem fs) {
+		public override void Write(YukaGraphic ykg, string baseName, FileSystem fs) {
 
 			if(ykg.Animation != null) {
 				Encode(ykg.Animation, baseName, fs, ykg.AnimationExportFormat);

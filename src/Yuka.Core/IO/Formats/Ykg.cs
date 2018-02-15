@@ -29,7 +29,7 @@ namespace Yuka.IO.Formats {
 		}
 	}
 
-	public class YkgGraphicReader : FileReader<Graphic> {
+	public class YkgGraphicReader : FileReader<YukaGraphic> {
 
 		public override Format Format => Ykg;
 
@@ -42,7 +42,7 @@ namespace Yuka.IO.Formats {
 			finally { r.BaseStream.Position = pos; }
 		}
 
-		public override Graphic Read(string name, Stream s) {
+		public override YukaGraphic Read(string name, Stream s) {
 
 			var r = s.NewReader();
 			var header = ReadHeader(r);
@@ -55,7 +55,7 @@ namespace Yuka.IO.Formats {
 			var alphaData = r.Seek(header.AlphaOffset).ReadBytes((int)header.AlphaLength).NullIfEmpty();
 			var frameData = r.Seek(header.FrameOffset).ReadBytes((int)header.FrameLength).NullIfEmpty();
 
-			return new Graphic(colorData, alphaData, Animation.FromFrameData(frameData));
+			return new YukaGraphic(colorData, alphaData, Animation.FromFrameData(frameData));
 		}
 
 		internal static YkgFormat.Header ReadHeader(BinaryReader r) {
@@ -73,15 +73,15 @@ namespace Yuka.IO.Formats {
 		}
 	}
 
-	public class YkgGraphicWriter : FileWriter<Graphic> {
+	public class YkgGraphicWriter : FileWriter<YukaGraphic> {
 
 		public override Format Format => Ykg;
 
 		public override bool CanWrite(object obj) {
-			return obj is Graphic;
+			return obj is YukaGraphic;
 		}
 
-		public override void Write(Graphic ykg, Stream s) {
+		public override void Write(YukaGraphic ykg, Stream s) {
 			ykg.EnsureEncoded();
 			var w = s.NewWriter();
 
