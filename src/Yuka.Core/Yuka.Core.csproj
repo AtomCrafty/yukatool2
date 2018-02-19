@@ -61,6 +61,7 @@
     <Compile Include="IO\Formats\Raw.cs" />
     <Compile Include="IO\Formats\Yks.cs" />
     <Compile Include="IO\Formats\Ykg.cs" />
+    <Compile Include="Script\AssignmentTarget.cs" />
     <Compile Include="Script\YukaScript.cs" />
     <Compile Include="IO\Options.cs" />
     <Compile Include="Script\Decompiler.cs" />
@@ -74,6 +75,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Script\Syntax\Expr\" />
+    <Folder Include="Script\Syntax\Stmt\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

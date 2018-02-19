@@ -6,7 +6,7 @@ using Yuka.Util;
 
 namespace Yuka.Script {
 	public class Decompiler {
-
+		private AssignmentTarget _currentAssignmentTarget;
 
 		public YukaScript Decompile(string name, Stream s) {
 			var r = s.NewReader();
@@ -40,24 +40,46 @@ namespace Yuka.Script {
 				switch(entry) {
 					case YksFormat.IndexEntry.Func func:
 						break;
-					case YksFormat.IndexEntry.CInt cint:
-						break;
-					case YksFormat.IndexEntry.CStr cstr:
-						break;
 					case YksFormat.IndexEntry.Ctrl ctrl:
 						break;
+					case YksFormat.IndexEntry.CInt cint:
+					case YksFormat.IndexEntry.CStr cstr:
+						break;
 					case YksFormat.IndexEntry.SStr sstr:
-						break;
 					case YksFormat.IndexEntry.VInt vint:
-						break;
 					case YksFormat.IndexEntry.VStr vstr:
-						break;
-					case YksFormat.IndexEntry.VTmp vtmp:
+					case YksFormat.IndexEntry.VLoc vloc:
+						SetAssignmentTarget(entry);
 						break;
 				}
 			}
 
 			return null;
+		}
+
+		internal void SetAssignmentTarget(YksFormat.IndexEntry entry) {
+			if(_currentAssignmentTarget != null) throw new InvalidOperationException("Assignment target already set");
+			switch(entry) {
+				case YksFormat.IndexEntry.SStr sstr:
+					_currentAssignmentTarget = new AssignmentTarget.SpecialString(sstr.FlagType);
+					break;
+				case YksFormat.IndexEntry.VInt vint when vint.FlagType == "GlobalFlag":
+					_currentAssignmentTarget = new AssignmentTarget.GlobalFlag(vint.FlagId);
+					break;
+				case YksFormat.IndexEntry.VInt vint when vint.FlagType == "Flag":
+					_currentAssignmentTarget = new AssignmentTarget.LocalFlag(vint.FlagId);
+					break;
+				case YksFormat.IndexEntry.VStr vstr when vstr.FlagType == "GlobalString":
+					_currentAssignmentTarget = new AssignmentTarget.GlobalString(vstr.FlagId);
+					break;
+				case YksFormat.IndexEntry.VStr vstr when vstr.FlagType == "String":
+					_currentAssignmentTarget = new AssignmentTarget.LocalString(vstr.FlagId);
+					break;
+				case YksFormat.IndexEntry.VLoc vloc:
+					_currentAssignmentTarget = new AssignmentTarget.Local(vloc.Id);
+					break;
+				default: throw new ArgumentOutOfRangeException(nameof(entry), "Invalid assignment target: " + entry);
+			}
 		}
 
 		internal static YksFormat.IndexEntry ReadEntry(BinaryReader index, BinaryReader data) {
@@ -81,8 +103,8 @@ namespace Yuka.Script {
 					return new YksFormat.IndexEntry.VInt(field1, field2, field3, data);
 				case YksFormat.IndexEntryType.VStr:
 					return new YksFormat.IndexEntry.VStr(field1, field2, field3, data);
-				case YksFormat.IndexEntryType.VTmp:
-					return new YksFormat.IndexEntry.VTmp(field1, field2, field3, data);
+				case YksFormat.IndexEntryType.VLoc:
+					return new YksFormat.IndexEntry.VLoc(field1, field2, field3, data);
 				default:
 					throw new ArgumentOutOfRangeException(nameof(type), type, "Unsupported index entry type");
 			}

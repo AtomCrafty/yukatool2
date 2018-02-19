@@ -144,12 +144,12 @@ namespace Yuka.IO.Formats {
 				public override string ToString() => $"{base.ToString()} [{FlagType} {FlagId}]";
 			}
 
-			internal sealed class VTmp : IndexEntry {
+			internal sealed class VLoc : IndexEntry {
 				internal uint Id { get => Field2; set => Field2 = value; }
 
 				// ReSharper disable once UnusedParameter.Local
-				public VTmp(uint field1, uint field2, uint field3, BinaryReader data)
-					: base(IndexEntryType.VTmp, field1, field2, field3) { }
+				public VLoc(uint field1, uint field2, uint field3, BinaryReader data)
+					: base(IndexEntryType.VLoc, field1, field2, field3) { }
 
 				public override string ToString() => $"{base.ToString()} [{Id}]";
 			}
@@ -165,7 +165,7 @@ namespace Yuka.IO.Formats {
 			SStr = 0x07,
 			VInt = 0x08,
 			VStr = 0x09,
-			VTmp = 0x0A,
+			VLoc = 0x0A,
 			RInt = 0x0B,
 			RStr = 0x0C
 		}
