@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Yuka.Script.Syntax.Stmt {
+﻿namespace Yuka.Script.Syntax.Stmt {
 	public class BodyFunctionStmt : StatementSyntaxNode {
 		public FunctionCallStmt Function;
 		public BlockStmt Body;

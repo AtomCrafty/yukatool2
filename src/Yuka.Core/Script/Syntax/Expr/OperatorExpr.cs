@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Yuka.Script.Syntax.Stmt;
+﻿using System.Linq;
 
 namespace Yuka.Script.Syntax.Expr {
 	public class OperatorExpr : ExpressionSyntaxNode {

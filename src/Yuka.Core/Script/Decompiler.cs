@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq.Expressions;
 using Yuka.IO;
 using Yuka.IO.Formats;
 using Yuka.Script.Syntax;

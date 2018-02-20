@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Yuka.Script.Syntax.Stmt {
 	public class FunctionCallStmt : StatementSyntaxNode {

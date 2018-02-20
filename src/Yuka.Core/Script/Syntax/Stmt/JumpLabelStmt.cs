@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Yuka.Script.Syntax.Stmt {
+﻿namespace Yuka.Script.Syntax.Stmt {
 	public class JumpLabelStmt : StatementSyntaxNode {
 		public string Name;
 
