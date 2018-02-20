@@ -185,7 +185,7 @@ namespace Yuka.IO.Formats {
 		}
 
 		public override YukaScript Read(string name, Stream s) {
-			return new Decompiler().Decompile(name, s);
+			return new Decompiler().Disassemble(name, s);
 		}
 	}
 }

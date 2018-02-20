@@ -62,6 +62,18 @@
     <Compile Include="IO\Formats\Yks.cs" />
     <Compile Include="IO\Formats\Ykg.cs" />
     <Compile Include="Script\AssignmentTarget.cs" />
+    <Compile Include="Script\Syntax\Expr\StringLiteral.cs" />
+    <Compile Include="Script\Syntax\Expr\IntLiteral.cs" />
+    <Compile Include="Script\Syntax\Expr\VariableExpr.cs" />
+    <Compile Include="Script\Syntax\Expr\OperatorExpr.cs" />
+    <Compile Include="Script\Syntax\Expr\JumpLabelExpr.cs" />
+    <Compile Include="Script\Syntax\Expr\FunctionCallExpr.cs" />
+    <Compile Include="Script\Syntax\Stmt\IfStmt.cs" />
+    <Compile Include="Script\Syntax\Stmt\BodyFunctionStmt.cs" />
+    <Compile Include="Script\Syntax\Stmt\BlockStmt.cs" />
+    <Compile Include="Script\Syntax\Stmt\AssignmentStmt.cs" />
+    <Compile Include="Script\Syntax\Stmt\FunctionCallStmt.cs" />
+    <Compile Include="Script\Syntax\Stmt\JumpLabelStmt.cs" />
     <Compile Include="Script\YukaScript.cs" />
     <Compile Include="IO\Options.cs" />
     <Compile Include="Script\Decompiler.cs" />
@@ -75,9 +87,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Script\Syntax\Expr\" />
-    <Folder Include="Script\Syntax\Stmt\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

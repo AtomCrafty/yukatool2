@@ -15,7 +15,7 @@ using Yuka.Util;
 namespace Yuka.Cli {
 	public class Program {
 		public static void Main() {
-			Tests.UnpackGfx();
+			Tests.Decompile();
 		}
 	}
 
@@ -25,6 +25,8 @@ namespace Yuka.Cli {
 			const string path = @"S:\Games\Visual Novels\Lover Able\debug.yks";
 
 			var script = FileReader.Decode<YukaScript>(Path.GetFileName(path), FileSystem.FromFile(path));
+			Console.WriteLine(script.Body);
+			Console.ReadLine();
 		}
 
 		public static void SemiramisExtract() {
