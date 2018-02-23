@@ -22,11 +22,21 @@ namespace Yuka.Cli {
 	public static class Tests {
 
 		public static void Decompile() {
-			const string path = @"S:\Games\Visual Novels\Lover Able\debug.yks";
+			const string path = @"C:\Temp\CopyTest\debug.yks";
+			var fs = FileSystem.FromFile(path);
+			var fn = Path.GetFileName(path);
 
-			var script = FileReader.Decode<YukaScript>(Path.GetFileName(path), FileSystem.FromFile(path));
+			var sw = new Stopwatch();
+			sw.Start();
 
-			script.Decompile();
+			int l = 1000;
+			for(int i = 0; i < l; i++) {
+				var script = FileReader.Decode<YukaScript>(fn, fs);
+				script.Decompile();
+				Console.Write($"\r{(i + 1) * 100f / l}% ");
+			}
+			sw.Stop();
+			Console.WriteLine($"Average time per script: {sw.ElapsedMilliseconds / (float)l:#2} ms");
 
 			Console.ReadLine();
 		}

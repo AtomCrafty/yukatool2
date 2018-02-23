@@ -8,7 +8,7 @@ using Yuka.Script.Instructions;
 using Yuka.Util;
 
 namespace Yuka.Script {
-	public class Disassembler {
+	public class Disassembler : IDisposable {
 		protected readonly Stream Stream;
 
 		public Disassembler(Stream stream) {
@@ -16,6 +16,7 @@ namespace Yuka.Script {
 		}
 
 		public YukaScript Disassemble() {
+			Stream.Seek(0);
 			var r = Stream.NewReader();
 
 			var header = ReadHeader(r);
@@ -27,21 +28,28 @@ namespace Yuka.Script {
 				code[i] = r.ReadUInt32();
 			}
 
-			// prepare data stream
-			Stream dataStream = new ReadOnlySubStream(Stream, header.DataOffset, header.DataLength);
-			if(header.Encryption == 1) dataStream = new XorStream(dataStream, Options.ScriptDataXorKey);
-			var dataReader = dataStream.NewReader();
+			// prepare data buffer
+			var dataBuffer = new byte[header.DataLength];
+			Stream.Seek(header.DataOffset).Read(dataBuffer, 0, (int)header.DataLength);
+			if(header.Encryption == 1) {
+				for(int i = 0; i < header.DataLength; i++) {
+					dataBuffer[i] ^= Options.ScriptDataXorKey;
+				}
+			}
 
 			// read index
 			var index = new DataElement[header.IndexCount];
 			Stream.Seek(header.IndexOffset);
-			for(int i = 0; i < header.IndexCount; i++) {
-				var type = (DataElementType)r.ReadUInt32();
-				uint field1 = r.ReadUInt32();
-				uint field2 = r.ReadUInt32();
-				uint field3 = r.ReadUInt32();
 
-				index[i] = DataElement.Create(type, field1, field2, field3, dataReader);
+			using(var dataReader = new MemoryStream(dataBuffer).NewReader()) {
+				for(int i = 0; i < header.IndexCount; i++) {
+					var type = (DataElementType)r.ReadUInt32();
+					uint field1 = r.ReadUInt32();
+					uint field2 = r.ReadUInt32();
+					uint field3 = r.ReadUInt32();
+
+					index[i] = DataElement.Create(type, field1, field2, field3, dataReader);
+				}
 			}
 
 			//foreach(var e in index) Console.WriteLine(e);
@@ -62,10 +70,12 @@ namespace Yuka.Script {
 					case DataElement.Ctrl ctrl:
 						instructions.Add(new LabelInstruction(ctrl));
 						break;
+					// ReSharper disable UnusedVariable
 					case DataElement.SStr sstr:
 					case DataElement.VInt vint:
 					case DataElement.VLoc vloc:
 					case DataElement.VStr vstr:
+						// ReSharper enable UnusedVariable
 						instructions.Add(new TargetInstruction(dataElement));
 						break;
 					default:
@@ -91,6 +101,10 @@ namespace Yuka.Script {
 				LocalCount = r.ReadUInt32(),
 				Unknown2 = r.ReadUInt32()
 			};
+		}
+
+		public void Dispose() {
+			Stream?.Dispose();
 		}
 	}
 }

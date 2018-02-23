@@ -44,7 +44,7 @@ namespace Yuka.Container {
 					if(NewData != null) stream.Write(NewData, 0, NewData.Length);
 				}
 				else {
-					Archive.Stream.Seek(DataOffset).CopyTo(stream, DataLength);
+					Archive.Stream.CopyRangeTo(stream, DataOffset, DataLength);
 				}
 			}
 			else {

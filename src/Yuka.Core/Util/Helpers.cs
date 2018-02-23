@@ -27,7 +27,12 @@ namespace Yuka.Util {
 			return r;
 		}
 
-		public static void CopyTo(this Stream input, Stream output, long bytes) {
+		public static void CopyRangeTo(this Stream input, Stream output, long start, long bytes) {
+			input.Seek(start);
+			input.CopyBytesTo(output, bytes);
+		}
+
+		public static void CopyBytesTo(this Stream input, Stream output, long bytes) {
 			var buffer = new byte[Math.Min(32768, (int)bytes)];
 			int read;
 			while(bytes > 0 &&
@@ -48,7 +53,11 @@ namespace Yuka.Util {
 		public static string ReadNullTerminatedString(this BinaryReader r, Encoding encoding = null) {
 			var bytes = new List<byte>();
 
-			while(r.BaseStream.Position < r.BaseStream.Length) {
+			// performance optimization
+			long len = r.BaseStream.Length;
+			long pos = r.BaseStream.Position;
+
+			while(pos++ < len) {
 				byte b = r.ReadByte();
 				if(b == 0) break;
 				bytes.Add(b);

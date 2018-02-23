@@ -171,9 +171,8 @@ namespace Yuka.Container {
 							w.Write(file.NewData);
 						}
 						else {
-							Stream.Seek(file.DataOffset);
 							file.DataOffset = tmp.Position;
-							Stream.CopyTo(tmp, file.DataLength);
+							Stream.CopyRangeTo(tmp, file.DataOffset, file.DataLength);
 						}
 					}
 
