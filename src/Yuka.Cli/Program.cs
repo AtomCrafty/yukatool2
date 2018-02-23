@@ -25,7 +25,9 @@ namespace Yuka.Cli {
 			const string path = @"S:\Games\Visual Novels\Lover Able\debug.yks";
 
 			var script = FileReader.Decode<YukaScript>(Path.GetFileName(path), FileSystem.FromFile(path));
-			Console.WriteLine(script.Body);
+
+			script.Decompile();
+
 			Console.ReadLine();
 		}
 
