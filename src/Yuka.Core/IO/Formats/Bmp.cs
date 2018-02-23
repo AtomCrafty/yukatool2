@@ -11,6 +11,7 @@ namespace Yuka.IO.Formats {
 
 	public class BmpFormat : Format {
 		public override string Extension => ".bmp";
+		public override string Description => "Windows Bitmap image file format";
 		public override FormatType Type => FormatType.Unpacked;
 		public readonly byte[] Signature = Encoding.ASCII.GetBytes("BM");
 		public readonly string AlphaExtension = ".alpha.bmp";

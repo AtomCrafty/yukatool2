@@ -11,6 +11,7 @@ namespace Yuka.IO.Formats {
 
 	public class GnpFormat : Format {
 		public override string Extension => ".gnp";
+		public override string Description => "PNG image file format with modified signature";
 		public override FormatType Type => FormatType.Unpacked;
 		public readonly byte[] Signature = { 137, 71, 78, 80, 13, 10, 26, 10 };
 		public readonly string AlphaExtension = ".alpha.gnp";

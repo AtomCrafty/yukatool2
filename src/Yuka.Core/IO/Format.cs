@@ -8,6 +8,7 @@ namespace Yuka.IO {
 	public abstract class Format {
 
 		public abstract string Extension { get; }
+		public abstract string Description { get; }
 		public abstract FormatType Type { get; }
 
 		#region Format instances

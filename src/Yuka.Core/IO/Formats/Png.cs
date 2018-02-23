@@ -11,6 +11,7 @@ namespace Yuka.IO.Formats {
 
 	public class PngFormat : Format {
 		public override string Extension => ".png";
+		public override string Description => "PNG image file format";
 		public override FormatType Type => FormatType.Unpacked;
 		public readonly byte[] Signature = { 137, 80, 78, 71, 13, 10, 26, 10 };
 		public readonly string AlphaExtension = ".alpha.png";

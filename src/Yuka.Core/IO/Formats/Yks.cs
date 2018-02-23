@@ -8,6 +8,7 @@ namespace Yuka.IO.Formats {
 
 	public class YksFormat : Format {
 		public override string Extension => ".yks";
+		public override string Description => "Compiled Yuka script";
 		public override FormatType Type => FormatType.Packed;
 
 		public readonly byte[] Signature = Encoding.ASCII.GetBytes("YKS001");

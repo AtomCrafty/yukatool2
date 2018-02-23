@@ -6,6 +6,7 @@ namespace Yuka.IO.Formats {
 
 	public class AniFormat : Format {
 		public override string Extension => ".ani";
+		public override string Description => "Human-readable frame animation data";
 		public override FormatType Type => FormatType.Unpacked;
 	}
 

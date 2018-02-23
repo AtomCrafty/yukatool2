@@ -9,6 +9,7 @@ namespace Yuka.IO.Formats {
 
 	public class YkgFormat : Format {
 		public override string Extension => ".ykg";
+		public override string Description => "Packed Yuka graphic";
 		public override FormatType Type => FormatType.Packed;
 
 		public readonly byte[] Signature = Encoding.ASCII.GetBytes("YKG000");
