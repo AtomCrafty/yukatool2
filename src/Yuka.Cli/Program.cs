@@ -29,14 +29,19 @@ namespace Yuka.Cli {
 			var sw = new Stopwatch();
 			sw.Start();
 
-			int l = 1000;
+			int l = 10000;
 			for(int i = 0; i < l; i++) {
 				var script = FileReader.Decode<YukaScript>(fn, fs);
+				if(i == 0) {
+					FileWriter.Encode(script, fn.WithExtension(Format.Yki.Extension), fs, new FormatPreference(Format.Yki));
+				}
 				script.Decompile();
-				Console.Write($"\r{(i + 1) * 100f / l}% ");
+				Console.Write($"\r{(i + 1) * 100f / l}%  ");
 			}
 			sw.Stop();
-			Console.WriteLine($"Average time per script: {sw.ElapsedMilliseconds / (float)l:#2} ms");
+			Console.WriteLine();
+			Console.WriteLine($"Processed {l} scripts in {sw.ElapsedMilliseconds:0.##} ms");
+			Console.WriteLine($"Average time per script: {sw.ElapsedMilliseconds / (float)l:0.##} ms");
 
 			Console.ReadLine();
 		}

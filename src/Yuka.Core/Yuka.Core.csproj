@@ -53,6 +53,7 @@
     <Compile Include="Container\Archive.cs" />
     <Compile Include="Container\ArchiveFile.cs" />
     <Compile Include="Container\ArchiveHelpers.cs" />
+    <Compile Include="IO\Formats\Csv.cs" />
     <Compile Include="Script\Data\DataElement.cs" />
     <Compile Include="IO\Formats\Frm.cs" />
     <Compile Include="IO\Formats\Gnp.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="IO\Formats\Ykg.cs" />
     <Compile Include="Script\AssignmentTarget.cs" />
     <Compile Include="Script\Disassembler.cs" />
+    <Compile Include="Script\Instructions\InstructionList.cs" />
     <Compile Include="Script\Instructions\Instruction.cs" />
     <Compile Include="Script\Syntax\Expr\StringLiteral.cs" />
     <Compile Include="Script\Syntax\Expr\IntLiteral.cs" />

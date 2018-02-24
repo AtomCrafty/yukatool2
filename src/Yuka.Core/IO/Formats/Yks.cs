@@ -27,7 +27,7 @@ namespace Yuka.IO.Formats {
 			internal uint IndexCount;
 			internal uint DataOffset;
 			internal uint DataLength;
-			internal uint LocalCount;
+			internal uint MaxLocals;
 			internal uint Unknown2;
 		}
 	}
@@ -46,7 +46,9 @@ namespace Yuka.IO.Formats {
 		}
 
 		public override YukaScript Read(string name, Stream s) {
-			return new Disassembler(s).Disassemble();
+			using(var disasm = new Disassembler(s)) {
+				return disasm.Disassemble();
+			}
 		}
 	}
 }

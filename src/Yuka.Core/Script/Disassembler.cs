@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Yuka.IO;
 using Yuka.IO.Formats;
 using Yuka.Script.Data;
@@ -9,6 +10,9 @@ using Yuka.Util;
 
 namespace Yuka.Script {
 	public class Disassembler : IDisposable {
+		protected static readonly string[] Operators = { "+", "-", "*", "/", "%", "=", "<", ">" };
+		protected const int OperatorLink = ushort.MaxValue; // all operator ctrl elements have this link value
+
 		protected readonly Stream Stream;
 
 		public Disassembler(Stream stream) {
@@ -50,40 +54,69 @@ namespace Yuka.Script {
 
 					index[i] = DataElement.Create(type, field1, field2, field3, dataReader);
 				}
-			}
 
-			//foreach(var e in index) Console.WriteLine(e);
+				//foreach(var e in index) Console.WriteLine(e);
 
-			// disassemble instructions
-			var instructions = new List<Instruction>();
-			for(int i = 0; i < code.Length; i++) {
-				var dataElement = index[code[i]];
-				switch(dataElement) {
-					case DataElement.Func func:
-						uint argCount = code[++i];
-						var arguments = new DataElement[argCount];
-						for(int j = 0; j < argCount; j++) {
-							arguments[j] = index[code[++i]];
-						}
-						instructions.Add(new CallInstruction(func, arguments));
-						break;
-					case DataElement.Ctrl ctrl:
-						instructions.Add(new LabelInstruction(ctrl));
-						break;
-					// ReSharper disable UnusedVariable
-					case DataElement.SStr sstr:
-					case DataElement.VInt vint:
-					case DataElement.VLoc vloc:
-					case DataElement.VStr vstr:
-						// ReSharper enable UnusedVariable
-						instructions.Add(new TargetInstruction(dataElement));
-						break;
-					default:
-						throw new FormatException("Invalid instruction type: " + dataElement.Type);
+				// needed to assign a unique id to each label
+				int currentLabelId = 0;
+
+				// disassemble instructions
+				var instructions = new InstructionList(header.MaxLocals);
+				for(uint i = 0; i < code.Length; i++) {
+					var dataElement = index[code[i]];
+					switch(dataElement) {
+
+						case DataElement.Func func:
+							uint argCount = code[++i];
+							var arguments = new DataElement[argCount];
+							for(int j = 0; j < argCount; j++) {
+								var argument = index[code[++i]];
+
+								if(argument is DataElement.Ctrl ctrl) {
+									int argLink = dataReader.Seek(ctrl.LinkOffset).ReadInt32();
+									if(argLink != -1 && argLink < code.Length) {
+										ctrl.LinkedElement = index[code[argLink]] as DataElement.Ctrl;
+									}
+									else {
+										if(argLink == OperatorLink) Debug.Assert(Operators.Contains(ctrl.Name));
+										Console.WriteLine("Unlinked control element: " + ctrl);
+									}
+								}
+
+								arguments[j] = argument;
+							}
+							instructions.Add(new CallInstruction(func, arguments, instructions));
+							break;
+
+						case DataElement.Ctrl ctrl:
+							// assign a unique id to this label
+							ctrl.Id = currentLabelId++;
+
+							// link the label
+							int link = dataReader.Seek(ctrl.LinkOffset).ReadInt32();
+							if(link != -1) {
+								ctrl.LinkedElement = index[code[link]] as DataElement.Ctrl;
+							}
+							else Console.WriteLine("Unlinked control element: " + ctrl);
+
+							instructions.Add(new LabelInstruction(ctrl, instructions));
+							break;
+
+						// ReSharper disable UnusedVariable
+						case DataElement.SStr sstr:
+						case DataElement.VInt vint:
+						case DataElement.VLoc vloc:
+						case DataElement.VStr vstr:
+							// ReSharper enable UnusedVariable
+							instructions.Add(new TargetInstruction(dataElement, instructions));
+							break;
+						default:
+							throw new FormatException("Invalid instruction type: " + dataElement.Type);
+					}
 				}
-			}
 
-			return new YukaScript { Header = header, Index = index, Instructions = instructions.ToArray() };
+				return new YukaScript { InstructionList = instructions };
+			}
 		}
 
 		internal static YksFormat.Header ReadHeader(BinaryReader r) {
@@ -98,7 +131,7 @@ namespace Yuka.Script {
 				IndexCount = r.ReadUInt32(),
 				DataOffset = r.ReadUInt32(),
 				DataLength = r.ReadUInt32(),
-				LocalCount = r.ReadUInt32(),
+				MaxLocals = r.ReadUInt32(),
 				Unknown2 = r.ReadUInt32()
 			};
 		}

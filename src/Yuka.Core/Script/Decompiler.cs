@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Yuka.Script.Data;
 using Yuka.Script.Instructions;
 using Yuka.Script.Syntax;
@@ -15,8 +14,6 @@ namespace Yuka.Script {
 		public const int GlobalFlagTableSize = 10000;
 		public const int LocalStringTableSize = 65536;
 		public const int GlobalStringTableSize = 10000;
-
-
 
 		protected readonly YukaScript Script;
 
@@ -33,17 +30,15 @@ namespace Yuka.Script {
 
 			Script.Body = ReadBlockStatement();
 
-			Script.Instructions = null;
-			Script.Header = null;
-			Script.Index = null;
+			Script.InstructionList = null;
 		}
 
-		protected Instruction CurrentInstruction => _currentInstructionOffset < Script.Instructions.Length ? Script.Instructions[_currentInstructionOffset] : null;
-		protected Instruction ReadInstruction() => Script.Instructions[_currentInstructionOffset++];
+		protected Instruction CurrentInstruction => _currentInstructionOffset < Script.InstructionList.Count ? Script.InstructionList[_currentInstructionOffset] : null;
+		protected Instruction ReadInstruction() => Script.InstructionList[_currentInstructionOffset++];
 
 		protected BlockStmt ReadBlockStatement() {
 			var statements = new List<StatementSyntaxNode>();
-			while(_currentInstructionOffset < Script.Instructions.Length) {
+			while(_currentInstructionOffset < Script.InstructionList.Count) {
 
 				// check if block end was reached
 				if(CurrentInstruction is LabelInstruction label && label.Name == "}") {
@@ -86,8 +81,8 @@ namespace Yuka.Script {
 					_currentAssignmentTarget = new AssignmentTarget.LocalString(vstr.FlagId);
 					break;
 				case DataElement.VLoc vloc:
-					if(vloc.Id >= Script.Header.LocalCount)
-						throw new ArgumentOutOfRangeException(nameof(vloc.Id), vloc.Id, "Local variable id must be smaller than local variable pool size (" + Script.Header.LocalCount + ")");
+					if(vloc.Id >= Script.InstructionList.MaxLocals)
+						throw new ArgumentOutOfRangeException(nameof(vloc.Id), vloc.Id, "Local variable id must be smaller than local variable pool size (" + Script.InstructionList.MaxLocals + ")");
 					_currentAssignmentTarget = new AssignmentTarget.Local(vloc.Id);
 					break;
 				default:
@@ -120,11 +115,9 @@ namespace Yuka.Script {
 			}
 		}
 
-		protected ExpressionSyntaxNode[] ToExpressions(DataElement[] elements) {
-			return elements.Select(ToExpression).ToArray();
-		}
+		protected ExpressionSyntaxNode ToExpression(DataElement[] parts) {
+			if(parts.Length == 1) return ToExpression(parts[0]);
 
-		protected ExpressionSyntaxNode ToOperatorExpression(DataElement[] parts) {
 			// odd number of elements (one less operator than operands)
 			Debug.Assert(parts.Length % 2 == 1);
 			var operators = new string[parts.Length / 2];
@@ -141,6 +134,15 @@ namespace Yuka.Script {
 				}
 			}
 			return new OperatorExpr { Operands = operands, Operators = operators };
+		}
+
+		protected ExpressionSyntaxNode[] MapToExpressions(DataElement[] elements) {
+			// not using linq here, because it's a performance critical function
+			var expressions = new ExpressionSyntaxNode[elements.Length];
+			for(int i = 0; i < elements.Length; i++) {
+				expressions[i] = ToExpression(elements[i]);
+			}
+			return expressions;
 		}
 
 		protected StatementSyntaxNode ReadStatement() {
@@ -161,7 +163,7 @@ namespace Yuka.Script {
 						if(func.Arguments.Length == 0) {
 							// a call to =() with no arguments means the result of the following function call is assigned
 							if(CurrentInstruction is CallInstruction callInstruction) {
-								expr = new FunctionCallExpr { CallStmt = new FunctionCallStmt { MethodName = callInstruction.Name, Arguments = ToExpressions(callInstruction.Arguments) } };
+								expr = new FunctionCallExpr { CallStmt = new FunctionCallStmt { MethodName = callInstruction.Name, Arguments = MapToExpressions(callInstruction.Arguments) } };
 								_currentInstructionOffset++;
 							}
 							else {
@@ -170,7 +172,7 @@ namespace Yuka.Script {
 						}
 						else {
 							// otherwise, the arguments are alternating operands and operators
-							expr = ToOperatorExpression(func.Arguments);
+							expr = ToExpression(func.Arguments);
 						}
 
 						if(_currentAssignmentTarget is AssignmentTarget.Local local) {
@@ -185,7 +187,7 @@ namespace Yuka.Script {
 					}
 					#endregion
 
-					var callStatement = new FunctionCallStmt { MethodName = func.Name, Arguments = ToExpressions(func.Arguments) };
+					var callStatement = new FunctionCallStmt { MethodName = func.Name, Arguments = MapToExpressions(func.Arguments) };
 
 					#region Handle body functions
 
@@ -197,13 +199,13 @@ namespace Yuka.Script {
 						#region Handle if statements
 
 						if(callStatement.MethodName.ToLower() == "if") {
-							if(!(Script.Instructions[_currentInstructionOffset] is LabelInstruction elseKeyword) || elseKeyword.Name != "else")
+							if(!(Script.InstructionList[_currentInstructionOffset] is LabelInstruction elseKeyword) || elseKeyword.Name != "else")
 								// no else block
 								return new IfStmt { Function = callStatement, Body = body };
 
 							// skip else keyword
 							_currentInstructionOffset++;
-							if(!(Script.Instructions[_currentInstructionOffset] is LabelInstruction elseStart) || elseStart.Name != "{")
+							if(!(Script.InstructionList[_currentInstructionOffset] is LabelInstruction elseStart) || elseStart.Name != "{")
 								throw new FormatException("Else keyword must be followed by an opening brace");
 
 							// skip opening brace

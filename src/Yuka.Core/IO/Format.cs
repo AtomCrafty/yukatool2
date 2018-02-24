@@ -23,6 +23,9 @@ namespace Yuka.IO {
 		public static readonly FrmFormat Frm = new FrmFormat();
 		// script
 		public static readonly YksFormat Yks = new YksFormat();
+		public static readonly YkiFormat Yki = new YkiFormat();
+		public static readonly YkdFormat Ykd = new YkdFormat();
+		public static readonly CsvFormat Csv = new CsvFormat();
 		// other
 		public static readonly RawFormat Raw = new RawFormat();
 

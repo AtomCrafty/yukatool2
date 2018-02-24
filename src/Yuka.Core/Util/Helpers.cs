@@ -53,7 +53,7 @@ namespace Yuka.Util {
 		public static string ReadNullTerminatedString(this BinaryReader r, Encoding encoding = null) {
 			var bytes = new List<byte>();
 
-			// performance optimization
+			// performance optimization for debug builds
 			long len = r.BaseStream.Length;
 			long pos = r.BaseStream.Position;
 

@@ -36,7 +36,9 @@ namespace Yuka.Script.Data {
 
 		public sealed class Ctrl : DataElement {
 			public uint NameOffset { get => Field1; set => Field1 = value; }
-			public uint Link { get => Field2; set => Field2 = value; }
+			public uint LinkOffset { get => Field2; set => Field2 = value; }
+			public Ctrl LinkedElement;
+			public int Id = -1;
 
 			public readonly string Name;
 
@@ -46,6 +48,7 @@ namespace Yuka.Script.Data {
 			}
 
 			public override string DisplayInfo => $"{base.DisplayInfo} [{Name}]";
+
 			public override string ToString() => ':' + Name;
 		}
 
