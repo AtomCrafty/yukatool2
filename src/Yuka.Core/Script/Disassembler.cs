@@ -9,10 +9,7 @@ using Yuka.Script.Instructions;
 using Yuka.Util;
 
 namespace Yuka.Script {
-	public class Disassembler : IDisposable {
-		protected static readonly string[] Operators = { "+", "-", "*", "/", "%", "=", "<", ">" };
-		protected const int OperatorLink = ushort.MaxValue; // all operator ctrl elements have this link value
-
+	public class Disassembler {
 		protected readonly Stream Stream;
 
 		public Disassembler(Stream stream) {
@@ -78,8 +75,8 @@ namespace Yuka.Script {
 										ctrl.LinkedElement = index[code[argLink]] as DataElement.Ctrl;
 									}
 									else {
-										if(argLink == OperatorLink) Debug.Assert(Operators.Contains(ctrl.Name));
-										Console.WriteLine("Unlinked control element: " + ctrl);
+										if(argLink == Format.Yks.OperatorLink) Debug.Assert(Format.Yks.Operators.Contains(ctrl.Name));
+										//Console.WriteLine("Unlinked control element: " + ctrl);
 									}
 								}
 
@@ -97,7 +94,7 @@ namespace Yuka.Script {
 							if(link != -1) {
 								ctrl.LinkedElement = index[code[link]] as DataElement.Ctrl;
 							}
-							else Console.WriteLine("Unlinked control element: " + ctrl);
+							//else Console.WriteLine("Unlinked control element: " + ctrl);
 
 							instructions.Add(new LabelInstruction(ctrl, instructions));
 							break;
@@ -134,10 +131,6 @@ namespace Yuka.Script {
 				MaxLocals = r.ReadUInt32(),
 				Unknown2 = r.ReadUInt32()
 			};
-		}
-
-		public void Dispose() {
-			Stream?.Dispose();
 		}
 	}
 }

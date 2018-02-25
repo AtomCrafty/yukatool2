@@ -89,7 +89,7 @@ namespace Yuka.Util {
 		}
 
 		public static string WithoutExtension(this string path) {
-			return Path.ChangeExtension(path, "");
+			return Path.ChangeExtension(path, "").TrimEnd('.');
 		}
 
 		public static T Seek<T>(this T s, long offset) where T : Stream {

@@ -39,6 +39,7 @@ namespace Yuka.Script.Data {
 			public uint LinkOffset { get => Field2; set => Field2 = value; }
 			public Ctrl LinkedElement;
 			public int Id = -1;
+			public int LabelOffset = -1;
 
 			public readonly string Name;
 

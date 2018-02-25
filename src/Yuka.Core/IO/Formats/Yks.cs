@@ -13,6 +13,10 @@ namespace Yuka.IO.Formats {
 
 		public readonly byte[] Signature = Encoding.ASCII.GetBytes("YKS001");
 		public readonly int HeaderLength = 0x30;
+		public readonly int IndexEntryLength = 0x10;
+
+		public readonly string[] Operators = { "+", "-", "*", "/", "%", "=", "<", ">" };
+		public readonly int OperatorLink = ushort.MaxValue; // all operator ctrl elements have this link value
 
 		internal Header DummyHeader => new Header { Signature = Signature, HeaderLength = HeaderLength };
 
@@ -46,9 +50,20 @@ namespace Yuka.IO.Formats {
 		}
 
 		public override YukaScript Read(string name, Stream s) {
-			using(var disasm = new Disassembler(s)) {
-				return disasm.Disassemble();
-			}
+			return new Disassembler(s).Disassemble();
+		}
+	}
+
+	public class YksScriptWriter : FileWriter<YukaScript> {
+
+		public override Format Format => Yks;
+
+		public override bool CanWrite(object obj) {
+			return obj is YukaScript;
+		}
+
+		public override void Write(YukaScript script, Stream s) {
+			new Assembler(script, s).Assemble();
 		}
 	}
 }

@@ -15,11 +15,48 @@ using Yuka.Util;
 namespace Yuka.Cli {
 	public class Program {
 		public static void Main() {
-			Tests.Decompile();
+			Tests.ReAssembleStart();
 		}
 	}
 
 	public static class Tests {
+
+		public static void ReAssembleStart() {
+
+			using(var fs = FileSystem.FromArchive(@"C:\Temp\CopyTest\data01.ykc")) {
+				var script = FileReader.Decode<YukaScript>("start.yks", fs);
+
+				//FileWriter.Encode(script, "start.yks", fs, new FormatPreference(Format.Yks));
+
+				using(var dir = FileSystem.FromFolder(@"C:\Temp\CopyTest")) {
+					FileWriter.Encode(script, "start.yks", dir, new FormatPreference(Format.Yks));
+				}
+			}
+			
+
+			Console.ReadLine();
+		}
+
+		public static void Assemble() {
+			const string path = @"C:\Temp\CopyTest\debug.yks";
+			var fs = FileSystem.FromFile(path);
+			var fn = Path.GetFileName(path);
+
+			var sw = new Stopwatch();
+			sw.Start();
+
+			int l = 1;
+			for(int i = 0; i < l; i++) {
+				var script = FileReader.Decode<YukaScript>(fn, fs);
+				FileWriter.Encode(script, fn.WithoutExtension() + "_new", fs, new FormatPreference(Format.Yks));
+			}
+			sw.Stop();
+			Console.WriteLine();
+			Console.WriteLine($"Processed {l} scripts in {sw.ElapsedMilliseconds:0.##} ms");
+			Console.WriteLine($"Average time per script: {sw.ElapsedMilliseconds / (float)l:0.##} ms");
+
+			Console.ReadLine();
+		}
 
 		public static void Decompile() {
 			const string path = @"C:\Temp\CopyTest\debug.yks";

@@ -26,7 +26,8 @@ namespace Yuka.IO {
 			new GnpGraphicWriter(),
 			new PngBitmapWriter(),
 			new GnpBitmapWriter(),
-			new YkiScriptWriter()
+			new YkiScriptWriter(),
+			new YksScriptWriter()
 		};
 
 		public static IEnumerable<FileWriter> FindWriters(object obj, Predicate<FileWriter> filter = null) {
