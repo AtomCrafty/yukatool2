@@ -86,7 +86,7 @@ namespace Yuka.IO.Formats {
 			}
 
 			if(!ykg.IsDecoded) {
-				if(!Options.MergeAlphaChannelOnExport || ykg.AlphaData == null) {
+				if(!Options.YkgMergeAlphaChannelOnExport || ykg.AlphaData == null) {
 					if(ykg.ColorData.StartsWith(Bmp.Signature)) {
 
 						// data is already in the correct format, so no re-encoding is needed
@@ -124,7 +124,7 @@ namespace Yuka.IO.Formats {
 
 			// merge or write alpha channel
 			if(ykg.AlphaBitmap != null) {
-				if(Options.MergeAlphaChannelOnExport) {
+				if(Options.YkgMergeAlphaChannelOnExport) {
 					// merge alpha channel into color bitmap
 					ykg.MergeChannels();
 				}

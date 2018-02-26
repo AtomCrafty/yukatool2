@@ -54,7 +54,7 @@ namespace Yuka.Script {
 			uint instrEndOffset = (uint)(Stream.Position - startOffset);
 
 			// create data sector and calculate offsets
-			var dataStream = Options.OptimizeScriptDataOnExport ? WriteDataSectorOptimized() : WriteDataSector();
+			var dataStream = Options.YksOptimizeScriptDataOnExport ? WriteDataSectorOptimized() : WriteDataSector();
 
 			// write index
 			uint indexOffset = (uint)(Stream.Position - startOffset);
@@ -75,7 +75,7 @@ namespace Yuka.Script {
 			Stream.Seek(startOffset);
 			WriteHeader(new YksFormat.Header {
 				Signature = Format.Yks.Signature,
-				Encryption = (short)(Options.EncryptScriptDataOnExport ? 1 : 0),
+				Encryption = (short)(Options.YksEncryptScriptDataOnExport ? 1 : 0),
 				HeaderLength = Format.Yks.HeaderLength,
 				InstrOffset = instrOffset,
 				InstrCount = (instrEndOffset - instrOffset) / sizeof(int),
@@ -147,7 +147,7 @@ namespace Yuka.Script {
 				}
 			}
 			dataStream.Seek(0);
-			return Options.EncryptScriptDataOnExport ? (Stream)new XorStream(dataStream, Options.ScriptDataXorKey) : dataStream;
+			return Options.YksEncryptScriptDataOnExport ? (Stream)new XorStream(dataStream, Options.YksScriptDataXorKey) : dataStream;
 		}
 
 		protected Stream WriteDataSectorOptimized() {
@@ -209,7 +209,7 @@ namespace Yuka.Script {
 				}
 			}
 			dataStream.Seek(0);
-			return Options.EncryptScriptDataOnExport ? (Stream)new XorStream(dataStream, Options.ScriptDataXorKey) : dataStream;
+			return Options.YksEncryptScriptDataOnExport ? (Stream)new XorStream(dataStream, Options.YksScriptDataXorKey) : dataStream;
 		}
 
 		internal static void WriteHeader(YksFormat.Header header, BinaryWriter w) {

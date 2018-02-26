@@ -10,16 +10,38 @@ using Yuka.Graphics;
 using Yuka.IO;
 using Yuka.IO.Formats;
 using Yuka.Script;
+using Yuka.Script.Data;
 using Yuka.Util;
 
 namespace Yuka.Cli {
 	public class Program {
 		public static void Main() {
-			Tests.ReAssembleStart();
+			Tests.CsvWrite();
 		}
 	}
 
 	public static class Tests {
+
+		public static void CsvWrite() {
+			using(var fs = FileSystem.FromFolder(@"C:\Temp\CopyTest")) {
+
+				var table = FileReader.Decode<StringTable>("kaho_01.csv", fs);
+				FileWriter.Encode(table, "kaho_01_export.csv", fs, new FormatPreference(Format.Csv));
+
+				table = FileReader.Decode<StringTable>("kaho_01_export.csv", fs);
+				FileWriter.Encode(table, "kaho_01_export_2.csv", fs, new FormatPreference(Format.Csv));
+
+			}
+		}
+
+		public static void CsvRead() {
+			using(var fs = FileSystem.FromFolder(@"S:\Games\Visual Novels\Lover Able\data01-src\yks\story\common")) {
+
+				var table = FileReader.Decode<StringTable>("chapter1-1.csv", fs);
+				Console.WriteLine($"Imported {table.Count} records");
+
+			}
+		}
 
 		public static void ReAssembleStart() {
 
@@ -32,7 +54,7 @@ namespace Yuka.Cli {
 					FileWriter.Encode(script, "start.yks", dir, new FormatPreference(Format.Yks));
 				}
 			}
-			
+
 
 			Console.ReadLine();
 		}
@@ -115,7 +137,7 @@ namespace Yuka.Cli {
 			var fs = FileSystem.FromFile(path);
 
 			var ykg = FileReader.Decode<YukaGraphic>(name, fs);
-			Options.MergeAlphaChannelOnExport = true;
+			Options.YkgMergeAlphaChannelOnExport = true;
 			FileWriter.Encode(ykg, name, fs, FormatPreference.DefaultGraphics);
 		}
 

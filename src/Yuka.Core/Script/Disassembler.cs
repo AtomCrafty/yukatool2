@@ -34,7 +34,7 @@ namespace Yuka.Script {
 			Stream.Seek(header.DataOffset).Read(dataBuffer, 0, (int)header.DataLength);
 			if(header.Encryption == 1) {
 				for(int i = 0; i < header.DataLength; i++) {
-					dataBuffer[i] ^= Options.ScriptDataXorKey;
+					dataBuffer[i] ^= Options.YksScriptDataXorKey;
 				}
 			}
 

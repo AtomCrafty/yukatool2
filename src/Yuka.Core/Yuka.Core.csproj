@@ -68,6 +68,7 @@
     <Compile Include="IO\Formats\Ykg.cs" />
     <Compile Include="Script\AssignmentTarget.cs" />
     <Compile Include="Script\Assembler.cs" />
+    <Compile Include="Script\Data\StringTable.cs" />
     <Compile Include="Script\Disassembler.cs" />
     <Compile Include="Script\Instructions\InstructionList.cs" />
     <Compile Include="Script\Instructions\Instruction.cs" />

@@ -85,7 +85,7 @@ namespace Yuka.IO.Formats {
 			}
 
 			if(!ykg.IsDecoded) {
-				if(!Options.MergeAlphaChannelOnExport || ykg.AlphaData == null) {
+				if(!Options.YkgMergeAlphaChannelOnExport || ykg.AlphaData == null) {
 					if(ykg.ColorData.StartsWith(Gnp.Signature)) {
 						// changing the signature is faster than re-encoding the image
 						for(int i = 0; i < Png.Signature.Length; i++) {
@@ -136,7 +136,7 @@ namespace Yuka.IO.Formats {
 			Debug.Assert(ykg.IsDecoded);
 
 			if(ykg.AlphaBitmap != null) {
-				if(Options.MergeAlphaChannelOnExport) {
+				if(Options.YkgMergeAlphaChannelOnExport) {
 					// merge alpha channel into color bitmap
 					ykg.MergeChannels();
 				}
