@@ -18,13 +18,15 @@ namespace Yuka.IO.Formats {
 		}
 
 		public override void Write(YukaScript script, Stream s) {
-			var w = new StreamWriter(s);
+			var writer = new StreamWriter(s);
 
 			script.EnsureCompiled();
 
 			foreach(var instruction in script.InstructionList) {
-				w.WriteLine(instruction.ToString());
+				writer.WriteLine(instruction.ToString());
 			}
+
+			writer.Flush();
 		}
 	}
 }

@@ -21,9 +21,13 @@ namespace Yuka.IO.Formats {
 		public override void Write(YukaScript script, Stream s) {
 			var writer = new StreamWriter(s);
 
+			script.EnsureDecompiled();
+
 			foreach(var statement in script.Body.Statements) {
 				writer.WriteLine(statement.ToString());
 			}
+
+			writer.Flush();
 		}
 	}
 }

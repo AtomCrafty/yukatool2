@@ -99,6 +99,98 @@ namespace Yuka.Script {
 
 		#region Statements
 
+		public void Visit(AssignmentStmt stmt) {
+			switch(stmt.Expression) {
+				case FunctionCallExpr call:
+					// evaluate all of the call arguments
+					// this may emit instructions and allocate locals
+					var arguments = EvaluateArguments(call.CallStmt.Arguments);
+
+					// insert assignment target and =() right before the actual function call
+					Emit(new TargetInstruction(CreateTargetElement(stmt.Target), _instructions));
+					EmitCall("=");
+
+					// emit the call instruction
+					EmitCall(call.CallStmt.MethodName, arguments);
+					break;
+				case OperatorExpr expr:
+					// evaluate all of the operands
+					// this may emit instructions and allocate locals
+					var operands = EvaluateArguments(expr.Operands);
+
+					// insert assignment target and the evaluation funcion =(...)
+					Emit(new TargetInstruction(CreateTargetElement(stmt.Target), _instructions));
+					EmitCall("=", InterleaveOperandsAndOperators(operands, expr.Operators));
+					break;
+				default:
+					Emit(new TargetInstruction(CreateTargetElement(stmt.Target), _instructions));
+					EmitCall("=", new[] { stmt.Expression.Accept(this) });
+					break;
+			}
+		}
+
+		public void Visit(BlockStmt stmt) {
+			var start = EmitBlockStart();
+
+			foreach(var statement in stmt.Statements) {
+				// emit instructions for this statement
+				statement.Accept(this);
+
+				// all locals should be freed at the end of each statement
+				Debug.Assert(!_usedLocals.ContainsValue(true), "Local not freed after statement evaluation");
+			}
+
+			EmitBlockEnd(start);
+		}
+
+		public void Visit(BodyFunctionStmt stmt) {
+			stmt.Function.Accept(this);
+			stmt.Body.Accept(this);
+		}
+
+		public void Visit(FunctionCallStmt stmt) {
+			var arguments = EvaluateArguments(stmt.Arguments);
+			EmitCall(stmt.MethodName, arguments);
+		}
+
+		public void Visit(IfStmt stmt) {
+			stmt.Function.Accept(this);
+			stmt.Body.Accept(this);
+
+			if(stmt.ElseBody != null) {
+				// else label remains unlinked
+				EmitLabel("else");
+				stmt.ElseBody.Accept(this);
+			}
+		}
+
+		public void Visit(JumpLabelStmt stmt) {
+			var label = GetUniqueLabel(stmt.Name);
+
+			// label should not be linked yet
+			Debug.Assert(label.LinkedElement == null, $"Duplicate unique label '{label.Name}'");
+
+			// unique labels are linked to themselves
+			label.LinkedElement = label;
+
+			// emit label
+			Emit(new LabelInstruction(label, _instructions));
+		}
+
+		#endregion
+
+		#endregion
+
+		#region Helper methods
+
+		protected int Emit(Instruction element) {
+			int index = _instructions.Count;
+			_instructions.Add(element);
+			return index;
+		}
+
+		#region DataElement
+
 		protected Dictionary<(DataElementType type, object value), DataElement> _usedElements = new Dictionary<(DataElementType type, object value), DataElement>();
 
 		protected TElem GetElement<TElem>(DataElementType type, object value, Func<TElem> producer) where TElem : DataElement {
@@ -156,93 +248,14 @@ namespace Yuka.Script {
 			}
 		}
 
-		public void Visit(AssignmentStmt stmt) {
-			if(stmt.Expression is FunctionCallExpr call) {
-				// evaluate all of the call arguments
-				// this may emit instructions and allocate locals
-				var arguments = EvaluateArguments(call.CallStmt.Arguments);
-
-				// insert assignment target and =() right before the actual function call
-				Emit(new TargetInstruction(CreateTargetElement(stmt.Target), _instructions));
-				EmitCall("=");
-
-				// emit the call instruction
-				EmitCall(call.CallStmt.MethodName, arguments);
-			}
-			else if(stmt.Expression is OperatorExpr expr) {
-
-			}
-			else {
-
-			}
-
-			// TODO else
-		}
-
-		public void Visit(BlockStmt stmt) {
-			var start = EmitLabel("{");
-
-			foreach(var statement in stmt.Statements) {
-				// emit instructions for this statement
-				statement.Accept(this);
-
-				// all locals should be freed at the end of each statement
-				Debug.Assert(!_usedLocals.ContainsValue(true), "Local not freed after statement evaluation");
-			}
-
-			var end = EmitLabel("}");
-			LinkLabels(start, end);
-		}
-
-		public void Visit(BodyFunctionStmt stmt) {
-			stmt.Function.Accept(this);
-			stmt.Body.Accept(this);
-		}
-
-		public void Visit(FunctionCallStmt stmt) {
-			var arguments = EvaluateArguments(stmt.Arguments);
-			EmitCall(stmt.MethodName, arguments);
-		}
-
-		public void Visit(IfStmt stmt) {
-			stmt.Function.Accept(this);
-			stmt.Body.Accept(this);
-
-			if(stmt.ElseBody != null) {
-				// else label remains unlinked
-				EmitLabel("else");
-				stmt.ElseBody.Accept(this);
-			}
-		}
-
-		public void Visit(JumpLabelStmt stmt) {
-			var label = GetUniqueLabel(stmt.Name);
-
-			// label should not be linked yet
-			Debug.Assert(label.LinkedElement == null, $"Duplicate unique label '{label.Name}'");
-
-			// unique labels are linked to themselves
-			label.LinkedElement = label;
-		}
-
-		#endregion
-
-		#endregion
-
-		#region Helper methods
-
-		protected int Emit(Instruction element) {
-			int index = _instructions.Count;
-			_instructions.Add(element);
-			return index;
-		}
-
 		protected TargetInstruction CreateTargetInstruction(AssignmentTarget target) {
 			return new TargetInstruction(CreateTargetElement(target), _instructions);
 		}
 
+		#endregion
 
-		// calls
+		#region Calls
+
 		protected CallInstruction CreateCallInstruction(string name, DataElement[] arguments = null) {
 			return new CallInstruction(CreateFunction(name), arguments ?? new DataElement[0], _instructions);
 		}
@@ -273,6 +286,40 @@ namespace Yuka.Script {
 			return interleaved;
 		}
 
+		#endregion
+
+		#region Labels
+
+		protected int _nextLabelId;
+		protected DataElement.Ctrl CreateLabel(string name) {
+			return new DataElement.Ctrl(name) { Id = _nextLabelId++ };
+		}
+
+		protected DataElement.Ctrl EmitLabel(string name) {
+			var label = CreateLabel(name);
+			Emit(new LabelInstruction(label, _instructions));
+			return label;
+		}
+
+		protected Dictionary<string, DataElement.Ctrl> _uniqueLabels = new Dictionary<string, DataElement.Ctrl>();
+		protected DataElement.Ctrl GetUniqueLabel(string name) {
+			if(_uniqueLabels.ContainsKey(name)) return _uniqueLabels[name];
+			return _uniqueLabels[name] = CreateLabel(name);
+		}
+
+		protected void LinkLabels(DataElement.Ctrl a, DataElement.Ctrl b) {
+			a.LinkedElement = b;
+			b.LinkedElement = a;
+		}
+
+		protected DataElement.Ctrl EmitBlockStart() {
+			return EmitLabel("{");
+		}
+		protected void EmitBlockEnd(DataElement.Ctrl start) {
+			var end = EmitLabel("}");
+			LinkLabels(start, end);
+		}
+
 		protected Dictionary<string, DataElement.Ctrl> _usedOperators = new Dictionary<string, DataElement.Ctrl>();
 		protected DataElement.Ctrl CreateOperator(string operation) {
 			// try to re-use existing operator symbol
@@ -283,28 +330,9 @@ namespace Yuka.Script {
 			return op;
 		}
 
+		#endregion
 
-
-
-
-		// labels
-		protected DataElement.Ctrl EmitLabel(string name) {
-			var element = new DataElement.Ctrl(name);
-			Emit(new LabelInstruction(element, _instructions));
-			return element;
-		}
-
-		protected Dictionary<string, DataElement.Ctrl> _uniqueLabels = new Dictionary<string, DataElement.Ctrl>();
-
-		protected DataElement.Ctrl GetUniqueLabel(string name) {
-			if(_uniqueLabels.ContainsKey(name)) return _uniqueLabels[name];
-			return _uniqueLabels[name] = new DataElement.Ctrl(name);
-		}
-
-		protected void LinkLabels(DataElement.Ctrl a, DataElement.Ctrl b) {
-			a.LinkedElement = b;
-			b.LinkedElement = a;
-		}
+		#region Locals
 
 		protected Dictionary<DataElement.VLoc, bool> _usedLocals = new Dictionary<DataElement.VLoc, bool>();
 
@@ -322,6 +350,8 @@ namespace Yuka.Script {
 			Debug.Assert(_usedLocals.ContainsKey(local) && _usedLocals[local]);
 			_usedLocals[local] = false;
 		}
+
+		#endregion
 
 		#endregion
 	}

@@ -25,12 +25,9 @@ namespace Yuka.Cli {
 		public static void Compile() {
 			using(var fs = FileSystem.FromFolder(@"C:\Temp\CopyTest")) {
 				var script = FileReader.Decode<YukaScript>("debug.yks", fs);
+
 				FileWriter.Encode(script, "debug_1", fs, new FormatPreference(Format.Yki));
-
-				script.Decompile();
 				FileWriter.Encode(script, "debug_2", fs, new FormatPreference(Format.Ykd));
-
-				script.Compile();
 				FileWriter.Encode(script, "debug_3", fs, new FormatPreference(Format.Yki));
 			}
 			Console.ReadLine();
