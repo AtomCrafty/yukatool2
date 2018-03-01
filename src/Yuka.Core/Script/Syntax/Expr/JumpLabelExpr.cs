@@ -2,7 +2,7 @@
 using Yuka.Script.Syntax.Stmt;
 
 namespace Yuka.Script.Syntax.Expr {
-	public class JumpLabelExpr : ExpressionSyntaxNode {
+	public class JumpLabelExpr : Expression {
 		public JumpLabelStmt LabelStmt;
 
 		public override string ToString() => $":{LabelStmt.Name}";

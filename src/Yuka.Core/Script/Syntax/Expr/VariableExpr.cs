@@ -2,7 +2,7 @@
 using Yuka.Script.Data;
 
 namespace Yuka.Script.Syntax.Expr {
-	public class VariableExpr : ExpressionSyntaxNode {
+	public class VariableExpr : Expression {
 		public string FlagType;
 		public int FlagId;
 

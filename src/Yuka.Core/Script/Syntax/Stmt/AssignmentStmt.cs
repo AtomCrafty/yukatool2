@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 
 namespace Yuka.Script.Syntax.Stmt {
-	public class AssignmentStmt : StatementSyntaxNode {
+	public class AssignmentStmt : Statement {
 		public AssignmentTarget Target;
-		public ExpressionSyntaxNode Expression;
+		public Expression Expression;
 
 		public override string ToString() => $"{Target} = {Expression};";
 

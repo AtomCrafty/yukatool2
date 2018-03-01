@@ -17,7 +17,7 @@ namespace Yuka.Script {
 
 		protected readonly YukaScript Script;
 
-		protected Dictionary<uint, ExpressionSyntaxNode> _locals = new Dictionary<uint, ExpressionSyntaxNode>();
+		protected Dictionary<uint, Expression> _locals = new Dictionary<uint, Expression>();
 		protected int _currentInstructionOffset;
 		protected AssignmentTarget _currentAssignmentTarget;
 
@@ -37,7 +37,7 @@ namespace Yuka.Script {
 		protected Instruction ReadInstruction() => Script.InstructionList[_currentInstructionOffset++];
 
 		protected BlockStmt ReadBlockStatement() {
-			var statements = new List<StatementSyntaxNode>();
+			var statements = new List<Statement>();
 			while(_currentInstructionOffset < Script.InstructionList.Count) {
 
 				// check if block end was reached
@@ -90,7 +90,7 @@ namespace Yuka.Script {
 			}
 		}
 
-		protected ExpressionSyntaxNode ToExpression(DataElement element) {
+		protected Expression ToExpression(DataElement element) {
 			switch(element) {
 				case DataElement.Ctrl ctrl:
 					return new JumpLabelExpr { LabelStmt = new JumpLabelStmt { Name = ctrl.Name } };
@@ -115,13 +115,13 @@ namespace Yuka.Script {
 			}
 		}
 
-		protected ExpressionSyntaxNode ToExpression(DataElement[] parts) {
+		protected Expression ToExpression(DataElement[] parts) {
 			if(parts.Length == 1) return ToExpression(parts[0]);
 
 			// odd number of elements (one less operator than operands)
 			Debug.Assert(parts.Length % 2 == 1);
 			var operators = new string[parts.Length / 2];
-			var operands = new ExpressionSyntaxNode[parts.Length / 2 + 1];
+			var operands = new Expression[parts.Length / 2 + 1];
 
 			for(int i = 0; i < parts.Length; i++) {
 				if(i % 2 == 0) {
@@ -136,16 +136,16 @@ namespace Yuka.Script {
 			return new OperatorExpr { Operands = operands, Operators = operators };
 		}
 
-		protected ExpressionSyntaxNode[] MapToExpressions(DataElement[] elements) {
+		protected Expression[] MapToExpressions(DataElement[] elements) {
 			// not using linq here, because it's a performance critical function
-			var expressions = new ExpressionSyntaxNode[elements.Length];
+			var expressions = new Expression[elements.Length];
 			for(int i = 0; i < elements.Length; i++) {
 				expressions[i] = ToExpression(elements[i]);
 			}
 			return expressions;
 		}
 
-		protected StatementSyntaxNode ReadStatement() {
+		protected Statement ReadStatement() {
 			var instruction = ReadInstruction();
 			switch(instruction) {
 
@@ -159,7 +159,7 @@ namespace Yuka.Script {
 					if(func.Name == "=") {
 						if(_currentAssignmentTarget == null) throw new FormatException("No assignment target set");
 
-						ExpressionSyntaxNode expr;
+						Expression expr;
 						if(func.Arguments.Length == 0) {
 							// a call to =() with no arguments means the result of the following function call is assigned
 							if(CurrentInstruction is CallInstruction callInstruction) {

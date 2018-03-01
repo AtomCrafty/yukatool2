@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 
 namespace Yuka.Script.Syntax.Stmt {
-	public class BodyFunctionStmt : StatementSyntaxNode {
+	public class BodyFunctionStmt : Statement {
 		public FunctionCallStmt Function;
 		public BlockStmt Body;
 

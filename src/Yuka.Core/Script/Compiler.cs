@@ -257,7 +257,7 @@ namespace Yuka.Script {
 			}
 		}
 
-		protected DataElement[] EvaluateArguments(ExpressionSyntaxNode[] expressions) {
+		protected DataElement[] EvaluateArguments(Expression[] expressions) {
 			return expressions.Select(expression => expression.Accept(this)).ToArray();
 		}
 

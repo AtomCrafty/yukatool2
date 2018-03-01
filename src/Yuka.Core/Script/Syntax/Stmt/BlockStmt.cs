@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.Linq;
 
 namespace Yuka.Script.Syntax.Stmt {
-	public class BlockStmt : StatementSyntaxNode {
-		public List<StatementSyntaxNode> Statements = new List<StatementSyntaxNode>();
+	public class BlockStmt : Statement {
+		public List<Statement> Statements = new List<Statement>();
 
 		public override string ToString() => $"{{\n  {string.Join("\n", Statements.Select(s => s?.ToString())).Replace("\n", "\n  ")}\n}}";
 

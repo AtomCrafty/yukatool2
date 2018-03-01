@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 
 namespace Yuka.Script.Syntax.Stmt {
-	public class JumpLabelStmt : StatementSyntaxNode {
+	public class JumpLabelStmt : Statement {
 		public string Name;
 
 		public override string ToString() => $"{Name}:";

@@ -2,7 +2,7 @@
 using Yuka.Script.Data;
 
 namespace Yuka.Script.Syntax.Expr {
-	public class IntLiteral : ExpressionSyntaxNode {
+	public class IntLiteral : Expression {
 		public int Value;
 
 		public override string ToString() => Value.ToString();
