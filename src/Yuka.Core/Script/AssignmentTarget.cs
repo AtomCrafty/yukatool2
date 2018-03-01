@@ -1,8 +1,8 @@
 ﻿namespace Yuka.Script {
-	public class AssignmentTarget {
+	public abstract class AssignmentTarget {
 		public readonly AssignmentTargetType Type;
 
-		public AssignmentTarget(AssignmentTargetType type) {
+		protected AssignmentTarget(AssignmentTargetType type) {
 			Type = type;
 		}
 

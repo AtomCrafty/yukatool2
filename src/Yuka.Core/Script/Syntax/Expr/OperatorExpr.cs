@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Diagnostics;
 using System.Linq;
-using Yuka.Script.Instructions;
+using Yuka.Script.Data;
 
 namespace Yuka.Script.Syntax.Expr {
 	public class OperatorExpr : ExpressionSyntaxNode {
@@ -9,6 +9,7 @@ namespace Yuka.Script.Syntax.Expr {
 
 		public override string ToString() => (Operands[0] is OperatorExpr ? $"({Operands[0]})" : Operands[0].ToString()) + string.Join("", Operators.Zip(Operands.Skip(1), (s, node) => $" {s} {(node is OperatorExpr ? $"({node})" : node.ToString())}"));
 
-		public override List<Instruction> Accept(ISyntaxVisitor visitor) => visitor.Visit(this);
+		[DebuggerStepThrough]
+		public override DataElement Accept(ISyntaxVisitor visitor) => visitor.Visit(this);
 	}
 }

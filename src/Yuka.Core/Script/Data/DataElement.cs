@@ -15,6 +15,10 @@ namespace Yuka.Script.Data {
 			Field3 = field3;
 		}
 
+		protected DataElement(DataElementType type) {
+			Type = type;
+		}
+
 		public virtual string DisplayInfo => $"{Field1:X8} {Field2:X8} {Field3:X8} {Type}";
 
 		#region Entry classes
@@ -28,6 +32,10 @@ namespace Yuka.Script.Data {
 			public Func(uint field1, uint field2, uint field3, BinaryReader data)
 				: base(DataElementType.Func, field1, field2, field3) {
 				Name = data.Seek(NameOffset).ReadNullTerminatedString();
+			}
+
+			public Func(string name) : base(DataElementType.Func) {
+				Name = name;
 			}
 
 			public override string DisplayInfo => $"{base.DisplayInfo} [{Name}]";
@@ -48,6 +56,10 @@ namespace Yuka.Script.Data {
 				Name = data.Seek(NameOffset).ReadNullTerminatedString();
 			}
 
+			public Ctrl(string name) : base(DataElementType.Ctrl) {
+				Name = name;
+			}
+
 			public override string DisplayInfo => $"{base.DisplayInfo} [{Name}]";
 
 			public override string ToString() => ':' + Name;
@@ -61,6 +73,10 @@ namespace Yuka.Script.Data {
 			public CInt(uint field1, uint field2, uint field3, BinaryReader data)
 				: base(DataElementType.CInt, field1, field2, field3) {
 				Value = data.Seek(ValueOffset).ReadInt32();
+			}
+
+			public CInt(int value) : base(DataElementType.CInt) {
+				Value = value;
 			}
 
 			public override string DisplayInfo => $"{base.DisplayInfo} [{Value}]";
@@ -77,6 +93,10 @@ namespace Yuka.Script.Data {
 				Value = data.Seek(ValueOffset).ReadNullTerminatedString();
 			}
 
+			public CStr(string value) : base(DataElementType.CStr) {
+				Value = value;
+			}
+
 			public override string DisplayInfo => $"{base.DisplayInfo} [{Value}]";
 
 			// replacing just the most important escape sequences for easy display
@@ -91,6 +111,10 @@ namespace Yuka.Script.Data {
 			public SStr(uint field1, uint field2, uint field3, BinaryReader data)
 				: base(DataElementType.SStr, field1, field2, field3) {
 				FlagType = data.Seek(FlagTypeOffset).ReadNullTerminatedString();
+			}
+
+			public SStr(string type) : base(DataElementType.SStr) {
+				FlagType = type;
 			}
 
 			public override string DisplayInfo => $"{base.DisplayInfo} [{FlagType}]";
@@ -110,6 +134,11 @@ namespace Yuka.Script.Data {
 				FlagId = data.Seek(FlagIdOffset).ReadInt32();
 			}
 
+			public VInt(string type, int id) : base(DataElementType.VInt) {
+				FlagType = type;
+				FlagId = id;
+			}
+
 			public override string DisplayInfo => $"{base.DisplayInfo} [{FlagType} {FlagId}]";
 			public override string ToString() => FlagType + ':' + FlagId;
 		}
@@ -127,6 +156,11 @@ namespace Yuka.Script.Data {
 				FlagId = data.Seek(FlagIdOffset).ReadInt32();
 			}
 
+			public VStr(string type, int id) : base(DataElementType.VStr) {
+				FlagType = type;
+				FlagId = id;
+			}
+
 			public override string DisplayInfo => $"{base.DisplayInfo} [{FlagType} {FlagId}]";
 			public override string ToString() => FlagType + ':' + FlagId;
 		}
@@ -137,6 +171,10 @@ namespace Yuka.Script.Data {
 			// ReSharper disable once UnusedParameter.Local
 			public VLoc(uint field1, uint field2, uint field3, BinaryReader data)
 				: base(DataElementType.VLoc, field1, field2, field3) { }
+
+			public VLoc(uint id) : base(DataElementType.VLoc) {
+				Id = id;
+			}
 
 			public override string DisplayInfo => $"{base.DisplayInfo} [{Id}]";
 			public override string ToString() => "$" + Id;

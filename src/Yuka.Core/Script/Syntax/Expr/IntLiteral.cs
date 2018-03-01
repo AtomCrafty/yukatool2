@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Yuka.Script.Instructions;
+﻿using System.Diagnostics;
+using Yuka.Script.Data;
 
 namespace Yuka.Script.Syntax.Expr {
 	public class IntLiteral : ExpressionSyntaxNode {
@@ -7,6 +7,7 @@ namespace Yuka.Script.Syntax.Expr {
 
 		public override string ToString() => Value.ToString();
 
-		public override List<Instruction> Accept(ISyntaxVisitor visitor) => visitor.Visit(this);
+		[DebuggerStepThrough]
+		public override DataElement Accept(ISyntaxVisitor visitor) => visitor.Visit(this);
 	}
 }

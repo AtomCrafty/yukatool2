@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Yuka.Script.Instructions;
+﻿using System.Diagnostics;
 
 namespace Yuka.Script.Syntax.Stmt {
 	public class JumpLabelStmt : StatementSyntaxNode {
@@ -7,6 +6,7 @@ namespace Yuka.Script.Syntax.Stmt {
 
 		public override string ToString() => $"{Name}:";
 
-		public override List<Instruction> Accept(ISyntaxVisitor visitor) => visitor.Visit(this);
+		[DebuggerStepThrough]
+		public override void Accept(ISyntaxVisitor visitor) => visitor.Visit(this);
 	}
 }

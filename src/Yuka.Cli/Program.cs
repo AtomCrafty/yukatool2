@@ -16,11 +16,19 @@ using Yuka.Util;
 namespace Yuka.Cli {
 	public class Program {
 		public static void Main() {
-			Tests.CsvWrite();
+			Tests.Compile();
 		}
 	}
 
 	public static class Tests {
+
+		public static void Compile() {
+			using(var fs = FileSystem.FromFolder(@"C:\Temp\CopyTest")) {
+				var script = FileReader.Decode<YukaScript>("debug.yks", fs);
+				script.Decompile();
+				script.Compile();
+			}
+		}
 
 		public static void CsvWrite() {
 			using(var fs = FileSystem.FromFolder(@"C:\Temp\CopyTest")) {
@@ -54,7 +62,6 @@ namespace Yuka.Cli {
 					FileWriter.Encode(script, "start.yks", dir, new FormatPreference(Format.Yks));
 				}
 			}
-
 
 			Console.ReadLine();
 		}

@@ -54,7 +54,7 @@ namespace Yuka.Script {
 			uint instrEndOffset = (uint)(Stream.Position - startOffset);
 
 			// create data sector and calculate offsets
-			var dataStream = Options.YksOptimizeScriptDataOnExport ? WriteDataSectorOptimized() : WriteDataSector();
+			var dataStream = Options.YksDeduplicateScriptDataOnExport ? WriteDataSectorOptimized() : WriteDataSector();
 
 			// write index
 			uint indexOffset = (uint)(Stream.Position - startOffset);

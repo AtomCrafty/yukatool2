@@ -29,7 +29,7 @@ namespace Yuka.Script {
 		}
 
 		public void Compile() {
-			throw new System.NotImplementedException();
+			new Compiler(this).Compile();
 		}
 	}
 }

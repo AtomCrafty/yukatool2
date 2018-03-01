@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Diagnostics;
 using System.Linq;
-using Yuka.Script.Instructions;
 
 namespace Yuka.Script.Syntax.Stmt {
 	public class FunctionCallStmt : StatementSyntaxNode {
@@ -9,6 +8,7 @@ namespace Yuka.Script.Syntax.Stmt {
 
 		public override string ToString() => $"{MethodName}({string.Join(", ", Arguments.Select(a => a.ToString()))});";
 
-		public override List<Instruction> Accept(ISyntaxVisitor visitor) => visitor.Visit(this);
+		[DebuggerStepThrough]
+		public override void Accept(ISyntaxVisitor visitor) => visitor.Visit(this);
 	}
 }
