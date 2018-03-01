@@ -5,8 +5,7 @@ namespace Yuka.Util {
 	public class XorStream : Stream {
 
 		public readonly Stream BaseStream;
-		private readonly byte[] _key;
-		private readonly long _keyOffset;
+		private readonly byte _key;
 
 		public override bool CanRead => BaseStream.CanRead;
 		public override bool CanSeek => BaseStream.CanSeek;
@@ -19,14 +18,7 @@ namespace Yuka.Util {
 
 		public XorStream(Stream baseStream, byte key) {
 			BaseStream = baseStream;
-			_key = new[] { key };
-			_keyOffset = 0;
-		}
-
-		public XorStream(Stream baseStream, byte[] key, long offset) {
-			BaseStream = baseStream;
 			_key = key;
-			_keyOffset = offset % key.Length;
 		}
 
 		public override void Flush() => BaseStream.Flush();
@@ -37,7 +29,7 @@ namespace Yuka.Util {
 			int result = BaseStream.Read(buffer, offset, count);
 
 			for(int i = offset; i < offset + count; i++) {
-				buffer[i] ^= _key[(i + _keyOffset) % _key.Length];
+				buffer[i] ^= _key;
 			}
 
 			return result;
@@ -48,7 +40,7 @@ namespace Yuka.Util {
 			buffer = buffer.ToArray();
 
 			for(int i = offset; i < offset + count; i++) {
-				buffer[i] ^= _key[(i + _keyOffset) % _key.Length];
+				buffer[i] ^= _key;
 			}
 
 			BaseStream.Write(buffer, offset, count);

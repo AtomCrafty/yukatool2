@@ -24,8 +24,10 @@ namespace Yuka.Cli {
 
 
 		public static void ScriptBenchmark() {
-			const int iterations = 1000;
+			const int iterations = 10000;
 
+			var sw = new Stopwatch();
+			sw.Start();
 			using(var fs = FileSystem.FromFolder(@"C:\Temp\CopyTest")) {
 				for(int i = 0; i < iterations; i++) {
 
@@ -42,6 +44,10 @@ namespace Yuka.Cli {
 					FileWriter.Encode(script, "output.yks", fs, new FormatPreference(Format.Yks));
 				}
 			}
+			sw.Stop();
+			Console.WriteLine($"Processed {iterations} scripts in {sw.ElapsedMilliseconds} ms");
+			Console.WriteLine($"Average time per script: {(double)sw.ElapsedMilliseconds/iterations:0.##} ms");
+			//Console.ReadLine();
 		}
 
 		public static void Compile() {
