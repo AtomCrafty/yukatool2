@@ -21,8 +21,7 @@ namespace Yuka.Cli {
 	}
 
 	public static class Tests {
-
-
+		
 		public static void ScriptBenchmark() {
 			const int iterations = 10000;
 
@@ -46,14 +45,7 @@ namespace Yuka.Cli {
 			}
 			sw.Stop();
 			Console.WriteLine($"Processed {iterations} scripts in {sw.ElapsedMilliseconds} ms");
-			Console.WriteLine($"Average time per script: {(double)sw.ElapsedMilliseconds/iterations:0.##} ms");
-			//Console.ReadLine();
-		}
-
-		public static void Compile() {
-			using(var fs = FileSystem.FromFolder(@"C:\Temp\CopyTest")) {
-				var script = FileReader.Decode<YukaScript>("debug.yks", fs);
-			}
+			Console.WriteLine($"Average time per script: {(double)sw.ElapsedMilliseconds / iterations:0.##} ms");
 			Console.ReadLine();
 		}
 

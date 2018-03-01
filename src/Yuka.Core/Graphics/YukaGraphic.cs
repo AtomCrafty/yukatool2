@@ -43,18 +43,10 @@ namespace Yuka.Graphics {
 		#region Decode / Encode
 
 		public bool IsDecoded => ColorBitmap != null || AlphaBitmap != null;
+		public bool IsEncoded => ColorData != null || AlphaData != null;
 
-		public void EnsureDecoded() {
-			if(IsDecoded) return;
-
-			Decode();
-		}
-
-		public void EnsureEncoded() {
-			if(!IsDecoded) return;
-
-			Encode();
-		}
+		public void EnsureDecoded() => Decode();
+		public void EnsureEncoded() => Encode();
 
 		public bool Decode() {
 			if(IsDecoded) return false;
@@ -72,7 +64,7 @@ namespace Yuka.Graphics {
 		}
 
 		public bool Encode(AlphaMode am = AlphaMode.Discard, ColorMode cm = ColorMode.MergePng) {
-			if(!IsDecoded) return false;
+			if(IsEncoded) return false;
 
 			Debug.Assert(ColorData == null);
 			Debug.Assert(AlphaData == null);
