@@ -31,6 +31,7 @@ namespace Yuka.Script {
 				Debug.Assert(!_usedLocals.ContainsValue(true), "Local not freed after statement evaluation");
 			}
 
+			_instructions.MaxLocals = (uint)_usedLocals.Count;
 			Script.InstructionList = _instructions;
 			Script.Body = null;
 		}
