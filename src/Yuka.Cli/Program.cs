@@ -16,19 +16,37 @@ using Yuka.Util;
 namespace Yuka.Cli {
 	public class Program {
 		public static void Main() {
-			Tests.Compile();
+			Tests.ScriptBenchmark();
 		}
 	}
 
 	public static class Tests {
 
+
+		public static void ScriptBenchmark() {
+			const int iterations = 1000;
+
+			using(var fs = FileSystem.FromFolder(@"C:\Temp\CopyTest")) {
+				for(int i = 0; i < iterations; i++) {
+
+					// Disassemble
+					var script = FileReader.Decode<YukaScript>("debug.yks", fs);
+
+					// Decompile
+					script.Decompile();
+
+					// Compile
+					script.Compile();
+
+					// Assemble
+					FileWriter.Encode(script, "output.yks", fs, new FormatPreference(Format.Yks));
+				}
+			}
+		}
+
 		public static void Compile() {
 			using(var fs = FileSystem.FromFolder(@"C:\Temp\CopyTest")) {
 				var script = FileReader.Decode<YukaScript>("debug.yks", fs);
-
-				FileWriter.Encode(script, "debug_1", fs, new FormatPreference(Format.Yki));
-				FileWriter.Encode(script, "debug_2", fs, new FormatPreference(Format.Ykd));
-				FileWriter.Encode(script, "debug_3", fs, new FormatPreference(Format.Yki));
 			}
 			Console.ReadLine();
 		}
