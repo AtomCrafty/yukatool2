@@ -21,7 +21,7 @@ namespace Yuka.Script {
 		public void Compile() {
 			Debug.Assert(Script.IsDecompiled);
 
-			_instructions = new InstructionList(0);
+			_instructions = new InstructionList();
 
 			foreach(var statement in Script.Body.Statements) {
 				// emit instructions for this statement
@@ -189,6 +189,8 @@ namespace Yuka.Script {
 			_instructions.Add(element);
 			return index;
 		}
+
+		// TODO use DataSet instead
 
 		#region DataElement
 

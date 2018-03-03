@@ -100,7 +100,7 @@ namespace Yuka.Script.Data {
 			public override string DisplayInfo => $"{base.DisplayInfo} [{Value}]";
 
 			// replacing just the most important escape sequences for easy display
-			public override string ToString() => '"' + Value.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\\n").Replace("\r", "\\\r").Replace("\t", "\\\t") + '"';
+			public override string ToString() => '"' + Value.Escape() + '"';
 		}
 
 		public sealed class SStr : DataElement {

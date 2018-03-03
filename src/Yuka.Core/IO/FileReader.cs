@@ -26,7 +26,8 @@ namespace Yuka.IO {
 			new GnpBitmapReader(),
 			new PngBitmapReader(),
 			new YksScriptReader(),
-			new CsvStringTableReader()
+			new CsvStringTableReader(),
+			new YkiScriptReader()
 		};
 
 		public static IEnumerable<FileReader> FindReaders(string name, BinaryReader r, Predicate<FileReader> predicate = null) {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Yuka.Util {
 	public static class Helpers {
@@ -122,6 +123,25 @@ namespace Yuka.Util {
 
 		public static T Clamp<T>(this T val, T min, T max) where T : IComparable {
 			return val.CompareTo(min) < 0 ? min : val.CompareTo(max) > 0 ? max : val;
+		}
+
+		public static string Escape(this string value) {
+			return value.Replace(@"\", @"\\").Replace(@"""", @"\""").Replace("\n", @"\n").Replace("\r", @"\r").Replace("\t", @"\t");
+		}
+
+		private static readonly Regex UnescapeRegex = new Regex(@"\\(.)");
+
+		public static string Unescape(this string value) {
+			return UnescapeRegex.Replace(value, match => {
+				switch(match.Groups[1].Value[0]) {
+					case '\\': return "\\";
+					case 'r': return "\r";
+					case 'n': return "\n";
+					case 't': return "\t";
+					case '"': return "\"";
+					default: return match.Groups[1].Value;
+				}
+			});
 		}
 	}
 }

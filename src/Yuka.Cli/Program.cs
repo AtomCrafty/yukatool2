@@ -16,12 +16,31 @@ using Yuka.Util;
 namespace Yuka.Cli {
 	public class Program {
 		public static void Main() {
-			Tests.ScriptBenchmark();
+			Tests.ScriptTest();
 		}
 	}
 
 	public static class Tests {
-		
+
+		public static void ScriptTest() {
+			using(var fs = FileSystem.FromFolder(@"S:\Games\Visual Novels\Lover Able Unpacked")) {
+				var script = FileReader.Decode<YukaScript>("start-org.yks", fs);
+				FileWriter.Encode(script, "start.yki", fs, new FormatPreference(Format.Yki));
+				script = FileReader.Decode<YukaScript>("start.yki", fs);
+				script.Decompile();
+				FileWriter.Encode(script, "start.ykd", fs, new FormatPreference(Format.Ykd));
+				script.Compile();
+				FileWriter.Encode(script, "start.yks", fs, new FormatPreference(Format.Yks));
+			}
+		}
+
+		public static void InstructionParser() {
+			using(var fs = FileSystem.FromFolder(@"C:\Temp\CopyTest")) {
+				var script = FileReader.Decode<YukaScript>("debug_before.yki", fs);
+				FileWriter.Encode(script, "debug_after.yki", fs, new FormatPreference(Format.Yki));
+			}
+		}
+
 		public static void ScriptBenchmark() {
 			const int iterations = 10000;
 

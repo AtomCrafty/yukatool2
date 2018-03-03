@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Yuka.Script.Data;
+﻿using Yuka.Script.Data;
 
 namespace Yuka.Script.Syntax {
 	public abstract class SyntaxNode {

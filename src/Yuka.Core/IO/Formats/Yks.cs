@@ -15,8 +15,17 @@ namespace Yuka.IO.Formats {
 		public readonly int HeaderLength = 0x30;
 		public readonly int IndexEntryLength = 0x10;
 
+		public readonly string[] BlockLabels = { "{", "}" };
 		public readonly string[] Operators = { "+", "-", "*", "/", "%", "=", "<", ">" };
 		public readonly int OperatorLink = ushort.MaxValue; // all operator ctrl elements have this link value
+
+		public const string Flag = "Flag";
+		public const string GlobalFlag = "GlobalFlag";
+		public const string String = "String";
+		public const string GlobalString = "GlobalString";
+		public const string 主人公 = "主人公";
+		public const string TempGlobalString = "tempglobalstring";
+		public const string 汎用文字変数 = "汎用文字変数";
 
 		internal Header DummyHeader => new Header { Signature = Signature, HeaderLength = HeaderLength };
 
