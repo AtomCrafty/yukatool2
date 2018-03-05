@@ -13,19 +13,19 @@
 				Id = id;
 			}
 
-			public override string ToString() => $"[{GetType().Name}:{Id}]";
+			public override string ToString() => $"{GetType().Name}:{Id}";
 		}
 
-		public class LocalFlag : IdAssignmentTarget {
-			public LocalFlag(int id) : base(id, AssignmentTargetType.LocalFlag) { }
+		public class Flag : IdAssignmentTarget {
+			public Flag(int id) : base(id, AssignmentTargetType.Flag) { }
 		}
 
 		public class GlobalFlag : IdAssignmentTarget {
 			public GlobalFlag(int id) : base(id, AssignmentTargetType.GlobalFlag) { }
 		}
 
-		public class LocalString : IdAssignmentTarget {
-			public LocalString(int id) : base(id, AssignmentTargetType.LocalString) { }
+		public class String : IdAssignmentTarget {
+			public String(int id) : base(id, AssignmentTargetType.String) { }
 		}
 
 		public class GlobalString : IdAssignmentTarget {
@@ -39,7 +39,7 @@
 				Id = id;
 			}
 
-			public override string ToString() => $"[{GetType().Name}:{Id}]";
+			public override string ToString() => $"{Id}";
 		}
 
 		public class Local : AssignmentTarget {
@@ -49,15 +49,15 @@
 				Id = id;
 			}
 
-			public override string ToString() => $"[{GetType().Name}:{Id}]";
+			public override string ToString() => $"${Id}";
 		}
 	}
 
 	public enum AssignmentTargetType {
 		GlobalFlag,
-		LocalFlag,
+		Flag,
 		GlobalString,
-		LocalString,
+		String,
 		SpecialString,
 		Local
 	}

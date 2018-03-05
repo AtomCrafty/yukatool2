@@ -6,7 +6,7 @@ namespace Yuka.Script.Syntax.Expr {
 		public string FlagType;
 		public int FlagId;
 
-		public override string ToString() => $"[{FlagType}:{FlagId}]";
+		public override string ToString() => $"{FlagType}:{FlagId}";
 
 		[DebuggerStepThrough]
 		public override DataElement Accept(ISyntaxVisitor visitor) => visitor.Visit(this);

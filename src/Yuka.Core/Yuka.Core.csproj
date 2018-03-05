@@ -77,6 +77,7 @@
     <Compile Include="Script\InstructionParser.cs" />
     <Compile Include="Script\Instructions\InstructionList.cs" />
     <Compile Include="Script\Instructions\Instruction.cs" />
+    <Compile Include="Script\Lexer.cs" />
     <Compile Include="Script\Syntax\Expr\StringLiteral.cs" />
     <Compile Include="Script\Syntax\Expr\IntLiteral.cs" />
     <Compile Include="Script\Syntax\Expr\VariableExpr.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Script\Syntax\Stmt\AssignmentStmt.cs" />
     <Compile Include="Script\Syntax\Stmt\FunctionCallStmt.cs" />
     <Compile Include="Script\Syntax\Stmt\JumpLabelStmt.cs" />
+    <Compile Include="Script\Syntax\Token.cs" />
     <Compile Include="Script\YukaScript.cs" />
     <Compile Include="IO\Options.cs" />
     <Compile Include="Script\Decompiler.cs" />

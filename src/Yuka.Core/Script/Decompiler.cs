@@ -68,7 +68,7 @@ namespace Yuka.Script {
 				case DataElement.VInt vint when vint.FlagType == "Flag":
 					if(vint.FlagId >= LocalFlagTableSize)
 						throw new ArgumentOutOfRangeException(nameof(vint.FlagId), vint.FlagId, "Local flag index must be smaller than " + LocalFlagTableSize);
-					_currentAssignmentTarget = new AssignmentTarget.LocalFlag(vint.FlagId);
+					_currentAssignmentTarget = new AssignmentTarget.Flag(vint.FlagId);
 					break;
 				case DataElement.VStr vstr when vstr.FlagType == "GlobalString":
 					if(vstr.FlagId >= GlobalFlagTableSize)
@@ -78,7 +78,7 @@ namespace Yuka.Script {
 				case DataElement.VStr vstr when vstr.FlagType == "String":
 					if(vstr.FlagId >= LocalFlagTableSize)
 						throw new ArgumentOutOfRangeException(nameof(vstr.FlagId), vstr.FlagId, "Local string index must be smaller than " + LocalStringTableSize);
-					_currentAssignmentTarget = new AssignmentTarget.LocalString(vstr.FlagId);
+					_currentAssignmentTarget = new AssignmentTarget.String(vstr.FlagId);
 					break;
 				case DataElement.VLoc vloc:
 					if(vloc.Id >= Script.InstructionList.MaxLocals)

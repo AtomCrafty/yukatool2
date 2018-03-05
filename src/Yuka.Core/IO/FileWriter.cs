@@ -65,7 +65,7 @@ namespace Yuka.IO {
 		public override void WriteObject(object obj, Stream s) => Write((T)obj, s);
 		public override void WriteObject(object obj, string name, FileSystem fs) => Write((T)obj, name, fs);
 
-		// The stream is expected to point to the end of the written data when this method returs.
+		// The stream is expected to point to the end of the written data when this method returns.
 		public abstract void Write(T obj, Stream s);
 		public virtual void Write(T obj, string baseName, FileSystem fs) {
 			using(var s = fs.CreateFile(baseName.WithExtension(Format.Extension))) {

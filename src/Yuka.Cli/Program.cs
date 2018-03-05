@@ -11,16 +11,36 @@ using Yuka.IO;
 using Yuka.IO.Formats;
 using Yuka.Script;
 using Yuka.Script.Data;
+using Yuka.Script.Syntax;
 using Yuka.Util;
 
 namespace Yuka.Cli {
 	public class Program {
 		public static void Main() {
-			Tests.ScriptTest();
+			Tests.Lexer();
 		}
 	}
 
 	public static class Tests {
+
+		public static void Lexer() {
+			using(var fs = FileSystem.FromFolder(@"S:\Games\Visual Novels\Lover Able Unpacked")) {
+				using(var reader = new StreamReader(fs.OpenFile("start.ykd"))) {
+					var lexer = new Lexer(reader, "start.ykd");
+
+					Token token;
+					while((token = lexer.LexToken()) != null) {
+						Console.ForegroundColor = ConsoleColor.Cyan;
+						Console.Write(token.Source);
+						Console.ForegroundColor = ConsoleColor.White;
+						Console.WriteLine($" ({token.Kind})");
+					}
+
+					Console.ResetColor();
+					Console.ReadLine();
+				}
+			}
+		}
 
 		public static void ScriptTest() {
 			using(var fs = FileSystem.FromFolder(@"S:\Games\Visual Novels\Lover Able Unpacked")) {

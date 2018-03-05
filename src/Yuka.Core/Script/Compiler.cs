@@ -238,9 +238,9 @@ namespace Yuka.Script {
 					return CreateStringVariable("GlobalFlag", gflg.Id);
 				case AssignmentTarget.GlobalString gstr:
 					return CreateStringVariable("GlobalString", gstr.Id);
-				case AssignmentTarget.LocalFlag lflg:
+				case AssignmentTarget.Flag lflg:
 					return CreateStringVariable("Flag", lflg.Id);
-				case AssignmentTarget.LocalString lstr:
+				case AssignmentTarget.String lstr:
 					return CreateStringVariable("String", lstr.Id);
 				case AssignmentTarget.SpecialString sstr:
 					return CreateSpecialString(sstr.Id);

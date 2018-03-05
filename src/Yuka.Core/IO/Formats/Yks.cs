@@ -23,8 +23,8 @@ namespace Yuka.IO.Formats {
 		public const string GlobalFlag = "GlobalFlag";
 		public const string String = "String";
 		public const string GlobalString = "GlobalString";
-		public const string 主人公 = "主人公";
 		public const string TempGlobalString = "tempglobalstring";
+		public const string 主人公 = "主人公";
 		public const string 汎用文字変数 = "汎用文字変数";
 
 		internal Header DummyHeader => new Header { Signature = Signature, HeaderLength = HeaderLength };

@@ -9,6 +9,10 @@ namespace Yuka.Util {
 	public static class Helpers {
 		public static readonly Encoding ShiftJis = Encoding.GetEncoding("Shift-JIS");
 
+		public static bool IsOneOf<T>(this T value, params T[] options) {
+			return options.Contains(value);
+		}
+
 		public static bool Matches(this byte[] a, byte[] b) {
 			if(a == b) return true;
 			if(a == null || b == null) return false;
@@ -90,7 +94,7 @@ namespace Yuka.Util {
 		}
 
 		public static string WithoutExtension(this string path) {
-			return Path.ChangeExtension(path, "").TrimEnd('.');
+			return Path.ChangeExtension(path, "")?.TrimEnd('.');
 		}
 
 		public static T Seek<T>(this T s, long offset) where T : Stream {
