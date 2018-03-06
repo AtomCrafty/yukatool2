@@ -99,12 +99,18 @@ namespace Yuka.Script {
 							instructions.Add(new LabelInstruction(ctrl, instructions));
 							break;
 
-						// ReSharper disable UnusedVariable
-						case DataElement.SStr sstr:
-						case DataElement.VInt vint:
-						case DataElement.VLoc vloc:
-						case DataElement.VStr vstr:
-							// ReSharper enable UnusedVariable
+						case DataElement.SStr _:
+						case DataElement.VInt _:
+						case DataElement.VLoc _:
+						case DataElement.VStr _:
+							instructions.Add(new TargetInstruction(dataElement, instructions));
+							break;
+
+						case DataElement.CInt _:
+						case DataElement.CStr _:
+							// TODO find a solution for this madness
+							dataElement.IsAssigned = true;
+							Console.WriteLine("WARNING: Constant element gets assigned! Unexpected behavior may occur.");
 							instructions.Add(new TargetInstruction(dataElement, instructions));
 							break;
 						default:

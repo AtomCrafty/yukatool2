@@ -51,6 +51,12 @@
 
 			public override string ToString() => $"${Id}";
 		}
+
+		public class Pointer : AssignmentTarget {
+			public Pointer() : base(AssignmentTargetType.Pointer) { }
+
+			public override string ToString() => "$";
+		}
 	}
 
 	public enum AssignmentTargetType {
@@ -59,6 +65,7 @@
 		GlobalString,
 		String,
 		SpecialString,
-		Local
+		Local,
+		Pointer
 	}
 }

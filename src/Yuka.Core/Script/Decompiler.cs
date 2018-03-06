@@ -85,6 +85,11 @@ namespace Yuka.Script {
 						throw new ArgumentOutOfRangeException(nameof(vloc.Id), vloc.Id, "Local variable id must be smaller than local variable pool size (" + Script.InstructionList.MaxLocals + ")");
 					_currentAssignmentTarget = new AssignmentTarget.Local(vloc.Id);
 					break;
+				case DataElement.CInt cint:
+					if(cint.Value != 0)
+						throw new ArgumentOutOfRangeException(nameof(cint.Value), cint.Value, "Flag pointer must have value 0");
+					_currentAssignmentTarget = new AssignmentTarget.Pointer();
+					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(instruction), "Invalid assignment target: " + instruction);
 			}
@@ -199,7 +204,9 @@ namespace Yuka.Script {
 						#region Handle if statements
 
 						if(callStatement.MethodName.ToLower() == "if") {
-							if(!(Script.InstructionList[_currentInstructionOffset] is LabelInstruction elseKeyword) || elseKeyword.Name != "else")
+							if(Script.InstructionList.Count <= _currentInstructionOffset
+							   || !(Script.InstructionList[_currentInstructionOffset] is LabelInstruction elseKeyword)
+							   || elseKeyword.Name != "else")
 								// no else block
 								return new IfStmt { Function = callStatement, Body = body };
 

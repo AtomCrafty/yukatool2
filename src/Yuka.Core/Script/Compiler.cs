@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Yuka.IO.Formats;
 using Yuka.Script.Data;
 using Yuka.Script.Instructions;
 using Yuka.Script.Syntax;
@@ -22,6 +23,7 @@ namespace Yuka.Script {
 			Debug.Assert(Script.IsDecompiled);
 
 			_instructions = new InstructionList();
+			_dataSet = new DataSet();
 
 			foreach(var statement in Script.Body.Statements) {
 				// emit instructions for this statement
@@ -58,7 +60,7 @@ namespace Yuka.Script {
 		}
 
 		public DataElement Visit(IntLiteral expr) {
-			return CreateIntConstant(expr.Value);
+			return _dataSet.GetIntConstant(expr.Value);
 		}
 
 		public DataElement Visit(JumpLabelExpr expr) {
@@ -80,20 +82,11 @@ namespace Yuka.Script {
 		}
 
 		public DataElement Visit(StringLiteral expr) {
-			return CreateStringConstant(expr.Value);
+			return _dataSet.GetStringConstant(expr.Value);
 		}
 
 		public DataElement Visit(VariableExpr expr) {
-			switch(expr.FlagType) {
-				case "Flag":
-				case "GlobalFlag":
-					return CreateIntVariable(expr.FlagType, expr.FlagId);
-				case "String":
-				case "GlobalString":
-					return CreateStringVariable(expr.FlagType, expr.FlagId);
-				default:
-					return CreateSpecialString(expr.FlagType);
-			}
+			return _dataSet.GetVariable(expr.FlagType, expr.FlagId);
 		}
 
 		#endregion
@@ -190,62 +183,26 @@ namespace Yuka.Script {
 			return index;
 		}
 
-		// TODO use DataSet instead
+		protected DataSet _dataSet;
 
 		#region DataElement
-
-		protected Dictionary<(DataElementType type, object value), DataElement> _usedElements = new Dictionary<(DataElementType type, object value), DataElement>();
-
-		protected TElem GetElement<TElem>(DataElementType type, object value, Func<TElem> producer) where TElem : DataElement {
-			// try to re-use existing data element
-			if(_usedElements.ContainsKey((type, value)) && _usedElements[(type, value)] is TElem existingElement) {
-				return existingElement;
-			}
-
-			// if none was found, create a new one
-			var newElement = producer();
-			_usedElements[(type, value)] = newElement;
-			return newElement;
-		}
-
-		protected DataElement.Func CreateFunction(string name) {
-			return GetElement(DataElementType.Func, name, () => new DataElement.Func(name));
-		}
-
-		protected DataElement.CInt CreateIntConstant(int value) {
-			return GetElement(DataElementType.CInt, value, () => new DataElement.CInt(value));
-		}
-
-		protected DataElement.CStr CreateStringConstant(string value) {
-			return GetElement(DataElementType.CStr, value, () => new DataElement.CStr(value));
-		}
-
-		protected DataElement.VInt CreateIntVariable(string type, int id) {
-			return GetElement(DataElementType.VInt, (type, id), () => new DataElement.VInt(type, id));
-		}
-
-		protected DataElement.VStr CreateStringVariable(string type, int id) {
-			return GetElement(DataElementType.VStr, (type, id), () => new DataElement.VStr(type, id));
-		}
-
-		protected DataElement.SStr CreateSpecialString(string type) {
-			return GetElement(DataElementType.SStr, type, () => new DataElement.SStr(type));
-		}
 
 		protected DataElement CreateTargetElement(AssignmentTarget target) {
 			switch(target) {
 				case AssignmentTarget.GlobalFlag gflg:
-					return CreateStringVariable("GlobalFlag", gflg.Id);
+					return _dataSet.GetVariable(YksFormat.GlobalFlag, gflg.Id);
 				case AssignmentTarget.GlobalString gstr:
-					return CreateStringVariable("GlobalString", gstr.Id);
+					return _dataSet.GetVariable(YksFormat.GlobalString, gstr.Id);
 				case AssignmentTarget.Flag lflg:
-					return CreateStringVariable("Flag", lflg.Id);
+					return _dataSet.GetVariable(YksFormat.Flag, lflg.Id);
 				case AssignmentTarget.String lstr:
-					return CreateStringVariable("String", lstr.Id);
+					return _dataSet.GetVariable(YksFormat.String, lstr.Id);
 				case AssignmentTarget.SpecialString sstr:
-					return CreateSpecialString(sstr.Id);
+					return _dataSet.GetVariable(sstr.Id);
 				case AssignmentTarget.Local local:
 					throw new FormatException($"Unexpected local variable in assignment: {local.Id}");
+				case AssignmentTarget.Pointer _:
+					return _dataSet.GetIntConstant(0);
 				default:
 					throw new FormatException($"Invalid assignment target: {target.GetType().Name}");
 			}
@@ -260,7 +217,7 @@ namespace Yuka.Script {
 		#region Calls
 
 		protected CallInstruction CreateCallInstruction(string name, DataElement[] arguments = null) {
-			return new CallInstruction(CreateFunction(name), arguments ?? new DataElement[0], _instructions);
+			return new CallInstruction(_dataSet.GetFunction(name), arguments ?? new DataElement[0], _instructions);
 		}
 
 		protected void EmitCall(string function, DataElement[] arguments = null) {

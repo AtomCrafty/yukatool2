@@ -17,11 +17,30 @@ using Yuka.Util;
 namespace Yuka.Cli {
 	public class Program {
 		public static void Main() {
-			Tests.Lexer();
+			Tests.Recompile();
 		}
 	}
 
 	public static class Tests {
+
+		public static void Recompile() {
+			using(var fs = FileSystem.FromFolder(@"S:\Games\Visual Novels\Lover Able Unpacked")) {
+				foreach(string file in fs.GetFiles("*.yks")) {
+
+					Console.WriteLine(file);
+
+					if(file.Contains("root_select")) {
+
+					}
+
+					var script = FileReader.Decode<YukaScript>(file, fs);
+					script.Decompile();
+					FileWriter.Encode(script, file, fs, new FormatPreference(Format.Yks));
+
+				}
+			}
+			Console.ReadLine();
+		}
 
 		public static void Lexer() {
 			using(var fs = FileSystem.FromFolder(@"S:\Games\Visual Novels\Lover Able Unpacked")) {

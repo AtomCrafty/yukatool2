@@ -7,6 +7,7 @@ namespace Yuka.Script.Data {
 	public abstract class DataElement {
 		public DataElementType Type;
 		public uint Field1, Field2, Field3;
+		public bool IsAssigned;
 
 		protected DataElement(DataElementType type, uint field1, uint field2, uint field3) {
 			Type = type;

@@ -48,12 +48,13 @@
 		Dollar,             // $
 		At,                 // @
 		Comma,              // ,
-		Colon,              // :
 		Semicolon,          // ;
 		OpenParen,          // (
 		CloseParen,         // )
 		OpenBracket,        // {
 		CloseBracket,       // }
+
+		Colon,              // :
 		Assign,             // =
 		Operator,           // + - * / > < ==
 
