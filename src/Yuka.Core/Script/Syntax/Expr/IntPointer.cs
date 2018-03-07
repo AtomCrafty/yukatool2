@@ -1,12 +1,11 @@
 ﻿using System.Diagnostics;
 using Yuka.Script.Data;
-using Yuka.Util;
 
 namespace Yuka.Script.Syntax.Expr {
-	public class StringLiteral : Expression {
-		public ScriptValue.Str Value;
+	public class IntPointer : Expression {
+		public int PointerId;
 
-		public override string ToString() => '"' + Value.StringValue.Escape() + '"';
+		public override string ToString() => '&' + PointerId.ToString();
 
 		[DebuggerStepThrough]
 		public override DataElement Accept(ISyntaxVisitor visitor) => visitor.Visit(this);

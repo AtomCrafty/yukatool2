@@ -25,17 +25,14 @@ namespace Yuka.Cli {
 
 		public static void Recompile() {
 			using(var fs = FileSystem.FromFolder(@"S:\Games\Visual Novels\Lover Able Unpacked")) {
-				foreach(string file in fs.GetFiles("*.yks")) {
-
+				foreach(string file in fs.GetFiles("*root_select.org.yks")) {
 					Console.WriteLine(file);
-
-					if(file.Contains("root_select")) {
-
-					}
+					string outPath = Path.Combine(Path.GetDirectoryName(file) ?? "", "root_select.yks");
 
 					var script = FileReader.Decode<YukaScript>(file, fs);
-					script.Decompile();
-					FileWriter.Encode(script, file, fs, new FormatPreference(Format.Yks));
+					FileWriter.Encode(script, outPath, fs, new FormatPreference(Format.Ykd));
+					FileWriter.Encode(script, outPath, fs, new FormatPreference(Format.Yki));
+					FileWriter.Encode(script, outPath, fs, new FormatPreference(Format.Yks));
 
 				}
 			}
@@ -62,14 +59,14 @@ namespace Yuka.Cli {
 		}
 
 		public static void ScriptTest() {
-			using(var fs = FileSystem.FromFolder(@"S:\Games\Visual Novels\Lover Able Unpacked")) {
-				var script = FileReader.Decode<YukaScript>("start-org.yks", fs);
-				FileWriter.Encode(script, "start.yki", fs, new FormatPreference(Format.Yki));
-				script = FileReader.Decode<YukaScript>("start.yki", fs);
+			using(var fs = FileSystem.FromFolder(@"C:\Temp\CopyTest")) {
+				var script = FileReader.Decode<YukaScript>("root_select-org.yks", fs);
+				FileWriter.Encode(script, "root_select.yki", fs, new FormatPreference(Format.Yki));
+				script = FileReader.Decode<YukaScript>("root_select.yki", fs);
 				script.Decompile();
-				FileWriter.Encode(script, "start.ykd", fs, new FormatPreference(Format.Ykd));
+				FileWriter.Encode(script, "root_select.ykd", fs, new FormatPreference(Format.Ykd));
 				script.Compile();
-				FileWriter.Encode(script, "start.yks", fs, new FormatPreference(Format.Yks));
+				FileWriter.Encode(script, "root_select.yks", fs, new FormatPreference(Format.Yks));
 			}
 		}
 

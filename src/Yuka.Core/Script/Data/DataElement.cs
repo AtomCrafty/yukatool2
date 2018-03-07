@@ -7,7 +7,6 @@ namespace Yuka.Script.Data {
 	public abstract class DataElement {
 		public DataElementType Type;
 		public uint Field1, Field2, Field3;
-		public bool IsAssigned;
 
 		protected DataElement(DataElementType type, uint field1, uint field2, uint field3) {
 			Type = type;
@@ -28,19 +27,19 @@ namespace Yuka.Script.Data {
 			public uint NameOffset { get => Field1; set => Field1 = value; }
 			public uint LastUsedAt { get => Field2; set => Field2 = value; }
 
-			public readonly string Name;
+			public readonly ScriptValue.Str Name;
 
-			public Func(uint field1, uint field2, uint field3, BinaryReader data)
+			public Func(uint field1, uint field2, uint field3, DataSectorReader data)
 				: base(DataElementType.Func, field1, field2, field3) {
-				Name = data.Seek(NameOffset).ReadNullTerminatedString();
+				Name = data.GetString(NameOffset);
 			}
 
-			public Func(string name) : base(DataElementType.Func) {
+			public Func(ScriptValue.Str name) : base(DataElementType.Func) {
 				Name = name;
 			}
 
 			public override string DisplayInfo => $"{base.DisplayInfo} [{Name}]";
-			public override string ToString() => Name;
+			public override string ToString() => Name.StringValue;
 		}
 
 		public sealed class Ctrl : DataElement {
@@ -50,33 +49,33 @@ namespace Yuka.Script.Data {
 			public int Id = -1;
 			public int LabelOffset = -1;
 
-			public readonly string Name;
+			public readonly ScriptValue.Str Name;
 
-			public Ctrl(uint field1, uint field2, uint field3, BinaryReader data)
+			public Ctrl(uint field1, uint field2, uint field3, DataSectorReader data)
 				: base(DataElementType.Ctrl, field1, field2, field3) {
-				Name = data.Seek(NameOffset).ReadNullTerminatedString();
+				Name = data.GetString(NameOffset);
 			}
 
-			public Ctrl(string name) : base(DataElementType.Ctrl) {
+			public Ctrl(ScriptValue.Str name) : base(DataElementType.Ctrl) {
 				Name = name;
 			}
 
 			public override string DisplayInfo => $"{base.DisplayInfo} [{Name}]";
 
-			public override string ToString() => ':' + Name;
+			public override string ToString() => ':' + Name.StringValue;
 		}
 
 		public sealed class CInt : DataElement {
 			public uint ValueOffset { get => Field2; set => Field2 = value; }
 
-			public int Value;
+			public readonly ScriptValue.Int Value;
 
-			public CInt(uint field1, uint field2, uint field3, BinaryReader data)
+			public CInt(uint field1, uint field2, uint field3, DataSectorReader data)
 				: base(DataElementType.CInt, field1, field2, field3) {
-				Value = data.Seek(ValueOffset).ReadInt32();
+				Value = data.GetInteger(ValueOffset);
 			}
 
-			public CInt(int value) : base(DataElementType.CInt) {
+			public CInt(ScriptValue.Int value) : base(DataElementType.CInt) {
 				Value = value;
 			}
 
@@ -87,90 +86,90 @@ namespace Yuka.Script.Data {
 		public sealed class CStr : DataElement {
 			public uint ValueOffset { get => Field2; set => Field2 = value; }
 
-			public string Value;
+			public readonly ScriptValue.Str Value;
 
-			public CStr(uint field1, uint field2, uint field3, BinaryReader data)
+			public CStr(uint field1, uint field2, uint field3, DataSectorReader data)
 				: base(DataElementType.CStr, field1, field2, field3) {
-				Value = data.Seek(ValueOffset).ReadNullTerminatedString();
+				Value = data.GetString(ValueOffset);
 			}
 
-			public CStr(string value) : base(DataElementType.CStr) {
+			public CStr(ScriptValue.Str value) : base(DataElementType.CStr) {
 				Value = value;
 			}
 
 			public override string DisplayInfo => $"{base.DisplayInfo} [{Value}]";
 
 			// replacing just the most important escape sequences for easy display
-			public override string ToString() => '"' + Value.Escape() + '"';
+			public override string ToString() => '"' + Value.StringValue.Escape() + '"';
 		}
 
 		public sealed class SStr : DataElement {
 			public uint FlagTypeOffset { get => Field1; set => Field1 = value; }
 
-			public string FlagType;
+			public readonly ScriptValue.Str FlagType;
 
-			public SStr(uint field1, uint field2, uint field3, BinaryReader data)
+			public SStr(uint field1, uint field2, uint field3, DataSectorReader data)
 				: base(DataElementType.SStr, field1, field2, field3) {
-				FlagType = data.Seek(FlagTypeOffset).ReadNullTerminatedString();
+				FlagType = data.GetString(FlagTypeOffset);
 			}
 
-			public SStr(string type) : base(DataElementType.SStr) {
+			public SStr(ScriptValue.Str type) : base(DataElementType.SStr) {
 				FlagType = type;
 			}
 
 			public override string DisplayInfo => $"{base.DisplayInfo} [{FlagType}]";
-			public override string ToString() => FlagType;
+			public override string ToString() => FlagType.StringValue;
 		}
 
 		public sealed class VInt : DataElement {
 			public uint FlagTypeOffset { get => Field1; set => Field1 = value; }
 			public uint FlagIdOffset { get => Field3; set => Field3 = value; }
 
-			public string FlagType;
-			public int FlagId;
+			public ScriptValue.Str FlagType;
+			public ScriptValue.Int FlagId;
 
-			public VInt(uint field1, uint field2, uint field3, BinaryReader data)
+			public VInt(uint field1, uint field2, uint field3, DataSectorReader data)
 				: base(DataElementType.VInt, field1, field2, field3) {
-				FlagType = data.Seek(FlagTypeOffset).ReadNullTerminatedString();
-				FlagId = data.Seek(FlagIdOffset).ReadInt32();
+				FlagType = data.GetString(FlagTypeOffset);
+				FlagId = data.GetInteger(FlagIdOffset);
 			}
 
-			public VInt(string type, int id) : base(DataElementType.VInt) {
+			public VInt(ScriptValue.Str type, ScriptValue.Int id) : base(DataElementType.VInt) {
 				FlagType = type;
 				FlagId = id;
 			}
 
 			public override string DisplayInfo => $"{base.DisplayInfo} [{FlagType} {FlagId}]";
-			public override string ToString() => FlagType + ':' + FlagId;
+			public override string ToString() => FlagType.StringValue + ':' + FlagId;
 		}
 
 		public sealed class VStr : DataElement {
 			public uint FlagTypeOffset { get => Field1; set => Field1 = value; }
 			public uint FlagIdOffset { get => Field3; set => Field3 = value; }
 
-			public string FlagType;
-			public int FlagId;
+			public ScriptValue.Str FlagType;
+			public ScriptValue.Int FlagId;
 
-			public VStr(uint field1, uint field2, uint field3, BinaryReader data)
+			public VStr(uint field1, uint field2, uint field3, DataSectorReader data)
 				: base(DataElementType.VStr, field1, field2, field3) {
-				FlagType = data.Seek(FlagTypeOffset).ReadNullTerminatedString();
-				FlagId = data.Seek(FlagIdOffset).ReadInt32();
+				FlagType = data.GetString(FlagTypeOffset);
+				FlagId = data.GetInteger(FlagIdOffset);
 			}
 
-			public VStr(string type, int id) : base(DataElementType.VStr) {
+			public VStr(ScriptValue.Str type, ScriptValue.Int id) : base(DataElementType.VStr) {
 				FlagType = type;
 				FlagId = id;
 			}
 
 			public override string DisplayInfo => $"{base.DisplayInfo} [{FlagType} {FlagId}]";
-			public override string ToString() => FlagType + ':' + FlagId;
+			public override string ToString() => FlagType.StringValue + ':' + FlagId;
 		}
 
 		public sealed class VLoc : DataElement {
 			public uint Id { get => Field2; set => Field2 = value; }
 
 			// ReSharper disable once UnusedParameter.Local
-			public VLoc(uint field1, uint field2, uint field3, BinaryReader data)
+			public VLoc(uint field1, uint field2, uint field3, DataSectorReader data)
 				: base(DataElementType.VLoc, field1, field2, field3) { }
 
 			public VLoc(uint id) : base(DataElementType.VLoc) {
@@ -183,7 +182,7 @@ namespace Yuka.Script.Data {
 
 		#endregion
 
-		public static DataElement Create(DataElementType type, uint field1, uint field2, uint field3, BinaryReader data) {
+		public static DataElement Create(DataElementType type, uint field1, uint field2, uint field3, DataSectorReader data) {
 			switch(type) {
 				case DataElementType.Func:
 					return new Func(field1, field2, field3, data);

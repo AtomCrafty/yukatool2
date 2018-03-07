@@ -19,7 +19,7 @@ namespace Yuka.Script.Instructions {
 			Arguments = arguments;
 		}
 
-		public string Name => Function.Name;
+		public string Name => Function.Name.StringValue;
 
 		public override string ToString() => $"{Function.Name}({string.Join(", ", Arguments.Select(a => a.ToString()))})";
 	}
@@ -31,7 +31,7 @@ namespace Yuka.Script.Instructions {
 			Label = label;
 		}
 
-		public string Name => Label.Name;
+		public string Name => Label.Name.StringValue;
 
 		public override string ToString() => $":{Label.Id}:{Label.Name}" + (Label.LinkedElement != null ? $" [{Label.LinkedElement.Id}]" : "");
 	}

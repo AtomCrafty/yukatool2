@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
-using System.Threading.Tasks;
 using Yuka.Script.Syntax;
 using Yuka.Util;
 
@@ -15,6 +12,7 @@ namespace Yuka.Script {
 		protected static readonly char[] OperatorChars = { '+', '-', '*', '/', '=', '<', '>' };
 		protected static readonly Dictionary<char, TokenKind> SingleCharTokens = new Dictionary<char, TokenKind> {
 			{ '$', TokenKind.Dollar       },
+			{ '&', TokenKind.Ampersand    },
 			{ '@', TokenKind.At           },
 			{ ',', TokenKind.Comma        },
 			{ ';', TokenKind.Semicolon    },

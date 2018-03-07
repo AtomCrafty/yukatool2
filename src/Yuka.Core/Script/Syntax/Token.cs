@@ -46,6 +46,7 @@
 		LabelLiteral,       // :[^\s]+
 
 		Dollar,             // $
+		Ampersand,          // &
 		At,                 // @
 		Comma,              // ,
 		Semicolon,          // ;
