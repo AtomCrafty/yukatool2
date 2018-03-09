@@ -7,6 +7,6 @@ namespace Yuka.Script.Syntax.Stmt {
 		public override string ToString() => ElseBody != null ? base.ToString() + "\nelse " + ElseBody : base.ToString();
 
 		[DebuggerStepThrough]
-		public override void Accept(ISyntaxVisitor visitor) => visitor.Visit(this);
+		public override void Accept<T>(ISyntaxVisitor<T> visitor) => visitor.Visit(this);
 	}
 }

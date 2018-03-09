@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Yuka.IO;
 
@@ -16,6 +17,15 @@ namespace Yuka.Script.Data {
 		public string Comment;
 		public string Fallback;
 		public string[] Text;
+
+		internal StringTableEntry() { }
+
+		public StringTableEntry(string key, string fallback, string speaker = null) {
+			Key = key;
+			Fallback = fallback;
+			Speaker = speaker;
+			Text = Array.Empty<string>();
+		}
 
 		public string CurrentTextVersion {
 			get {

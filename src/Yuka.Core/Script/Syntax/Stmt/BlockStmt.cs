@@ -9,6 +9,6 @@ namespace Yuka.Script.Syntax.Stmt {
 		public override string ToString() => $"{{\n  {string.Join("\n", Statements.Select(s => s?.ToString())).Replace("\n", "\n  ")}\n}}";
 
 		[DebuggerStepThrough]
-		public override void Accept(ISyntaxVisitor visitor) => visitor.Visit(this);
+		public override void Accept<T>(ISyntaxVisitor<T> visitor) => visitor.Visit(this);
 	}
 }

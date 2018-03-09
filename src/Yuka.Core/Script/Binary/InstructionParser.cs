@@ -6,7 +6,7 @@ using Yuka.Script.Data;
 using Yuka.Script.Instructions;
 using Yuka.Util;
 
-namespace Yuka.Script {
+namespace Yuka.Script.Binary {
 
 	/// <summary>
 	/// Creates an instruction list from a yuka asm file

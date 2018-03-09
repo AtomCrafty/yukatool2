@@ -6,7 +6,7 @@ using System.Text;
 using Yuka.Script.Syntax;
 using Yuka.Util;
 
-namespace Yuka.Script {
+namespace Yuka.Script.Source {
 	public class Lexer : IDisposable {
 
 		protected static readonly char[] OperatorChars = { '+', '-', '*', '/', '=', '<', '>' };

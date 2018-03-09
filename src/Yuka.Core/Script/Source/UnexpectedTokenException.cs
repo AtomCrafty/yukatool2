@@ -1,7 +1,7 @@
 ﻿using System;
 using Yuka.Script.Syntax;
 
-namespace Yuka.Script {
+namespace Yuka.Script.Source {
 	public class UnexpectedTokenException : Exception {
 
 		public readonly Token Found;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Yuka.Script;
+using Yuka.Script.Binary;
 using static Yuka.IO.Format;
 
 namespace Yuka.IO.Formats {

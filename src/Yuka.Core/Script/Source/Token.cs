@@ -1,4 +1,4 @@
-﻿namespace Yuka.Script.Syntax {
+﻿namespace Yuka.Script.Source {
 
 	public class Token {
 		public static readonly Token EndOfFile = new Token(TokenKind.EndOfFile, "", SourceRange.Invalid);

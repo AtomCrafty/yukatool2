@@ -8,6 +8,7 @@ namespace Yuka.Script {
 
 		// only set if compiled
 		public InstructionList InstructionList;
+
 		// only set if decompiled
 		public BlockStmt Body;
 		public StringTable Strings;
@@ -37,6 +38,12 @@ namespace Yuka.Script {
 		public void Compile() {
 			if(IsCompiled) return;
 			new Compiler(this).Compile();
+		}
+
+		public void ExternalizeStrings() {
+			if(Strings != null) return;
+			Strings = new StringTable();
+			new StringExternalizer { StringTable = Strings }.Visit(Body);
 		}
 	}
 }

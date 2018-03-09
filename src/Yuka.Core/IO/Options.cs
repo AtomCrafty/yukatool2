@@ -20,5 +20,8 @@ namespace Yuka.IO {
 		public static string CsvIgnorePrefix = "#";
 		public static string CsvSkipTextField = ".";
 		public static string[] CsvGeneratedColumns = { "ID", "Speaker", "Original", "[Translation]", "[TLC]", "[Edit]", "[QC]", "Comment" };
+		public static string[] YkdLineMethods = { "StrOut", "StrOutNW" };
+		public static string[] YkdNameMethods = { "NameOut", "StrOutNWC" };
+		public static string[] YkdResetSpeakerMethods = { "PF" };
 	}
 }

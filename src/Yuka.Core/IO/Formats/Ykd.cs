@@ -1,6 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using Yuka.Script;
 using Yuka.Script.Data;
+using Yuka.Script.Source;
+using Yuka.Util;
 using static Yuka.IO.Format;
 
 namespace Yuka.IO.Formats {
@@ -35,15 +39,25 @@ namespace Yuka.IO.Formats {
 		}
 
 		public override void Write(YukaScript script, Stream s) {
-			var writer = new StreamWriter(s);
+			throw new InvalidOperationException("Writing to stream is not supported by " + nameof(YkdScriptWriter));
+		}
 
-			script.EnsureDecompiled();
+		public override void Write(YukaScript script, string baseName, FileSystem fs) {
+			using(var stream = fs.CreateFile(baseName.WithExtension(Ykd.Extension))) {
+				var writer = new StreamWriter(stream);
 
-			foreach(var statement in script.Body.Statements) {
-				writer.WriteLine(statement.ToString());
+				script.EnsureDecompiled();
+
+				foreach(var statement in script.Body.Statements) {
+					writer.WriteLine(statement.ToString());
+				}
+
+				writer.Flush();
 			}
 
-			writer.Flush();
+			if(script.Strings != null && script.Strings.Any()) {
+				Encode(script.Strings, baseName, fs, new FormatPreference(Csv));
+			}
 		}
 	}
 }

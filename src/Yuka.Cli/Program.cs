@@ -11,17 +11,33 @@ using Yuka.IO;
 using Yuka.IO.Formats;
 using Yuka.Script;
 using Yuka.Script.Data;
+using Yuka.Script.Source;
 using Yuka.Script.Syntax;
 using Yuka.Util;
 
 namespace Yuka.Cli {
 	public class Program {
 		public static void Main() {
-			Tests.Parser();
+			Tests.DecompileGame();
 		}
 	}
 
 	public static class Tests {
+
+		public static void DecompileGame() {
+			using(FileSystem srcFs = FileSystem.FromFolder(@"S:\Games\Visual Novels\Lover Able Unpacked"), dstFs = FileSystem.NewFolder("decompiled")) {
+				foreach(string file in srcFs.GetFiles("*.yks")) {
+					Console.WriteLine(file);
+
+					var script = FileReader.Decode<YukaScript>(file, srcFs);
+					script.Decompile();
+					script.ExternalizeStrings();
+					FileWriter.Encode(script, file, dstFs, new FormatPreference(Format.Ykd));
+
+				}
+			}
+			Console.ReadLine();
+		}
 
 		public static void Parser() {
 			using(var fs = FileSystem.FromFolder(@"S:\Games\Visual Novels\Lover Able Unpacked")) {

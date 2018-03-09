@@ -13,7 +13,7 @@ namespace Yuka.Script {
 	/// <summary>
 	/// Converts a syntax tree to an instruction list
 	/// </summary>
-	public class Compiler : ISyntaxVisitor {
+	public class Compiler : ISyntaxVisitor<DataElement> {
 
 		protected readonly YukaScript Script;
 		protected InstructionList _instructions;
@@ -328,23 +328,5 @@ namespace Yuka.Script {
 		#endregion
 
 		#endregion
-	}
-
-	public interface ISyntaxVisitor {
-		DataElement Visit(FunctionCallExpr expr);
-		DataElement Visit(IntegerLiteral expr);
-		DataElement Visit(PointerLiteral expr);
-		DataElement Visit(JumpLabelExpr expr);
-		DataElement Visit(OperatorExpr expr);
-		DataElement Visit(StringLiteral expr);
-		DataElement Visit(Variable expr);
-		DataElement Visit(VariablePointer expr);
-
-		void Visit(AssignmentStmt stmt);
-		void Visit(BlockStmt stmt);
-		void Visit(BodyFunctionStmt stmt);
-		void Visit(FunctionCallStmt stmt);
-		void Visit(IfStmt stmt);
-		void Visit(JumpLabelStmt stmt);
 	}
 }

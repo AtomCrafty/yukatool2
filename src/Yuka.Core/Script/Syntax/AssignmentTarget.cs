@@ -1,7 +1,7 @@
 ﻿using System;
 using Yuka.IO.Formats;
 
-namespace Yuka.Script {
+namespace Yuka.Script.Syntax {
 	public abstract class AssignmentTarget {
 		public readonly AssignmentTargetType Type;
 

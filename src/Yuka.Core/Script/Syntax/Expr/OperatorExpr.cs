@@ -10,6 +10,6 @@ namespace Yuka.Script.Syntax.Expr {
 		public override string ToString() => (Operands[0] is OperatorExpr ? $"({Operands[0]})" : Operands[0].ToString()) + string.Join("", Operators.Zip(Operands.Skip(1), (op, node) => $" {(op == "=" ? "==" : op)} {(node is OperatorExpr ? $"({node})" : node.ToString())}"));
 
 		[DebuggerStepThrough]
-		public override DataElement Accept(ISyntaxVisitor visitor) => visitor.Visit(this);
+		public override T Accept<T>(ISyntaxVisitor<T> visitor) => visitor.Visit(this);
 	}
 }

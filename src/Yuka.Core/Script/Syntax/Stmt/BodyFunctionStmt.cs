@@ -8,6 +8,6 @@ namespace Yuka.Script.Syntax.Stmt {
 		public override string ToString() => $"{Function.ToString().TrimEnd(';')} {Body}";
 
 		[DebuggerStepThrough]
-		public override void Accept(ISyntaxVisitor visitor) => visitor.Visit(this);
+		public override void Accept<T>(ISyntaxVisitor<T> visitor) => visitor.Visit(this);
 	}
 }

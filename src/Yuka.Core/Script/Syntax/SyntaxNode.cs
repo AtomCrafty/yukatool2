@@ -5,10 +5,10 @@ namespace Yuka.Script.Syntax {
 	}
 
 	public abstract class Statement : SyntaxNode {
-		public abstract void Accept(ISyntaxVisitor visitor);
+		public abstract void Accept<T>(ISyntaxVisitor<T> visitor);
 	}
 
 	public abstract class Expression : SyntaxNode {
-		public abstract DataElement Accept(ISyntaxVisitor visitor);
+		public abstract T Accept<T>(ISyntaxVisitor<T> visitor);
 	}
 }

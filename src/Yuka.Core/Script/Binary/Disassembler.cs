@@ -8,7 +8,7 @@ using Yuka.Script.Data;
 using Yuka.Script.Instructions;
 using Yuka.Util;
 
-namespace Yuka.Script {
+namespace Yuka.Script.Binary {
 
 	/// <summary>
 	/// Creates an instruction list from a binary script file
@@ -108,12 +108,12 @@ namespace Yuka.Script {
 
 						case DataElement.CInt cint:
 							cint.Value.PointerId = _flagPointerId++;
-							Console.WriteLine("WARNING: Constant element gets assigned! Unexpected behavior may occur.");
+							// Console.WriteLine("WARNING: Constant element gets assigned! Unexpected behavior may occur.");
 							instructions.Add(new TargetInstruction(dataElement, instructions));
 							break;
 
 						case DataElement.CStr cstr:
-							throw new InvalidOperationException($"Assignment to string constant is not supported by the disassembler: '{cstr.Value.StringValue}'");
+							throw new InvalidOperationException($"Assignment to string constants is not supported by the disassembler: '{cstr.Value.StringValue}'");
 
 						default:
 							throw new FormatException("Invalid instruction type: " + dataElement.Type);

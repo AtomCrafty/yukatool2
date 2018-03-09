@@ -7,9 +7,8 @@ using Yuka.Script.Syntax;
 using Yuka.Script.Syntax.Expr;
 using Yuka.Script.Syntax.Stmt;
 using Yuka.Util;
-using Expression = Yuka.Script.Syntax.Expression;
 
-namespace Yuka.Script {
+namespace Yuka.Script.Source {
 	public class Parser {
 
 		protected readonly TokenStream TokenStream;
@@ -315,7 +314,7 @@ namespace Yuka.Script {
 					ConsumeToken(); // consume $
 					string varName = ConsumeToken(TokenKind.Identifier).Source;
 					if(!DefinedVariables.ContainsKey(varName))
-						throw new ArgumentException($"Use on undefined variable '{varName}' {TokenStream.LookBack(1).Start.InLineColumnOfFile()}");
+						throw new ArgumentException($"Use of undefined variable '{varName}' {TokenStream.LookBack(1).Start.InLineColumnOfFile()}");
 					return DefinedVariables[varName];
 
 				default:
@@ -355,7 +354,8 @@ namespace Yuka.Script {
 			var operators = new List<string>();
 
 			while(CurrentToken.Kind == TokenKind.Operator) {
-				operators.Add(ConsumeToken().Source);
+				string op = ConsumeToken().Source;
+				operators.Add(op == "==" ? "=" : op);
 				operands.Add(ParsePrimaryExpression());
 			}
 
@@ -422,7 +422,7 @@ namespace Yuka.Script {
 
 			return new StringLiteral {
 				StringTable = StringTable,
-				ExternalId = stringId
+				ExternalKey = stringId
 			};
 		}
 

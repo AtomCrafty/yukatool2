@@ -7,7 +7,7 @@ using Yuka.Script.Data;
 using Yuka.Script.Instructions;
 using Yuka.Util;
 
-namespace Yuka.Script {
+namespace Yuka.Script.Binary {
 
 	/// <summary>
 	/// Creates a binary script file from an instruction list

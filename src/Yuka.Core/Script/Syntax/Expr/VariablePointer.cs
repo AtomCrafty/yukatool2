@@ -9,6 +9,6 @@ namespace Yuka.Script.Syntax.Expr {
 		public override string ToString() => $"{VariableType}:&{PointerId}";
 
 		[DebuggerStepThrough]
-		public override DataElement Accept(ISyntaxVisitor visitor) => visitor.Visit(this);
+		public override T Accept<T>(ISyntaxVisitor<T> visitor) => visitor.Visit(this);
 	}
 }
