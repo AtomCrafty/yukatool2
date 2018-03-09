@@ -25,14 +25,14 @@ namespace Yuka.Cli {
 
 		public static void Parser() {
 			using(var fs = FileSystem.FromFolder(@"S:\Games\Visual Novels\Lover Able Unpacked")) {
-				foreach(string file in fs.GetFiles("*root_select.ykd")) {
+				foreach(string file in fs.GetFiles("*.ykd")) {
 					Console.WriteLine(file);
-					string outPath = Path.Combine(Path.GetDirectoryName(file) ?? "", "root_select.parsed.yks");
+					string outPath = Path.Combine(Path.GetDirectoryName(file) ?? "", Path.GetFileName(file).WithExtension(".parsed.yks"));
 
 					var script = FileReader.Decode<YukaScript>(file, fs);
-					FileWriter.Encode(script, outPath, fs, new FormatPreference(Format.Ykd));
-					FileWriter.Encode(script, outPath, fs, new FormatPreference(Format.Yki));
 					FileWriter.Encode(script, outPath, fs, new FormatPreference(Format.Yks));
+					FileWriter.Encode(script, outPath, fs, new FormatPreference(Format.Yki));
+					FileWriter.Encode(script, outPath, fs, new FormatPreference(Format.Ykd));
 
 				}
 			}
