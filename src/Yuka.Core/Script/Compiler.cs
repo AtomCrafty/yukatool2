@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Yuka.IO.Formats;
 using Yuka.Script.Data;
 using Yuka.Script.Instructions;
 using Yuka.Script.Syntax;
@@ -41,6 +40,8 @@ namespace Yuka.Script {
 			_instructions.MaxLocals = (uint)_usedLocals.Count;
 			Script.InstructionList = _instructions;
 			Script.Body = null;
+
+			// TODO internalize string table
 		}
 
 		#region Visitor methods
@@ -64,11 +65,11 @@ namespace Yuka.Script {
 			return local;
 		}
 
-		public DataElement Visit(IntLiteral expr) {
+		public DataElement Visit(IntegerLiteral expr) {
 			return _dataSet.CreateIntConstant(expr.Value);
 		}
 
-		public DataElement Visit(IntPointer expr) {
+		public DataElement Visit(PointerLiteral expr) {
 			return _dataSet.CreateIntPointer(expr.PointerId);
 		}
 
@@ -91,15 +92,15 @@ namespace Yuka.Script {
 		}
 
 		public DataElement Visit(StringLiteral expr) {
-			return _dataSet.CreateStringConstant(expr.Value.StringValue);
+			return _dataSet.CreateStringConstant(expr.Value);
 		}
 
 		public DataElement Visit(Variable expr) {
-			return _dataSet.CreateVariable(expr.FlagType, expr.FlagId);
+			return _dataSet.CreateVariable(expr.VariableType, expr.VariableId);
 		}
 
 		public DataElement Visit(VariablePointer expr) {
-			return _dataSet.CreateVariablePointer(expr.FlagType, expr.FlagPointerId);
+			return _dataSet.CreateVariablePointer(expr.VariableType, expr.PointerId);
 		}
 
 		#endregion
@@ -131,7 +132,7 @@ namespace Yuka.Script {
 					break;
 				default:
 					Emit(new TargetInstruction(CreateTargetElement(stmt.Target), _instructions));
-					EmitCall("=", new[] { stmt.Expression.Accept(this) });
+					EmitCall("=", stmt.Expression.Accept(this));
 					break;
 			}
 		}
@@ -233,7 +234,7 @@ namespace Yuka.Script {
 			return new CallInstruction(_dataSet.CreateFunction(name), arguments ?? new DataElement[0], _instructions);
 		}
 
-		protected void EmitCall(string function, DataElement[] arguments = null) {
+		protected void EmitCall(string function, params DataElement[] arguments) {
 			Emit(CreateCallInstruction(function, arguments));
 
 			// free all locals used as arguments
@@ -331,8 +332,8 @@ namespace Yuka.Script {
 
 	public interface ISyntaxVisitor {
 		DataElement Visit(FunctionCallExpr expr);
-		DataElement Visit(IntLiteral expr);
-		DataElement Visit(IntPointer expr);
+		DataElement Visit(IntegerLiteral expr);
+		DataElement Visit(PointerLiteral expr);
 		DataElement Visit(JumpLabelExpr expr);
 		DataElement Visit(OperatorExpr expr);
 		DataElement Visit(StringLiteral expr);

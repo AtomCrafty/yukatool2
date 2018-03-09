@@ -35,8 +35,9 @@ namespace Yuka.Script {
 			Debug.Assert(!Script.IsDecompiled);
 
 			Script.Body = ReadBlockStatement();
-
 			Script.InstructionList = null;
+
+			// TODO externalize string table
 		}
 
 		protected Instruction CurrentInstruction => _currentInstructionOffset < Script.InstructionList.Count ? Script.InstructionList[_currentInstructionOffset] : null;
@@ -144,28 +145,28 @@ namespace Yuka.Script {
 					return new JumpLabelExpr { LabelStmt = new JumpLabelStmt { Name = ctrl.Name.StringValue } };
 
 				case DataElement.CInt cint when cint.Value.IsPointer:
-					return new IntPointer { PointerId = cint.Value.PointerId };
+					return new PointerLiteral { PointerId = cint.Value.PointerId };
 
 				case DataElement.CInt cint:
-					return new IntLiteral { Value = cint.Value.IntValue };
+					return new IntegerLiteral { Value = cint.Value.IntValue };
 
 				case DataElement.CStr cstr:
-					return new StringLiteral { Value = cstr.Value };
+					return new StringLiteral { Value = cstr.Value.StringValue };
 
 				case DataElement.SStr sstr:
-					return new Variable { FlagType = sstr.FlagType.StringValue };
+					return new Variable { VariableType = sstr.FlagType.StringValue };
 
 				case DataElement.VInt vint when vint.FlagId.IsPointer:
-					return new VariablePointer { FlagType = vint.FlagType.StringValue, FlagPointerId = vint.FlagId.PointerId };
+					return new VariablePointer { VariableType = vint.FlagType.StringValue, PointerId = vint.FlagId.PointerId };
 
 				case DataElement.VInt vint:
-					return new Variable { FlagType = vint.FlagType.StringValue, FlagId = vint.FlagId.IntValue };
+					return new Variable { VariableType = vint.FlagType.StringValue, VariableId = vint.FlagId.IntValue };
 
 				case DataElement.VStr vstr when vstr.FlagId.IsPointer:
-					return new VariablePointer { FlagType = vstr.FlagType.StringValue, FlagPointerId = vstr.FlagId.PointerId };
+					return new VariablePointer { VariableType = vstr.FlagType.StringValue, PointerId = vstr.FlagId.PointerId };
 
 				case DataElement.VStr vstr:
-					return new Variable { FlagType = vstr.FlagType.StringValue, FlagId = vstr.FlagId.IntValue };
+					return new Variable { VariableType = vstr.FlagType.StringValue, VariableId = vstr.FlagId.IntValue };
 
 				case DataElement.VLoc vloc:
 					if(!_locals.ContainsKey(vloc.Id)) throw new FormatException("Use of undefined local variable");

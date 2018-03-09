@@ -80,9 +80,10 @@
     <Compile Include="Script\Instructions\InstructionList.cs" />
     <Compile Include="Script\Instructions\Instruction.cs" />
     <Compile Include="Script\Lexer.cs" />
-    <Compile Include="Script\Syntax\Expr\IntPointer.cs" />
+    <Compile Include="Script\Parser.cs" />
+    <Compile Include="Script\Syntax\Expr\PointerLiteral.cs" />
     <Compile Include="Script\Syntax\Expr\StringLiteral.cs" />
-    <Compile Include="Script\Syntax\Expr\IntLiteral.cs" />
+    <Compile Include="Script\Syntax\Expr\IntegerLiteral.cs" />
     <Compile Include="Script\Syntax\Expr\VariablePointer.cs" />
     <Compile Include="Script\Syntax\Expr\Variable.cs" />
     <Compile Include="Script\Syntax\Expr\OperatorExpr.cs" />
@@ -95,6 +96,8 @@
     <Compile Include="Script\Syntax\Stmt\FunctionCallStmt.cs" />
     <Compile Include="Script\Syntax\Stmt\JumpLabelStmt.cs" />
     <Compile Include="Script\Syntax\Token.cs" />
+    <Compile Include="Script\TokenStream.cs" />
+    <Compile Include="Script\UnexpectedTokenException.cs" />
     <Compile Include="Script\YukaScript.cs" />
     <Compile Include="IO\Options.cs" />
     <Compile Include="Script\Decompiler.cs" />

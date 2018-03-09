@@ -3,10 +3,10 @@ using Yuka.Script.Data;
 
 namespace Yuka.Script.Syntax.Expr {
 	public class VariablePointer : Expression {
-		public string FlagType;
-		public int FlagPointerId;
+		public string VariableType;
+		public int PointerId;
 
-		public override string ToString() => $"{FlagType}:&{FlagPointerId}";
+		public override string ToString() => $"{VariableType}:&{PointerId}";
 
 		[DebuggerStepThrough]
 		public override DataElement Accept(ISyntaxVisitor visitor) => visitor.Visit(this);

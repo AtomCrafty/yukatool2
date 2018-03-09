@@ -7,7 +7,7 @@ using Yuka.Script.Syntax;
 using Yuka.Util;
 
 namespace Yuka.Script {
-	public class Lexer {
+	public class Lexer : IDisposable {
 
 		protected static readonly char[] OperatorChars = { '+', '-', '*', '/', '=', '<', '>' };
 		protected static readonly Dictionary<char, TokenKind> SingleCharTokens = new Dictionary<char, TokenKind> {
@@ -18,8 +18,8 @@ namespace Yuka.Script {
 			{ ';', TokenKind.Semicolon    },
 			{ '(', TokenKind.OpenParen    },
 			{ ')', TokenKind.CloseParen   },
-			{ '{', TokenKind.OpenBracket  },
-			{ '}', TokenKind.CloseBracket }
+			{ '{', TokenKind.OpenBrace  },
+			{ '}', TokenKind.CloseBrace }
 		};
 
 		public readonly string FileName;
@@ -38,7 +38,8 @@ namespace Yuka.Script {
 		public Token LexToken() {
 			SkipWhiteSpaceAndComments();
 
-			if(CurrentChar == null) return null;
+			if(CurrentChar == null) return Token.EndOfFile;
+
 			char ch = CurrentChar.Value;
 			var type = TypeOf(ch);
 
@@ -68,10 +69,12 @@ namespace Yuka.Script {
 						// label literal
 						case ':':
 							ConsumeChar();
-							if(TypeOf(CurrentChar) == CharType.Digit) {
-								// next char is a digit -> this must be a colon within a variable specifier
+
+							if(TypeOf(CurrentChar) != CharType.Letter) {
 								return FinishToken(TokenKind.Colon);
 							}
+
+							// next char is a letter -> this must be a label literal
 							ConsumeIdentifier();
 							return FinishToken(TokenKind.LabelLiteral);
 
@@ -223,5 +226,9 @@ namespace Yuka.Script {
 		}
 
 		#endregion
+
+		public void Dispose() {
+			Reader?.Dispose();
+		}
 	}
 }
