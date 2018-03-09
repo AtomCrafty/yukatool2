@@ -12,31 +12,42 @@ using Yuka.IO.Formats;
 using Yuka.Script;
 using Yuka.Script.Data;
 using Yuka.Script.Source;
-using Yuka.Script.Syntax;
 using Yuka.Util;
 
 namespace Yuka.Cli {
 	public class Program {
 		public static void Main() {
 			Tests.DecompileGame();
+			Tests.CompileGame();
 		}
 	}
 
 	public static class Tests {
 
+		public static void CompileGame() {
+			using(FileSystem srcFs = FileSystem.FromFolder(@"C:\Temp\CopyTest\decompiled"), dstFs = FileSystem.NewFolder(@"C:\Temp\CopyTest\compiled")) {
+				foreach(string file in srcFs.GetFiles("*.ykd")) {
+					Console.WriteLine(file);
+
+					var script = FileReader.Decode<YukaScript>(file, srcFs);
+					FileWriter.Encode(script, file, dstFs, new FormatPreference(Format.Yks));
+
+				}
+			}
+			//Console.ReadLine();
+		}
+
 		public static void DecompileGame() {
-			using(FileSystem srcFs = FileSystem.FromFolder(@"S:\Games\Visual Novels\Lover Able Unpacked"), dstFs = FileSystem.NewFolder("decompiled")) {
+			using(FileSystem srcFs = FileSystem.FromFolder(@"C:\Temp\CopyTest\compiled"), dstFs = FileSystem.NewFolder(@"C:\Temp\CopyTest\decompiled")) {
 				foreach(string file in srcFs.GetFiles("*.yks")) {
 					Console.WriteLine(file);
 
 					var script = FileReader.Decode<YukaScript>(file, srcFs);
-					script.Decompile();
-					script.ExternalizeStrings();
 					FileWriter.Encode(script, file, dstFs, new FormatPreference(Format.Ykd));
 
 				}
 			}
-			Console.ReadLine();
+			//Console.ReadLine();
 		}
 
 		public static void Parser() {

@@ -11,16 +11,18 @@ using Yuka.Util;
 namespace Yuka.Script.Source {
 	public class Parser {
 
+		protected readonly string FileName;
 		protected readonly TokenStream TokenStream;
 		public readonly Dictionary<string, Expression> DefinedVariables = new Dictionary<string, Expression>();
 		public readonly StringTable StringTable;
 
-		public Parser(Lexer lexer, StringTable stringTable) {
+		public Parser(string fileName, StringTable stringTable, Lexer lexer) {
+			FileName = fileName;
+			StringTable = stringTable;
 			TokenStream = new TokenStream(lexer);
+
 			// move read head to the first token
 			TokenStream.MoveNext();
-
-			StringTable = stringTable;
 		}
 
 		#region Parser methods
@@ -32,12 +34,9 @@ namespace Yuka.Script.Source {
 
 			ConsumeToken(TokenKind.EndOfFile);
 
-			return new YukaScript {
-				Body = new BlockStmt {
-					Statements = statements
-				},
-				Strings = StringTable
-			};
+			return new YukaScript(FileName, new BlockStmt {
+				Statements = statements
+			});
 		}
 
 		public void ParseDirectives() {
@@ -417,6 +416,8 @@ namespace Yuka.Script.Source {
 		}
 
 		public StringLiteral ParseExternalStringLiteral() {
+			Debug.Assert(StringTable != null, "StringTable != null");
+
 			ConsumeToken(TokenKind.At);
 			string stringId = ConsumeToken(TokenKind.Identifier).Source;
 

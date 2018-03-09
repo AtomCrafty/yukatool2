@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Yuka.IO;
 using Yuka.Script.Data;
 using Yuka.Script.Instructions;
 using Yuka.Script.Syntax.Stmt;
@@ -6,12 +7,24 @@ using Yuka.Script.Syntax.Stmt;
 namespace Yuka.Script {
 	public class YukaScript {
 
+		public string Name;
+
 		// only set if compiled
 		public InstructionList InstructionList;
 
 		// only set if decompiled
 		public BlockStmt Body;
 		public StringTable Strings;
+
+		public YukaScript(string name, InstructionList instructions) {
+			Name = name;
+			InstructionList = instructions;
+		}
+
+		public YukaScript(string name, BlockStmt body) {
+			Name = name;
+			Body = body;
+		}
 
 		public bool IsCompiled {
 			get {
@@ -32,6 +45,10 @@ namespace Yuka.Script {
 		public void Decompile() {
 			if(IsDecompiled) return;
 			new Decompiler(this).Decompile();
+
+			if(Options.YkdExternalizeStrings) {
+				ExternalizeStrings();
+			}
 		}
 
 		public void EnsureCompiled() => Compile();
@@ -41,9 +58,18 @@ namespace Yuka.Script {
 		}
 
 		public void ExternalizeStrings() {
-			if(Strings != null) return;
+			if(!IsDecompiled || Strings != null) return;
+
 			Strings = new StringTable();
-			new StringExternalizer { StringTable = Strings }.Visit(Body);
+			new StringExternalizer(Strings).Visit(Body);
+		}
+
+		public void InternalizeStrings() {
+			if(!IsDecompiled || Strings == null) return;
+
+			new StringInternalizer(this).Visit(Body);
+
+			Strings = null;
 		}
 	}
 }

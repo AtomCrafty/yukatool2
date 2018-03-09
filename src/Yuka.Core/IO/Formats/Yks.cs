@@ -60,7 +60,7 @@ namespace Yuka.IO.Formats {
 		}
 
 		public override YukaScript Read(string name, Stream s) {
-			return new Disassembler(s).Disassemble();
+			return new Disassembler(name, s).Disassemble();
 		}
 	}
 

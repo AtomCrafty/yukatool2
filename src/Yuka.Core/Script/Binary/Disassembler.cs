@@ -14,10 +14,12 @@ namespace Yuka.Script.Binary {
 	/// Creates an instruction list from a binary script file
 	/// </summary>
 	public class Disassembler {
+		protected readonly string FileName;
 		protected readonly Stream Stream;
 		protected int _flagPointerId;
 
-		public Disassembler(Stream stream) {
+		public Disassembler(string fileName, Stream stream) {
+			FileName = fileName;
 			Stream = stream;
 		}
 
@@ -120,7 +122,7 @@ namespace Yuka.Script.Binary {
 					}
 				}
 
-				return new YukaScript { InstructionList = instructions };
+				return new YukaScript(FileName, instructions);
 			}
 		}
 

@@ -24,9 +24,21 @@ namespace Yuka.IO.Formats {
 		}
 
 		public override YukaScript Read(string name, Stream s) {
-			var lexer = new Lexer(new StreamReader(s), name);
-			// TODO read string table from csv file
-			return new Parser(lexer, new StringTable()).ParseScript();
+			throw new InvalidOperationException("Reading from stream is not supported by " + nameof(YkdScriptReader));
+		}
+
+		public override YukaScript Read(string baseName, FileSystem fs) {
+			StringTable stringTable = null;
+
+			string csvFileName = baseName.WithExtension(Csv.Extension);
+			if(fs.FileExists(csvFileName)) {
+				stringTable = Decode<StringTable>(csvFileName, fs);
+			}
+
+			using(var stream = fs.OpenFile(baseName)) {
+				var lexer = new Lexer(new StreamReader(stream), baseName);
+				return new Parser(baseName, stringTable, lexer).ParseScript();
+			}
 		}
 	}
 

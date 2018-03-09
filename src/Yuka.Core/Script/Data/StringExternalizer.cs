@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Yuka.IO;
 using Yuka.Script.Syntax;
@@ -10,8 +11,12 @@ namespace Yuka.Script.Data {
 	public class StringExternalizer : NodeVisitor {
 
 		public StringTable StringTable;
-		protected readonly Dictionary<string, int> IdCounter = new Dictionary<string, int>();
+		protected readonly Dictionary<StringCategory, int> IdCounter = new Dictionary<StringCategory, int>();
 		protected string _currentSpeaker;
+
+		public StringExternalizer(StringTable stringTable) {
+			StringTable = stringTable;
+		}
 
 		// TODO make this configurable
 		public static readonly Regex InternalStringRegex = new Regex(@".*\\.*|.*\.(?:png|bmp|ogg|yk.)$|^\s*$");
@@ -20,13 +25,18 @@ namespace Yuka.Script.Data {
 			return !InternalStringRegex.IsMatch(value);
 		}
 
-		public string GetUniqueId(string category) {
+		public string GetUniqueId(StringCategory category, string value) {
+			if(category == StringCategory.N) {
+				string key = StringTable.Names.FirstOrDefault(entry => entry.Fallback == value)?.Key;
+				if(key != null) return key;
+			}
+
 			if(!IdCounter.ContainsKey(category)) IdCounter[category] = 1;
-			return category + IdCounter[category]++;
+			return category.ToString() + IdCounter[category]++;
 		}
 
-		public void ExternalizeStringLiteral(StringLiteral literal, string category, bool includeSpeaker = false) {
-			string key = GetUniqueId(category);
+		public void ExternalizeStringLiteral(StringLiteral literal, StringCategory category, bool includeSpeaker = false) {
+			string key = GetUniqueId(category, literal.Value);
 
 			StringTable[key] = new StringTableEntry(key, literal.Value, includeSpeaker ? _currentSpeaker : null);
 
@@ -36,7 +46,7 @@ namespace Yuka.Script.Data {
 
 		public override object Visit(StringLiteral literal) {
 			if(IsExternalizableString(literal.Value)) {
-				ExternalizeStringLiteral(literal, "S");
+				ExternalizeStringLiteral(literal, StringCategory.S);
 			}
 			return base.Visit(literal);
 		}
@@ -47,7 +57,7 @@ namespace Yuka.Script.Data {
 				// externalize line of text
 				foreach(var argument in stmt.Arguments) {
 					if(argument is StringLiteral literal) {
-						ExternalizeStringLiteral(literal, "L", true);
+						ExternalizeStringLiteral(literal, StringCategory.L, true);
 					}
 					else {
 						argument.Accept(this);
@@ -63,7 +73,7 @@ namespace Yuka.Script.Data {
 						// set current speaker
 						_currentSpeaker = literal.Value;
 
-						ExternalizeStringLiteral(literal, "N");
+						ExternalizeStringLiteral(literal, StringCategory.N);
 					}
 					else if(argument is Variable) {
 
@@ -82,5 +92,9 @@ namespace Yuka.Script.Data {
 				base.Visit(stmt);
 			}
 		}
+	}
+
+	public enum StringCategory {
+		L, N, S
 	}
 }

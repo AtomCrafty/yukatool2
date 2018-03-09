@@ -26,6 +26,8 @@ namespace Yuka.Script {
 		public void Compile() {
 			Debug.Assert(Script.IsDecompiled);
 
+			Script.InternalizeStrings();
+
 			_instructions = new InstructionList();
 			_dataSet = new DataSet();
 
@@ -40,8 +42,6 @@ namespace Yuka.Script {
 			_instructions.MaxLocals = (uint)_usedLocals.Count;
 			Script.InstructionList = _instructions;
 			Script.Body = null;
-
-			// TODO internalize string table
 		}
 
 		#region Visitor methods

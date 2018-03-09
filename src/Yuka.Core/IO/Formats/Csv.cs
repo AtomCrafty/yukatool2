@@ -59,7 +59,9 @@ namespace Yuka.IO.Formats {
 					if(match.Success) {
 						textColumns[i] = match.Value;
 					}
-					Console.WriteLine($"Unrecognized column '{field}', ignoring");
+					else {
+						Console.WriteLine($"Unrecognized column '{field}', ignoring");
+					}
 				}
 			}
 

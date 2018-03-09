@@ -69,6 +69,7 @@
     <Compile Include="IO\Formats\Ykd.cs" />
     <Compile Include="IO\Formats\Yks.cs" />
     <Compile Include="IO\Formats\Ykg.cs" />
+    <Compile Include="Script\Data\StringInternalizer.cs" />
     <Compile Include="Script\Syntax\AssignmentTarget.cs" />
     <Compile Include="Script\Binary\Assembler.cs" />
     <Compile Include="Script\Data\DataSector.cs" />

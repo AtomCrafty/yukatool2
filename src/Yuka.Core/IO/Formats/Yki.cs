@@ -20,7 +20,7 @@ namespace Yuka.IO.Formats {
 		}
 
 		public override YukaScript Read(string name, Stream s) {
-			return new YukaScript { InstructionList = new InstructionParser(s).Parse() };
+			return new YukaScript(name, new InstructionParser(s).Parse());
 		}
 	}
 
