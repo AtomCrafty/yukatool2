@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Yuka.Script.Data;
 using Yuka.Script.Instructions;
 using Yuka.Script.Syntax.Stmt;
 
@@ -9,6 +10,7 @@ namespace Yuka.Script {
 		public InstructionList InstructionList;
 		// only set if decompiled
 		public BlockStmt Body;
+		public StringTable Strings;
 
 		public bool IsCompiled {
 			get {

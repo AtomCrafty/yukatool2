@@ -8,6 +8,10 @@ using Yuka.Script.Instructions;
 using Yuka.Util;
 
 namespace Yuka.Script {
+
+	/// <summary>
+	/// Creates a binary script file from an instruction list
+	/// </summary>
 	public class Assembler {
 
 		protected readonly YukaScript Script;
@@ -54,7 +58,7 @@ namespace Yuka.Script {
 			uint instrEndOffset = (uint)(Stream.Position - startOffset);
 
 			// create data sector and calculate offsets
-			var dataStream = Options.YksDeduplicateScriptDataOnExport ? WriteDataSectorOptimized() : WriteDataSector();
+			var dataStream = WriteDataSector();
 
 			// write index
 			uint indexOffset = (uint)(Stream.Position - startOffset);
@@ -98,118 +102,46 @@ namespace Yuka.Script {
 		}
 
 		protected Stream WriteDataSector() {
-			var dataStream = new MemoryStream();
-			var dataWriter = dataStream.NewWriter();
+			var writer = new DataSectorWriter();
+
 			foreach(var dataElement in Index) {
+
 				switch(dataElement) {
 					case DataElement.CInt cint:
-						cint.ValueOffset = (uint)dataStream.Position;
-						dataWriter.Write(cint.Value);
+						cint.ValueOffset = writer.Write(cint.Value);
 						break;
 					case DataElement.CStr cstr:
-						cstr.ValueOffset = (uint)dataStream.Position;
-						dataWriter.WriteNullTerminatedString(cstr.Value);
+						cstr.ValueOffset = writer.Write(cstr.Value);
 						break;
 					case DataElement.Ctrl ctrl:
-						ctrl.NameOffset = (uint)dataStream.Position;
-						dataWriter.WriteNullTerminatedString(ctrl.Name);
-						ctrl.LinkOffset = (uint)dataStream.Position;
+						ctrl.NameOffset = writer.Write(ctrl.Name);
 						if(ctrl.LinkedElement != null) {
-							dataWriter.Write(ctrl.LinkedElement.LabelOffset);
+							ctrl.LinkOffset = writer.Write(ctrl.LinkedElement.LabelOffset);
 						}
-						else if(Format.Yks.Operators.Contains(ctrl.Name)) {
-							dataWriter.Write(Format.Yks.OperatorLink);
+						else if(Format.Yks.Operators.Contains(ctrl.Name.StringValue)) {
+							ctrl.LinkOffset = writer.Write(Format.Yks.OperatorLink);
 						}
 						else {
-							dataWriter.Write(-1);
+							ctrl.LinkOffset = writer.Write(-1);
 						}
 						break;
 					case DataElement.Func func:
-						func.NameOffset = (uint)dataStream.Position;
-						dataWriter.WriteNullTerminatedString(func.Name);
+						func.NameOffset = writer.Write(func.Name);
 						break;
 					case DataElement.SStr sstr:
-						sstr.FlagTypeOffset = (uint)dataStream.Position;
-						dataWriter.WriteNullTerminatedString(sstr.FlagType);
+						sstr.FlagTypeOffset = writer.Write(sstr.FlagType);
 						break;
 					case DataElement.VInt vint:
-						vint.FlagTypeOffset = (uint)dataStream.Position;
-						dataWriter.WriteNullTerminatedString(vint.FlagType);
-						vint.FlagIdOffset = (uint)dataStream.Position;
-						dataWriter.Write(vint.FlagId);
+						vint.FlagTypeOffset = writer.Write(vint.FlagType);
+						vint.FlagIdOffset = writer.Write(vint.FlagId);
 						break;
 					case DataElement.VStr vstr:
-						vstr.FlagTypeOffset = (uint)dataStream.Position;
-						dataWriter.WriteNullTerminatedString(vstr.FlagType);
-						vstr.FlagIdOffset = (uint)dataStream.Position;
-						dataWriter.Write(vstr.FlagId);
+						vstr.FlagTypeOffset = writer.Write(vstr.FlagType);
+						vstr.FlagIdOffset = writer.Write(vstr.FlagId);
 						break;
 				}
 			}
-			dataStream.Seek(0);
-			return Options.YksEncryptScriptDataOnExport ? (Stream)new XorStream(dataStream, Options.YksScriptDataXorKey) : dataStream;
-		}
-
-		protected Stream WriteDataSectorOptimized() {
-			var dataStream = new MemoryStream();
-			var dataWriter = dataStream.NewWriter();
-
-			var writtenInts = new Dictionary<int, uint>();
-			var writtenStrings = new Dictionary<string, uint>();
-
-			uint WriteInt(int val) {
-				if(!writtenInts.ContainsKey(val)) {
-					writtenInts[val] = (uint)dataStream.Position;
-					dataWriter.Write(val);
-				}
-				return writtenInts[val];
-			}
-			uint WriteString(string val) {
-				if(!writtenStrings.ContainsKey(val)) {
-					writtenStrings[val] = (uint)dataStream.Position;
-					dataWriter.WriteNullTerminatedString(val);
-				}
-				return writtenStrings[val];
-			}
-
-			foreach(var dataElement in Index) {
-				switch(dataElement) {
-					case DataElement.CInt cint:
-						cint.ValueOffset = WriteInt(cint.Value);
-						break;
-					case DataElement.CStr cstr:
-						cstr.ValueOffset = WriteString(cstr.Value);
-						break;
-					case DataElement.Ctrl ctrl:
-						ctrl.NameOffset = WriteString(ctrl.Name);
-						if(ctrl.LinkedElement != null) {
-							ctrl.LinkOffset = WriteInt(ctrl.LinkedElement.LabelOffset);
-						}
-						else if(Format.Yks.Operators.Contains(ctrl.Name)) {
-							ctrl.LinkOffset = WriteInt(Format.Yks.OperatorLink);
-						}
-						else {
-							ctrl.LinkOffset = WriteInt(-1);
-						}
-						break;
-					case DataElement.Func func:
-						func.NameOffset = WriteString(func.Name);
-						break;
-					case DataElement.SStr sstr:
-						sstr.FlagTypeOffset = WriteString(sstr.FlagType);
-						break;
-					case DataElement.VInt vint:
-						vint.FlagTypeOffset = WriteString(vint.FlagType);
-						vint.FlagIdOffset = WriteInt(vint.FlagId);
-						break;
-					case DataElement.VStr vstr:
-						vstr.FlagTypeOffset = WriteString(vstr.FlagType);
-						vstr.FlagIdOffset = WriteInt(vstr.FlagId);
-						break;
-				}
-			}
-			dataStream.Seek(0);
-			return Options.YksEncryptScriptDataOnExport ? (Stream)new XorStream(dataStream, Options.YksScriptDataXorKey) : dataStream;
+			return writer.GetStream();
 		}
 
 		internal static void WriteHeader(YksFormat.Header header, BinaryWriter w) {

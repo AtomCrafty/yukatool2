@@ -2,10 +2,11 @@
 using Yuka.Script.Data;
 
 namespace Yuka.Script.Syntax.Expr {
-	public class IntLiteral : Expression {
-		public int Value;
+	public class VariablePointer : Expression {
+		public string VariableType;
+		public int PointerId;
 
-		public override string ToString() => Value.ToString();
+		public override string ToString() => $"{VariableType}:&{PointerId}";
 
 		[DebuggerStepThrough]
 		public override DataElement Accept(ISyntaxVisitor visitor) => visitor.Visit(this);

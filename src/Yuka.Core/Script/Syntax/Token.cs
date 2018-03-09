@@ -1,6 +1,8 @@
 ﻿namespace Yuka.Script.Syntax {
 
 	public class Token {
+		public static readonly Token EndOfFile = new Token(TokenKind.EndOfFile, "", SourceRange.Invalid);
+
 		public readonly TokenKind Kind;
 		public readonly string Source;
 		public readonly SourceRange Range;
@@ -15,6 +17,8 @@
 	}
 
 	public class SourcePosition {
+		public static SourcePosition Invalid => new SourcePosition(-1, -1, -1, "<invalid>");
+
 		public readonly int Index, Line, Column;
 		public readonly string FileName;
 
@@ -31,6 +35,8 @@
 	}
 
 	public class SourceRange {
+		public static SourceRange Invalid => new SourceRange(SourcePosition.Invalid, SourcePosition.Invalid);
+
 		public readonly SourcePosition Start, End;
 
 		public SourceRange(SourcePosition start, SourcePosition end) {
@@ -46,18 +52,20 @@
 		LabelLiteral,       // :[^\s]+
 
 		Dollar,             // $
+		Ampersand,          // &
 		At,                 // @
 		Comma,              // ,
 		Semicolon,          // ;
 		OpenParen,          // (
 		CloseParen,         // )
-		OpenBracket,        // {
-		CloseBracket,       // }
+		OpenBrace,          // {
+		CloseBrace,         // }
 
 		Colon,              // :
 		Assign,             // =
 		Operator,           // + - * / > < ==
 
 		Directive,          // !<Identifier>
+		EndOfFile
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Yuka.IO.Formats;
 using Yuka.Script.Data;
 using Yuka.Script.Instructions;
 using Yuka.Script.Syntax;
@@ -8,6 +9,10 @@ using Yuka.Script.Syntax.Expr;
 using Yuka.Script.Syntax.Stmt;
 
 namespace Yuka.Script {
+
+	/// <summary>
+	/// Converts an instruction list tree to a syntax
+	/// </summary>
 	public class Decompiler {
 
 		public const int LocalFlagTableSize = 65536;
@@ -20,6 +25,7 @@ namespace Yuka.Script {
 		protected Dictionary<uint, Expression> _locals = new Dictionary<uint, Expression>();
 		protected int _currentInstructionOffset;
 		protected AssignmentTarget _currentAssignmentTarget;
+		private int _flagPointerId;
 
 		public Decompiler(YukaScript script) {
 			Script = script;
@@ -29,8 +35,9 @@ namespace Yuka.Script {
 			Debug.Assert(!Script.IsDecompiled);
 
 			Script.Body = ReadBlockStatement();
-
 			Script.InstructionList = null;
+
+			// TODO externalize string table
 		}
 
 		protected Instruction CurrentInstruction => _currentInstructionOffset < Script.InstructionList.Count ? Script.InstructionList[_currentInstructionOffset] : null;
@@ -57,39 +64,75 @@ namespace Yuka.Script {
 		protected void SetAssignmentTarget(TargetInstruction instruction) {
 			if(_currentAssignmentTarget != null) throw new FormatException("Assignment target already set");
 			switch(instruction.Target) {
+
+				// special strings
 				case DataElement.SStr sstr:
-					_currentAssignmentTarget = new AssignmentTarget.SpecialString(sstr.FlagType);
+					_currentAssignmentTarget = new AssignmentTarget.SpecialString(sstr.FlagType.StringValue);
 					break;
-				case DataElement.VInt vint when vint.FlagType == "GlobalFlag":
-					if(vint.FlagId >= GlobalFlagTableSize)
-						throw new ArgumentOutOfRangeException(nameof(vint.FlagId), vint.FlagId, "Global flag index must be smaller than " + GlobalFlagTableSize);
-					_currentAssignmentTarget = new AssignmentTarget.GlobalFlag(vint.FlagId);
+
+
+
+
+				// integer variable pointers
+				case DataElement.VInt vint when vint.FlagId.IsPointer:
+					_currentAssignmentTarget = new AssignmentTarget.VariablePointer(vint.FlagType.StringValue, vint.FlagId.PointerId);
 					break;
-				case DataElement.VInt vint when vint.FlagType == "Flag":
-					if(vint.FlagId >= LocalFlagTableSize)
-						throw new ArgumentOutOfRangeException(nameof(vint.FlagId), vint.FlagId, "Local flag index must be smaller than " + LocalFlagTableSize);
-					_currentAssignmentTarget = new AssignmentTarget.Flag(vint.FlagId);
+
+
+
+				// integer variables
+				case DataElement.VInt vint:
+					// range checks
+					if(vint.FlagId.IntValue < 0) throw new ArgumentOutOfRangeException(nameof(vint.FlagId.IntValue), vint.FlagId.IntValue, "Flag index must be positive");
+					if(vint.FlagId.IntValue >= GlobalFlagTableSize && vint.FlagType.StringValue == YksFormat.GlobalFlag)
+						throw new ArgumentOutOfRangeException(nameof(vint.FlagId.IntValue), vint.FlagId.IntValue, "Global flag index must be smaller than " + GlobalFlagTableSize);
+					if(vint.FlagId.IntValue >= LocalFlagTableSize && vint.FlagType.StringValue == YksFormat.Flag)
+						throw new ArgumentOutOfRangeException(nameof(vint.FlagId.IntValue), vint.FlagId.IntValue, "Local flag index must be smaller than " + LocalFlagTableSize);
+
+					_currentAssignmentTarget = new AssignmentTarget.Variable(YksFormat.Flag, vint.FlagId.IntValue);
 					break;
-				case DataElement.VStr vstr when vstr.FlagType == "GlobalString":
-					if(vstr.FlagId >= GlobalFlagTableSize)
-						throw new ArgumentOutOfRangeException(nameof(vstr.FlagId), vstr.FlagId, "Global string index must be smaller than " + GlobalStringTableSize);
-					_currentAssignmentTarget = new AssignmentTarget.GlobalString(vstr.FlagId);
+
+
+
+				// string variable pointers
+				case DataElement.VStr vstr when vstr.FlagId.IsPointer:
+					_currentAssignmentTarget = new AssignmentTarget.VariablePointer(vstr.FlagType.StringValue, vstr.FlagId.PointerId);
 					break;
-				case DataElement.VStr vstr when vstr.FlagType == "String":
-					if(vstr.FlagId >= LocalFlagTableSize)
-						throw new ArgumentOutOfRangeException(nameof(vstr.FlagId), vstr.FlagId, "Local string index must be smaller than " + LocalStringTableSize);
-					_currentAssignmentTarget = new AssignmentTarget.String(vstr.FlagId);
+
+
+
+				// integer variables
+				case DataElement.VStr vstr:
+					// range checks
+					if(vstr.FlagId.IntValue < 0) throw new ArgumentOutOfRangeException(nameof(vstr.FlagId.IntValue), vstr.FlagId.IntValue, "String index must be positive");
+					if(vstr.FlagId.IntValue >= GlobalStringTableSize && vstr.FlagType.StringValue == YksFormat.GlobalFlag)
+						throw new ArgumentOutOfRangeException(nameof(vstr.FlagId.IntValue), vstr.FlagId.IntValue, "String flag index must be smaller than " + GlobalStringTableSize);
+					if(vstr.FlagId.IntValue >= LocalStringTableSize && vstr.FlagType.StringValue == YksFormat.Flag)
+						throw new ArgumentOutOfRangeException(nameof(vstr.FlagId.IntValue), vstr.FlagId.IntValue, "String flag index must be smaller than " + LocalStringTableSize);
+
+					_currentAssignmentTarget = new AssignmentTarget.Variable(YksFormat.Flag, vstr.FlagId.IntValue);
 					break;
+
+
+
+				// local variables
 				case DataElement.VLoc vloc:
 					if(vloc.Id >= Script.InstructionList.MaxLocals)
 						throw new ArgumentOutOfRangeException(nameof(vloc.Id), vloc.Id, "Local variable id must be smaller than local variable pool size (" + Script.InstructionList.MaxLocals + ")");
 					_currentAssignmentTarget = new AssignmentTarget.Local(vloc.Id);
 					break;
+
+
+
+				// int pointers
 				case DataElement.CInt cint:
-					if(cint.Value != 0)
-						throw new ArgumentOutOfRangeException(nameof(cint.Value), cint.Value, "Flag pointer must have value 0");
-					_currentAssignmentTarget = new AssignmentTarget.Pointer();
+					cint.Value.PointerId = _flagPointerId++;
+					_currentAssignmentTarget = new AssignmentTarget.IntPointer(cint.Value.PointerId);
 					break;
+
+
+
+
 				default:
 					throw new ArgumentOutOfRangeException(nameof(instruction), "Invalid assignment target: " + instruction);
 			}
@@ -97,24 +140,41 @@ namespace Yuka.Script {
 
 		protected Expression ToExpression(DataElement element) {
 			switch(element) {
+
 				case DataElement.Ctrl ctrl:
-					return new JumpLabelExpr { LabelStmt = new JumpLabelStmt { Name = ctrl.Name } };
+					return new JumpLabelExpr { LabelStmt = new JumpLabelStmt { Name = ctrl.Name.StringValue } };
+
+				case DataElement.CInt cint when cint.Value.IsPointer:
+					return new PointerLiteral { PointerId = cint.Value.PointerId };
+
 				case DataElement.CInt cint:
-					return new IntLiteral { Value = cint.Value };
+					return new IntegerLiteral { Value = cint.Value.IntValue };
+
 				case DataElement.CStr cstr:
-					return new StringLiteral { Value = cstr.Value };
+					return new StringLiteral { Value = cstr.Value.StringValue };
+
 				case DataElement.SStr sstr:
-					return new VariableExpr { FlagType = sstr.FlagType };
+					return new Variable { VariableType = sstr.FlagType.StringValue };
+
+				case DataElement.VInt vint when vint.FlagId.IsPointer:
+					return new VariablePointer { VariableType = vint.FlagType.StringValue, PointerId = vint.FlagId.PointerId };
+
 				case DataElement.VInt vint:
-					return new VariableExpr { FlagType = vint.FlagType, FlagId = vint.FlagId };
+					return new Variable { VariableType = vint.FlagType.StringValue, VariableId = vint.FlagId.IntValue };
+
+				case DataElement.VStr vstr when vstr.FlagId.IsPointer:
+					return new VariablePointer { VariableType = vstr.FlagType.StringValue, PointerId = vstr.FlagId.PointerId };
+
 				case DataElement.VStr vstr:
-					return new VariableExpr { FlagType = vstr.FlagType, FlagId = vstr.FlagId };
+					return new Variable { VariableType = vstr.FlagType.StringValue, VariableId = vstr.FlagId.IntValue };
+
 				case DataElement.VLoc vloc:
 					if(!_locals.ContainsKey(vloc.Id)) throw new FormatException("Use of undefined local variable");
 					var local = _locals[vloc.Id];
 					if(local == null) throw new FormatException("Repeated use of the same local variable");
 					_locals[vloc.Id] = null;
 					return local;
+
 				default:
 					throw new FormatException("Invalid expression element: " + element.Type);
 			}
@@ -135,7 +195,7 @@ namespace Yuka.Script {
 				}
 				else {
 					Debug.Assert(parts[i] is DataElement.Ctrl, "Operands are only allowed at even indices");
-					operators[i / 2] = ((DataElement.Ctrl)parts[i]).Name;
+					operators[i / 2] = ((DataElement.Ctrl)parts[i]).Name.StringValue;
 				}
 			}
 			return new OperatorExpr { Operands = operands, Operators = operators };

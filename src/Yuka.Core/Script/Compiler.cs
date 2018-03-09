@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Yuka.IO.Formats;
 using Yuka.Script.Data;
 using Yuka.Script.Instructions;
 using Yuka.Script.Syntax;
@@ -10,10 +9,15 @@ using Yuka.Script.Syntax.Expr;
 using Yuka.Script.Syntax.Stmt;
 
 namespace Yuka.Script {
+
+	/// <summary>
+	/// Converts a syntax tree to an instruction list
+	/// </summary>
 	public class Compiler : ISyntaxVisitor {
 
 		protected readonly YukaScript Script;
 		protected InstructionList _instructions;
+		protected DataSet _dataSet;
 
 		public Compiler(YukaScript script) {
 			Script = script;
@@ -36,6 +40,8 @@ namespace Yuka.Script {
 			_instructions.MaxLocals = (uint)_usedLocals.Count;
 			Script.InstructionList = _instructions;
 			Script.Body = null;
+
+			// TODO internalize string table
 		}
 
 		#region Visitor methods
@@ -59,8 +65,12 @@ namespace Yuka.Script {
 			return local;
 		}
 
-		public DataElement Visit(IntLiteral expr) {
-			return _dataSet.GetIntConstant(expr.Value);
+		public DataElement Visit(IntegerLiteral expr) {
+			return _dataSet.CreateIntConstant(expr.Value);
+		}
+
+		public DataElement Visit(PointerLiteral expr) {
+			return _dataSet.CreateIntPointer(expr.PointerId);
 		}
 
 		public DataElement Visit(JumpLabelExpr expr) {
@@ -82,11 +92,15 @@ namespace Yuka.Script {
 		}
 
 		public DataElement Visit(StringLiteral expr) {
-			return _dataSet.GetStringConstant(expr.Value);
+			return _dataSet.CreateStringConstant(expr.Value);
 		}
 
-		public DataElement Visit(VariableExpr expr) {
-			return _dataSet.GetVariable(expr.FlagType, expr.FlagId);
+		public DataElement Visit(Variable expr) {
+			return _dataSet.CreateVariable(expr.VariableType, expr.VariableId);
+		}
+
+		public DataElement Visit(VariablePointer expr) {
+			return _dataSet.CreateVariablePointer(expr.VariableType, expr.PointerId);
 		}
 
 		#endregion
@@ -118,7 +132,7 @@ namespace Yuka.Script {
 					break;
 				default:
 					Emit(new TargetInstruction(CreateTargetElement(stmt.Target), _instructions));
-					EmitCall("=", new[] { stmt.Expression.Accept(this) });
+					EmitCall("=", stmt.Expression.Accept(this));
 					break;
 			}
 		}
@@ -183,26 +197,26 @@ namespace Yuka.Script {
 			return index;
 		}
 
-		protected DataSet _dataSet;
-
 		#region DataElement
 
 		protected DataElement CreateTargetElement(AssignmentTarget target) {
 			switch(target) {
-				case AssignmentTarget.GlobalFlag gflg:
-					return _dataSet.GetVariable(YksFormat.GlobalFlag, gflg.Id);
-				case AssignmentTarget.GlobalString gstr:
-					return _dataSet.GetVariable(YksFormat.GlobalString, gstr.Id);
-				case AssignmentTarget.Flag lflg:
-					return _dataSet.GetVariable(YksFormat.Flag, lflg.Id);
-				case AssignmentTarget.String lstr:
-					return _dataSet.GetVariable(YksFormat.String, lstr.Id);
+
+				case AssignmentTarget.Variable variable:
+					return _dataSet.CreateVariable(variable.VariableType, variable.VariableId);
+
+				case AssignmentTarget.VariablePointer pointer:
+					return _dataSet.CreateVariablePointer(pointer.VariableType, pointer.PointerId);
+
 				case AssignmentTarget.SpecialString sstr:
-					return _dataSet.GetVariable(sstr.Id);
+					return _dataSet.CreateVariable(sstr.Id, 0);
+
 				case AssignmentTarget.Local local:
 					throw new FormatException($"Unexpected local variable in assignment: {local.Id}");
-				case AssignmentTarget.Pointer _:
-					return _dataSet.GetIntConstant(0);
+
+				case AssignmentTarget.IntPointer pointer:
+					return _dataSet.CreateIntPointer(pointer.PointerId);
+
 				default:
 					throw new FormatException($"Invalid assignment target: {target.GetType().Name}");
 			}
@@ -217,10 +231,10 @@ namespace Yuka.Script {
 		#region Calls
 
 		protected CallInstruction CreateCallInstruction(string name, DataElement[] arguments = null) {
-			return new CallInstruction(_dataSet.GetFunction(name), arguments ?? new DataElement[0], _instructions);
+			return new CallInstruction(_dataSet.CreateFunction(name), arguments ?? new DataElement[0], _instructions);
 		}
 
-		protected void EmitCall(string function, DataElement[] arguments = null) {
+		protected void EmitCall(string function, params DataElement[] arguments) {
 			Emit(CreateCallInstruction(function, arguments));
 
 			// free all locals used as arguments
@@ -252,7 +266,7 @@ namespace Yuka.Script {
 
 		protected int _nextLabelId;
 		protected DataElement.Ctrl CreateLabel(string name) {
-			return new DataElement.Ctrl(name) { Id = _nextLabelId++ };
+			return new DataElement.Ctrl(_dataSet.CreateScriptValue(name)) { Id = _nextLabelId++ };
 		}
 
 		protected DataElement.Ctrl EmitLabel(string name) {
@@ -285,7 +299,7 @@ namespace Yuka.Script {
 			// try to re-use existing operator symbol
 			if(_usedOperators.ContainsKey(operation)) return _usedOperators[operation];
 
-			var op = new DataElement.Ctrl(operation);
+			var op = new DataElement.Ctrl(_dataSet.CreateScriptValue(operation));
 			_usedOperators[operation] = op;
 			return op;
 		}
@@ -318,11 +332,13 @@ namespace Yuka.Script {
 
 	public interface ISyntaxVisitor {
 		DataElement Visit(FunctionCallExpr expr);
-		DataElement Visit(IntLiteral expr);
+		DataElement Visit(IntegerLiteral expr);
+		DataElement Visit(PointerLiteral expr);
 		DataElement Visit(JumpLabelExpr expr);
 		DataElement Visit(OperatorExpr expr);
 		DataElement Visit(StringLiteral expr);
-		DataElement Visit(VariableExpr expr);
+		DataElement Visit(Variable expr);
+		DataElement Visit(VariablePointer expr);
 
 		void Visit(AssignmentStmt stmt);
 		void Visit(BlockStmt stmt);

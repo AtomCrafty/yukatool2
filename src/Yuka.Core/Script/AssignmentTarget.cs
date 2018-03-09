@@ -1,4 +1,7 @@
-﻿namespace Yuka.Script {
+﻿using System;
+using Yuka.IO.Formats;
+
+namespace Yuka.Script {
 	public abstract class AssignmentTarget {
 		public readonly AssignmentTargetType Type;
 
@@ -6,40 +9,36 @@
 			Type = type;
 		}
 
-		public abstract class IdAssignmentTarget : AssignmentTarget {
-			public readonly int Id;
+		public class Variable : AssignmentTarget {
+			public readonly string VariableType;
+			public readonly int VariableId;
 
-			protected IdAssignmentTarget(int id, AssignmentTargetType type) : base(type) {
-				Id = id;
+			public Variable(string variableType, int variableId) : base((AssignmentTargetType)Enum.Parse(typeof(AssignmentTargetType), variableType)) {
+				VariableType = variableType;
+				VariableId = variableId;
 			}
 
-			public override string ToString() => $"{GetType().Name}:{Id}";
-		}
-
-		public class Flag : IdAssignmentTarget {
-			public Flag(int id) : base(id, AssignmentTargetType.Flag) { }
-		}
-
-		public class GlobalFlag : IdAssignmentTarget {
-			public GlobalFlag(int id) : base(id, AssignmentTargetType.GlobalFlag) { }
-		}
-
-		public class String : IdAssignmentTarget {
-			public String(int id) : base(id, AssignmentTargetType.String) { }
-		}
-
-		public class GlobalString : IdAssignmentTarget {
-			public GlobalString(int id) : base(id, AssignmentTargetType.GlobalString) { }
+			public override string ToString() => $"{VariableType}:{VariableId}";
 		}
 
 		public class SpecialString : AssignmentTarget {
 			public readonly string Id;
 
 			public SpecialString(string id) : base(AssignmentTargetType.SpecialString) {
+
+				switch(id) {
+					case YksFormat.TempGlobalString:
+					case YksFormat.主人公:
+					case YksFormat.汎用文字変数:
+						break;
+					default:
+						throw new ArgumentOutOfRangeException(nameof(id), "Special string type must be one of the following: " +
+							$"{YksFormat.TempGlobalString}, {YksFormat.主人公}, {YksFormat.汎用文字変数}");
+				}
 				Id = id;
 			}
 
-			public override string ToString() => $"{Id}";
+			public override string ToString() => Id;
 		}
 
 		public class Local : AssignmentTarget {
@@ -52,20 +51,54 @@
 			public override string ToString() => $"${Id}";
 		}
 
-		public class Pointer : AssignmentTarget {
-			public Pointer() : base(AssignmentTargetType.Pointer) { }
+		public class VariablePointer : AssignmentTarget {
+			public readonly string VariableType;
+			public readonly int PointerId;
 
-			public override string ToString() => "$";
+			public VariablePointer(string variableType, int pointerId) : base((AssignmentTargetType)Enum.Parse(typeof(AssignmentTargetType), variableType + "Pointer")) {
+
+				switch(variableType) {
+					case YksFormat.Flag:
+					case YksFormat.String:
+					case YksFormat.GlobalFlag:
+					case YksFormat.GlobalString:
+						break;
+					default:
+						throw new ArgumentOutOfRangeException(nameof(variableType), "Variable must be one of the following: " +
+							$"{YksFormat.Flag}, {YksFormat.GlobalFlag}, {YksFormat.String}, {YksFormat.GlobalString}");
+				}
+
+				VariableType = variableType;
+				PointerId = pointerId;
+			}
+
+			public override string ToString() => $"{VariableType}:&{PointerId}";
+		}
+
+		public class IntPointer : AssignmentTarget {
+			public readonly int PointerId;
+
+			public IntPointer(int pointerId) : base(AssignmentTargetType.IntPointer) {
+				PointerId = pointerId;
+			}
+
+			public override string ToString() => $"&{PointerId}";
 		}
 	}
 
 	public enum AssignmentTargetType {
-		GlobalFlag,
 		Flag,
-		GlobalString,
 		String,
+		GlobalFlag,
+		GlobalString,
 		SpecialString,
+
 		Local,
-		Pointer
+
+		IntPointer,
+		FlagPointer,
+		StringPointer,
+		GlobalFlagPointer,
+		GlobalStringPointer,
 	}
 }

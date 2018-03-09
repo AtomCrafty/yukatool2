@@ -121,11 +121,11 @@ namespace Yuka.Util {
 			return w;
 		}
 
-		public static T Clamp<T>(this T val, T max) where T : IComparable {
+		public static T Clamp<T>(this T val, T max) where T : IComparable<T> {
 			return val.CompareTo(default(T)) < 0 ? default(T) : val.CompareTo(max) > 0 ? max : val;
 		}
 
-		public static T Clamp<T>(this T val, T min, T max) where T : IComparable {
+		public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T> {
 			return val.CompareTo(min) < 0 ? min : val.CompareTo(max) > 0 ? max : val;
 		}
 

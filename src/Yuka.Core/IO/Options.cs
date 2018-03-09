@@ -7,7 +7,6 @@ namespace Yuka.IO {
 
 		public static byte YksScriptDataXorKey = 0xAA;
 		public static bool YksEncryptScriptDataOnExport = true;
-		public static bool YksDeduplicateScriptDataOnExport = true;
 
 		public static bool CsvStrict = true;
 		public static string CsvIdColumnName = "ID";

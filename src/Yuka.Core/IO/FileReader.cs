@@ -26,6 +26,7 @@ namespace Yuka.IO {
 			new GnpBitmapReader(),
 			new PngBitmapReader(),
 			new YksScriptReader(),
+			new YkdScriptReader(),
 			new CsvStringTableReader(),
 			new YkiScriptReader(),
 			new RawFileReader()
