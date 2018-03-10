@@ -6,46 +6,124 @@ using Yuka.Script;
 
 namespace Yuka.Cli.Commands {
 	public class HelpCommand : Command {
-
 		public static readonly string AppName = Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location).ToLower();
 
-		public HelpCommand(CommandParameters parameters) : base(parameters) {
-		}
+		public HelpCommand(CommandParameters parameters) : base(parameters) { }
 
 		public override string Name => "help";
-		public override string[] Description => new[]{
-			""
+
+		public override string[] Description => new[] {
+			"Displays general information about yukatool"
 		};
 
 		public override (string syntax, string description)[] Usage => new[] {
-			("help", "Display general information about yukatool"),
-			("help <command>", "Display the help page of a specific command")
+			("", "Display general information about yukatool"),
+			("\aacommand", "Display the help page of a specific \aacommand")
+		};
+
+		public override (char shorthand, string name, string fallback, string description)[] Flags => new[] {
+			('t', "test-flag", null, "A flag to test the help page"),
+			('w', "wait", "true", "Whether to wait after displaying the help page")
 		};
 
 		public override bool Execute() {
 			DisplayVersionInformation();
+			Output.WriteLine();
 
 			if(Arguments.Length > 0) {
-				var command = Command.CreateFromName(Arguments[0], CommandParameters.Empty);
+				var command = CreateFromName(Arguments[0], CommandParameters.Empty);
 				if(command != null) {
-					var _ = command.Usage;
-
+					DisplayCommandHelp(command);
+					Console.ReadLine();
 					return true;
 				}
 			}
 
-			DisplayGeneralHelpPage();
+			DisplayBasicSyntax();
+			DisplayAvailableCommands();
+
+			Output.WriteLineColored("For more information on a specific command type \"yuka help \aacommand\a-\"");
+
+			Console.ReadLine();
 			return true;
 		}
 
 		public static void DisplayVersionInformation() {
 			var cliVersion = Assembly.GetEntryAssembly().GetName().Version;
 			var coreVersion = Assembly.GetAssembly(typeof(YukaScript)).GetName().Version;
-			Output.WriteLine($"YukaTool Cli v{cliVersion.ToString(3)} running YukaTool Core v{coreVersion.ToString(3)}", ConsoleColor.Yellow);
+			Output.WriteCaption($"YukaTool Cli v{cliVersion.ToString(3)} running YukaTool Core v{coreVersion.ToString(3)}");
 		}
 
-		public static void DisplayGeneralHelpPage() {
+		public static void DisplayBasicSyntax() {
+			Output.WriteCaption("Basic syntax");
+			Output.WriteLineColored($"  {AppName} \ac[flags] \aacommand \abarg1 arg2 ...");
+			Output.WriteLine();
+		}
 
+		public static void DisplayAvailableCommands() {
+			Output.WriteCaption("Available commands");
+
+			foreach(var command in AvailableCommands) {
+				Output.WriteLine("  " + command.Name, ConsoleColor.Green);
+
+				foreach(string desc in command.Description) {
+					Output.WriteLine("   " + desc);
+				}
+			}
+
+			Output.WriteLine();
+		}
+
+		public static void DisplayCommandHelp(Command command) {
+			Output.WriteLineColored($"Command: \aa{command.Name}");
+			Output.WriteLine();
+
+			DisplayCommandUsage(command);
+			DisplayCommandFlags(command);
+		}
+
+		public static void DisplayCommandUsage(Command command) {
+			Output.WriteCaption("Usage");
+
+			foreach(var usage in command.Usage) {
+				Output.WriteLineColored($"  yuka \aa{command.Name} \ab{usage.syntax}");
+				if(usage.description != null) {
+					Output.WriteLineColored("   " + usage.description);
+				}
+			}
+
+			Output.WriteLine();
+		}
+
+		private static void DisplayCommandFlags(Command command) {
+			var flags = command.Flags;
+			if(flags.Length == 0) return;
+
+			Output.WriteCaption("Flags");
+
+			foreach(var (shorthand, name, fallback, description) in flags) {
+
+				// write flag
+				string info = "  \ac";
+				if(shorthand != ' ') {
+					info += "-" + shorthand;
+				}
+				if(name != null) {
+					if(shorthand != ' ') info += "\a-, \ac";
+					info += "--" + name;
+				}
+				if(fallback != null) {
+					info += $" \a-(defaults to \ab{fallback}\a-)";
+				}
+				Output.WriteLineColored(info);
+
+				// write description
+				if(description != null) {
+					Output.WriteLineColored("   " + description);
+				}
+			}
+
+			Output.WriteLine();
 		}
 	}
 }

@@ -13,6 +13,7 @@ namespace Yuka.Cli {
 		public abstract string[] Description { get; }
 
 		public abstract (string syntax, string description)[] Usage { get; }
+		public abstract (char shorthand, string name, string fallback, string description)[] Flags { get; }
 
 		protected Command(CommandParameters parameters) {
 			Parameters = parameters;
@@ -26,6 +27,8 @@ namespace Yuka.Cli {
 		private static readonly Dictionary<string, Func<CommandParameters, Command>> CommandFactories = new Dictionary<string, Func<CommandParameters, Command>> {
 			{"help", cl => new HelpCommand(cl) }
 		};
+
+		public static Command[] AvailableCommands => CommandFactories.Values.Select(factory => factory(CommandParameters.Empty)).ToArray();
 
 		public static Command CreateFromName(string name, CommandParameters parameters) {
 			return CommandFactories.TryGet(name, param => null)(parameters);

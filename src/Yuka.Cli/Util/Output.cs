@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Yuka.Cli.Util {
@@ -47,7 +50,49 @@ namespace Yuka.Cli.Util {
 		public static void WriteLine(string text)
 			=> Write(text + Environment.NewLine, DefaultForegroundColor);
 
+		public static void WriteLine()
+			=> Write(Environment.NewLine);
+
 		#endregion
+
+		public static void WriteCaption(string text)
+			=> WriteLine(text, ConsoleColor.Yellow);
+
+		public static void WriteColored(string text) {
+			var foregroundColor = DefaultForegroundColor;
+			var backgroundColor = DefaultBackgroundColor;
+			var sb = new StringBuilder(text.Length);
+
+			for(int i = 0; i < text.Length; i++) {
+				char ch = text[i];
+				switch(ch) {
+
+					case '\a' when i < text.Length - 2:
+						if(sb.Length > 0) {
+							Write(sb.ToString(), foregroundColor, backgroundColor);
+							sb.Clear();
+						}
+						foregroundColor = text[++i] == '-' ? DefaultForegroundColor : (ConsoleColor)int.Parse(text[i].ToString(), NumberStyles.HexNumber);
+						break;
+
+					case '\b' when i < text.Length - 2:
+						if(sb.Length > 0) {
+							Write(sb.ToString(), foregroundColor, backgroundColor);
+							sb.Clear();
+						}
+						backgroundColor = text[++i] == '-' ? DefaultBackgroundColor : (ConsoleColor)int.Parse(text[i].ToString(), NumberStyles.HexNumber);
+						break;
+
+					default:
+						sb.Append(ch);
+						break;
+				}
+			}
+			if(sb.Length > 0) Write(sb.ToString(), foregroundColor, backgroundColor);
+		}
+
+		public static void WriteLineColored(string text)
+			=> WriteColored(text + Environment.NewLine);
 
 		#endregion
 	}
