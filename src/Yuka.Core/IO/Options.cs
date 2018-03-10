@@ -1,5 +1,4 @@
-﻿
-namespace Yuka.IO {
+﻿namespace Yuka.IO {
 	public static class Options {
 
 		public static bool YkgConvertFrmToAniOnExport = true;

@@ -13,6 +13,10 @@ namespace Yuka.Util {
 			return options.Contains(value);
 		}
 
+		public static TValue TryGet<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue fallback = default(TValue)) {
+			return dict.ContainsKey(key) ? dict[key] : fallback;
+		}
+
 		public static bool Matches(this byte[] a, byte[] b) {
 			if(a == b) return true;
 			if(a == null || b == null) return false;

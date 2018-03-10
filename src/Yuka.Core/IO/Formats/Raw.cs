@@ -30,6 +30,13 @@ namespace Yuka.IO.Formats {
 			return obj is byte[];
 		}
 
+		// overwrite default behavior so the file extension isn't deleted
+		public override void Write(byte[] bytes, string baseName, FileSystem fs) {
+			using(var stream = fs.CreateFile(baseName)) {
+				Write(bytes, stream);
+			}
+		}
+
 		public override void Write(byte[] bytes, Stream s) {
 			s.WriteBytes(bytes);
 		}

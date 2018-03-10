@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
+using Yuka.Cli.Commands;
 using Yuka.Container;
 using Yuka.Graphics;
 using Yuka.IO;
@@ -15,14 +16,36 @@ using Yuka.Script.Source;
 using Yuka.Util;
 
 namespace Yuka.Cli {
+
+#if true
+
 	public class Program {
+		public static void Main(string[] args) {
+			var commandLine = CommandParameters.ParseArguments(args);
+			string commandName = GetCommandName(commandLine);
+			var command = Command.CreateFromName(commandName, commandLine);
+
+			if(command != null) {
+				command.Execute();
+			}
+			else {
+				new HelpCommand(CommandParameters.Empty).Execute();
+			}
+		}
+
+		public static string GetCommandName(CommandParameters parameters) {
+			return parameters.Arguments.Count > 0 ? parameters.Arguments[0] : "help";
+		}
+	}
+
+#else
+
+	public static class Tests {
+
 		public static void Main() {
 			Tests.DecompileGame();
 			Tests.CompileGame();
 		}
-	}
-
-	public static class Tests {
 
 		public static void CompileGame() {
 			using(FileSystem srcFs = FileSystem.FromFolder(@"C:\Temp\CopyTest\decompiled"), dstFs = FileSystem.NewFolder(@"C:\Temp\CopyTest\compiled")) {
@@ -437,4 +460,6 @@ namespace Yuka.Cli {
 			Console.ReadKey();
 		}
 	}
+
+#endif
 }
