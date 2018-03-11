@@ -22,11 +22,13 @@ namespace Yuka.Cli.Commands {
 		};
 
 		public override (char shorthand, string name, string fallback, string description)[] Flags => new[] {
-			('t', "test-flag", null, "A flag to test the help page"),
+			('q', "quiet", "false", "Disable user-friendly output"),
 			('w', "wait", "true", "Whether to wait after displaying the help page")
 		};
 
 		public override bool Execute() {
+			if(Parameters.GetBool("quiet", 'q', false)) return true;
+
 			DisplayVersionInformation();
 			Output.WriteLine();
 
@@ -34,7 +36,7 @@ namespace Yuka.Cli.Commands {
 				var command = CreateFromName(Arguments[0], CommandParameters.Empty);
 				if(command != null) {
 					DisplayCommandHelp(command);
-					Console.ReadLine();
+					Wait(true);
 					return true;
 				}
 			}
@@ -44,7 +46,7 @@ namespace Yuka.Cli.Commands {
 
 			Output.WriteLineColored("For more information on a specific command type \"yuka help \aacommand\a-\"");
 
-			Console.ReadLine();
+			Wait(true);
 			return true;
 		}
 
@@ -76,6 +78,9 @@ namespace Yuka.Cli.Commands {
 
 		public static void DisplayCommandHelp(Command command) {
 			Output.WriteLineColored($"Command: \aa{command.Name}");
+			foreach(string desc in command.Description) {
+				Output.WriteLineColored("  " + desc);
+			}
 			Output.WriteLine();
 
 			DisplayCommandUsage(command);

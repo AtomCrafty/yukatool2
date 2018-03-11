@@ -29,17 +29,42 @@ namespace Yuka.IO {
 			new YkiScriptWriter(),
 			new YksScriptWriter(),
 			new CsvStringTableWriter(),
-			new YkdScriptWriter()
+			new YkdScriptWriter(),
+			new RawFileWriter()
 		};
 
+		/// <summary>
+		/// Returns all registered <code>FileWriter</code>s that can write the object and satisfy the filter.
+		/// </summary>
+		/// <param name="obj">Object for the <code>FileReader.CanRead</code> check</param>
+		/// <param name="filter">A filter to select only some writers</param>
+		/// <returns>All registered <code>FileWriter</code>s that can write the object and satisfy the filter</returns>
 		public static IEnumerable<FileWriter> FindWriters(object obj, Predicate<FileWriter> filter = null) {
 			return Writers.Where(reader => (filter?.Invoke(reader) ?? true) && reader.CanWrite(obj));
 		}
 
-		public static List<FileWriter<T>> FindWriters<T>(object obj, FormatPreference pref) where T : class {
-			var writers = FindWriters(obj, fw => fw is FileWriter<T> && (pref ?? FormatPreference.Default).Allows(fw)).Cast<FileWriter<T>>().ToList();
+		/// <summary>
+		/// Returns all registered <code>FileWriter</code>s that can write the object and satisfy both the filter and format preference.
+		/// Writers are sorted by descending relevance as determined by the <code>FormatPreference</code>.
+		/// </summary>
+		/// <param name="obj">Object for the <code>FileReader.CanRead</code> check</param>
+		/// <param name="pref">A format preference used to filter and rank writers</param>
+		/// <param name="filter">A filter to select only some writers</param>
+		/// <returns>All registered <code>FileWriter</code>s that can write the object and satisfy both the filter and format preference</returns>
+		public static List<FileWriter> FindWriters(object obj, FormatPreference pref, Predicate<FileWriter> filter = null) {
+			var writers = FindWriters(obj, fw => (filter?.Invoke(fw) ?? true) && (pref ?? FormatPreference.Default).Allows(fw)).ToList();
 			writers.Sort(pref ?? FormatPreference.Default);
 			return writers;
+		}
+
+		/// <summary>
+		/// Returns all registered <code>FileWriter&lt;T&gt;</code>s with that can write the object and satisfy the format preference.
+		/// </summary>
+		/// <param name="obj">Object for the <code>FileReader.CanRead</code> check</param>
+		/// <param name="pref">A format preference used to filter and rank writers</param>
+		/// <returns>All registered <code>FileWriter</code>s that can write the object and satisfy the format preference</returns>
+		public static IEnumerable<FileWriter<T>> FindWriters<T>(object obj, FormatPreference pref) where T : class {
+			return FindWriters(obj, pref, fw => fw is FileWriter<T>).Cast<FileWriter<T>>();
 		}
 
 		public static void Encode<T>(T obj, Stream s, FormatPreference pref) where T : class {
@@ -58,6 +83,21 @@ namespace Yuka.IO {
 			writers.First().Write(obj, baseName, fs);
 		}
 
+		public static void EncodeObject(object obj, Stream s, FormatPreference pref) {
+			pref = pref ?? FormatPreference.Default;
+			var writers = FindWriters(obj, pref);
+			if(!writers.Any()) throw new InvalidOperationException("No writer found for object");
+
+			writers.First().WriteObject(obj, s);
+		}
+
+		public static void EncodeObject(object obj, string baseName, FileSystem fs, FormatPreference pref) {
+			pref = pref ?? FormatPreference.Default;
+			var writers = FindWriters(obj, pref);
+			if(!writers.Any()) throw new InvalidOperationException("No writer found for object");
+
+			writers.First().WriteObject(obj, baseName, fs);
+		}
 		#endregion
 	}
 

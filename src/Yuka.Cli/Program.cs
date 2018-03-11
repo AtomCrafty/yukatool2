@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using Yuka.Cli.Commands;
+using Yuka.Cli.Util;
 using Yuka.Container;
 using Yuka.Graphics;
 using Yuka.IO;
@@ -31,6 +32,8 @@ namespace Yuka.Cli {
 			else {
 				new HelpCommand(CommandParameters.Empty).Execute();
 			}
+
+			Output.Flush();
 		}
 
 		public static string GetCommandName(CommandParameters parameters) {

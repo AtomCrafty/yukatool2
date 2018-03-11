@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Yuka.Cli.Util {
@@ -19,9 +20,16 @@ namespace Yuka.Cli.Util {
 					Console.ForegroundColor = foregroundColor;
 					Console.BackgroundColor = backgroundColor;
 					Console.Write(text);
+					Console.ResetColor();
 				}
 				// ReSharper disable once FunctionNeverReturns
 			});
+		}
+
+		public static void Flush() {
+			while(WriteBuffer.Count > 0) {
+				Thread.Sleep(10);
+			}
 		}
 
 		#region Text output methods

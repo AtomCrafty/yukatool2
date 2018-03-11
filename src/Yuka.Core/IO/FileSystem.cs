@@ -44,7 +44,7 @@ namespace Yuka.IO {
 		}
 
 		public static string NormalizePath(string path) {
-			return Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), path).TrimEnd('/'));
+			return Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), path).TrimEnd('/', '\\'));
 		}
 
 		#endregion

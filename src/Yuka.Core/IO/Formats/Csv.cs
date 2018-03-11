@@ -278,7 +278,7 @@ namespace Yuka.IO.Formats {
 		}
 
 		public void WriteField(string content, TextWriter writer) {
-			if(content.Contains('"') || content.Contains(',')) {
+			if(content.Contains(',') || content.Contains('"') || content.Contains('\n') || content.Contains('r')) {
 				writer.Write('"' + content.Replace(@"""", @"""""") + '"');
 			}
 			else {

@@ -32,10 +32,23 @@ namespace Yuka.IO {
 			new RawFileReader()
 		};
 
-		public static IEnumerable<FileReader> FindReaders(string name, BinaryReader r, Predicate<FileReader> predicate = null) {
-			return Readers.Where(reader => (predicate?.Invoke(reader) ?? true) && reader.CanRead(name, r));
+		/// <summary>
+		/// Returns all registered <code>FileReader</code>s that can read the file and satisfy the filter.
+		/// </summary>
+		/// <param name="name">Name for the <code>FileReader.CanRead</code> check</param>
+		/// <param name="r"><code>BinaryReader</code> for the <code>FileReader.CanRead</code> check</param>
+		/// <param name="filter">A filter to select only some writers</param>
+		/// <returns>All registered <code>FileReader</code>s that can read the file and satisfy the filter</returns>
+		public static IEnumerable<FileReader> FindReaders(string name, BinaryReader r, Predicate<FileReader> filter = null) {
+			return Readers.Where(reader => (filter?.Invoke(reader) ?? true) && reader.CanRead(name, r));
 		}
 
+		/// <summary>
+		/// Returns all registered <code>FileReader</code>s that can read the file and satisfy the filter.
+		/// </summary>
+		/// <param name="name">Name for the <code>FileReader.CanRead</code> check</param>
+		/// <param name="s"><code>Stream</code> for the <code>FileReader.CanRead</code> check</param>
+		/// <returns>All registered <code>FileReader</code>s that can read the file and satisfy the filter</returns>
 		public static List<FileReader<T>> FindReaders<T>(string name, Stream s) where T : class {
 			return FindReaders(name, s.NewReader(), reader => reader is FileReader<T>).Cast<FileReader<T>>().ToList();
 		}
@@ -45,31 +58,44 @@ namespace Yuka.IO {
 			using(var s = fs.OpenFile(name)) {
 				readers = FindReaders<T>(name, s);
 			}
+			if(!readers.Any()) throw new InvalidOperationException("No reader found for type " + typeof(T));
 
-			if(readers.Any()) {
-				return readers.First().Read(name, fs);
-			}
-
-			// TODO Warning
-			Console.WriteLine("No suitable reader found for type " + typeof(T).Name);
-			return null;
+			return readers.First().Read(name, fs);
 		}
 
 		public static T Decode<T>(string name, Stream s) where T : class {
 			var readers = FindReaders<T>(name, s);
+			if(!readers.Any()) throw new InvalidOperationException("No reader found for type " + typeof(T));
 
-			if(readers.Any()) {
-				return readers.First().Read(name, s);
-			}
-
-			// TODO Warning
-			Console.WriteLine("No suitable reader found for type " + typeof(T).Name);
-			return null;
+			return readers.First().Read(name, s);
 		}
 
 		public static T Decode<T>(string name, byte[] data) where T : class {
 			using(var ms = new MemoryStream(data)) {
 				return Decode<T>(name, ms);
+			}
+		}
+
+		public static object DecodeObject(string name, FileSystem fs) {
+			List<FileReader> readers;
+			using(var s = fs.OpenFile(name)) {
+				readers = FindReaders(name, s.NewReader()).ToList();
+			}
+			if(!readers.Any()) throw new InvalidOperationException("No reader found for object");
+
+			return readers.First().ReadObject(name, fs);
+		}
+
+		public static object DecodeObject(string name, Stream s) {
+			var readers = FindReaders(name, s.NewReader()).ToList();
+			if(!readers.Any()) throw new InvalidOperationException("No reader found for object");
+
+			return readers.First().ReadObject(name, s);
+		}
+
+		public static object DecodeObject(string name, byte[] data) {
+			using(var ms = new MemoryStream(data)) {
+				return DecodeObject(name, ms);
 			}
 		}
 

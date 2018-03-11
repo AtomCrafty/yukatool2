@@ -52,16 +52,16 @@ namespace Yuka.Cli {
 			return bool.TryParse(Flags[key], out bool value) ? value : fallback;
 		}
 
-		public bool GetBoolFlag(string name, bool fallback) {
+		public bool GetBool(string name, bool fallback) {
 			return GetBoolFlagByKey("--" + name, fallback);
 		}
 
-		public bool GetBoolFlag(char shorthand, bool fallback) {
+		public bool GetBool(char shorthand, bool fallback) {
 			return GetBoolFlagByKey("-" + shorthand, fallback);
 		}
 
-		public bool GetBoolFlag(string name, char shorthand, bool fallback) {
-			return GetBoolFlag(name, GetBoolFlag(shorthand, fallback));
+		public bool GetBool(string name, char shorthand, bool fallback) {
+			return GetBool(name, GetBool(shorthand, fallback));
 		}
 
 		#endregion
@@ -74,16 +74,16 @@ namespace Yuka.Cli {
 			return int.TryParse(Flags[key], out int value) ? value : fallback;
 		}
 
-		public int GetIntFlag(string name, int fallback) {
+		public int GetInt(string name, int fallback) {
 			return GetIntFlagByKey("--" + name, fallback);
 		}
 
-		public int GetIntFlag(char shorthand, int fallback) {
+		public int GetInt(char shorthand, int fallback) {
 			return GetIntFlagByKey("-" + shorthand, fallback);
 		}
 
-		public int GetIntFlag(string name, char shorthand, int fallback) {
-			return GetIntFlag(name, GetIntFlag(shorthand, fallback));
+		public int GetInt(string name, char shorthand, int fallback) {
+			return GetInt(name, GetInt(shorthand, fallback));
 		}
 
 		#endregion
@@ -94,16 +94,16 @@ namespace Yuka.Cli {
 			return Flags.ContainsKey(key) ? Flags[key] : fallback;
 		}
 
-		public string GetStringFlag(string name, string fallback) {
+		public string GetString(string name, string fallback) {
 			return GetStringFlagByKey("--" + name, fallback);
 		}
 
-		public string GetStringFlag(char shorthand, string fallback) {
+		public string GetString(char shorthand, string fallback) {
 			return GetStringFlagByKey("-" + shorthand, fallback);
 		}
 
-		public string GetStringFlag(string name, char shorthand, string fallback) {
-			return GetStringFlag(name, GetStringFlag(shorthand, fallback));
+		public string GetString(string name, char shorthand, string fallback) {
+			return GetString(name, GetString(shorthand, fallback));
 		}
 
 		#endregion
