@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>copy "D:\Projects\GitHub\yukatool2\src\Yuka.Cli\bin\Debug\data01" "D:\Projects\GitHub\yukatool2\src\Yuka.Cli\bin\Debug\data01-" -f=packed -v</StartArguments>
+    <StartArguments>unpack -v "D:\Projects\GitHub\yukatool2\src\Yuka.Cli\bin\Debug\data02.ykc"</StartArguments>
   </PropertyGroup>
 </Project>

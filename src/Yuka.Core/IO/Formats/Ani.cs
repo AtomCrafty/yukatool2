@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text;
 using Newtonsoft.Json;
 using Yuka.Graphics;
 using Yuka.Util;
@@ -10,7 +11,7 @@ namespace Yuka.IO.Formats {
 		public override string Description => "Human-readable frame animation data";
 		public override FormatType Type => FormatType.Unpacked;
 
-		public override FileCategory GetFileType(FileSystem fs, string fileName) {
+		public override FileCategory GetFileCategory(FileSystem fs, string fileName) {
 			// when a png or bmp with the same name exists, this ani belongs to it
 			return fs.FileExists(fileName.WithExtension(Png.Extension))
 				 || fs.FileExists(fileName.WithExtension(Bmp.Extension)) ? FileCategory.Secondary : FileCategory.Primary;
@@ -44,7 +45,12 @@ namespace Yuka.IO.Formats {
 
 		public override void Write(Animation ani, Stream s) {
 			ani.EnsureDecoded();
-			_serializer.Serialize(new JsonTextWriter(new StreamWriter(s)), ani);
+			using(var streamWriter = new StreamWriter(s, Encoding.UTF8, 1024, true)) {
+				using(var jsonTextWriter = new JsonTextWriter(streamWriter)) {
+					_serializer.Serialize(jsonTextWriter, ani);
+					//jsonTextWriter.Flush();
+				}
+			}
 		}
 	}
 }

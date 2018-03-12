@@ -12,7 +12,7 @@ namespace Yuka.IO {
 		public abstract string Description { get; }
 		public abstract FormatType Type { get; }
 
-		public virtual FileCategory GetFileType(FileSystem fs, string fileName) => FileCategory.Primary;
+		public virtual FileCategory GetFileCategory(FileSystem fs, string fileName) => FileCategory.Primary;
 		public virtual IEnumerable<string> GetSecondaryFiles(FileSystem fs, string fileName) => Array.Empty<string>();
 
 		#region Format instances
@@ -101,7 +101,7 @@ namespace Yuka.IO {
 		public static FormatPreference Packed => new FormatPreference { AllowedFormats = null, PreferredFormat = null, PreferredType = FormatType.Packed };
 		public static FormatPreference Unpacked => new FormatPreference { AllowedFormats = null, PreferredFormat = null, PreferredType = FormatType.Unpacked };
 		public static FormatPreference DefaultGraphics => new FormatPreference { AllowedFormats = Format.GraphicsFormats, PreferredFormat = Format.Png };
-		public static FormatPreference DefaultAnimation => new FormatPreference { AllowedFormats = Format.AnimationFormats, PreferredFormat = Format.Frm };
+		public static FormatPreference DefaultAnimation => new FormatPreference { AllowedFormats = Format.AnimationFormats, PreferredFormat = Format.Ani };
 	}
 
 	public enum FormatType {

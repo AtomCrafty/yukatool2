@@ -19,6 +19,9 @@ namespace Yuka.Cli {
 		protected Command(CommandParameters parameters) {
 			Parameters = parameters;
 			Arguments = parameters.Arguments.Skip(1).ToArray();
+
+			// TODO parse config flags (--config-<key>="value")
+			// TODO individual FormatPreferences for different file types (eg. preserve png format in "pack" command)
 		}
 
 		public abstract bool Execute();

@@ -10,7 +10,7 @@ namespace Yuka.IO.Formats {
 		public readonly int FrameSize = 0x20;
 		public override FormatType Type => FormatType.Packed;
 
-		public override FileCategory GetFileType(FileSystem fs, string fileName) {
+		public override FileCategory GetFileCategory(FileSystem fs, string fileName) {
 			// when a png or bmp with the same name exists, this ani belongs to it
 			return fs.FileExists(fileName.WithExtension(Png.Extension))
 				   || fs.FileExists(fileName.WithExtension(Bmp.Extension)) ? FileCategory.Secondary : FileCategory.Primary;

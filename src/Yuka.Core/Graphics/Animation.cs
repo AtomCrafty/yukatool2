@@ -13,13 +13,15 @@ namespace Yuka.Graphics {
 	public class Animation {
 
 		// only one may be non-null at a time
-		[NonSerialized]
+		[JsonIgnore]
 		public byte[] FrameData;
 		public List<Frame> Frames;
 
+		[JsonIgnore]
 		public bool IsDecoded {
 			get {
 				Debug.Assert(Frames == null | FrameData == null);
+				Debug.Assert(Frames != null | FrameData != null);
 				return Frames != null;
 			}
 		}

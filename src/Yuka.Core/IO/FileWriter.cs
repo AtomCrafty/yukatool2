@@ -110,6 +110,7 @@ namespace Yuka.IO {
 		public virtual void Write(T obj, string baseName, FileSystem fs) {
 			using(var s = fs.CreateFile(baseName.WithExtension(Format.Extension))) {
 				Write(obj, s);
+				s.Flush();
 			}
 		}
 	}

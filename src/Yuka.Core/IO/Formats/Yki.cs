@@ -12,7 +12,7 @@ namespace Yuka.IO.Formats {
 		public override string Description => "Intermediate Yuka script instruction list";
 		public override FormatType Type => FormatType.None;
 
-		public override FileCategory GetFileType(FileSystem fs, string fileName) {
+		public override FileCategory GetFileCategory(FileSystem fs, string fileName) {
 			// if both a ykd and yki file exist, the ykd should take precedence
 			return fs.FileExists(fileName.WithExtension(Ykd.Extension)) ? FileCategory.Secondary : FileCategory.Primary;
 		}

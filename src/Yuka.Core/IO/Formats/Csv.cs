@@ -15,7 +15,7 @@ namespace Yuka.IO.Formats {
 		public override string Description => "String table for a decompiled Yuka script";
 		public override FormatType Type => FormatType.Unpacked;
 
-		public override FileCategory GetFileType(FileSystem fs, string fileName) {
+		public override FileCategory GetFileCategory(FileSystem fs, string fileName) {
 			if(fs.FileExists(fileName.WithExtension(Ykd.Extension))) {
 				// this csv file contains the string table for a decompiled script
 				return FileCategory.Secondary;
