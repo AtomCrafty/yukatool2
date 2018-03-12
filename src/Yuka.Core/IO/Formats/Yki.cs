@@ -2,6 +2,7 @@
 using System.IO;
 using Yuka.Script;
 using Yuka.Script.Binary;
+using Yuka.Util;
 using static Yuka.IO.Format;
 
 namespace Yuka.IO.Formats {
@@ -10,6 +11,11 @@ namespace Yuka.IO.Formats {
 		public override string Extension => ".yki";
 		public override string Description => "Intermediate Yuka script instruction list";
 		public override FormatType Type => FormatType.None;
+
+		public override FileCategory GetFileType(FileSystem fs, string fileName) {
+			// if both a ykd and yki file exist, the ykd should take precedence
+			return fs.FileExists(fileName.WithExtension(Ykd.Extension)) ? FileCategory.Secondary : FileCategory.Primary;
+		}
 	}
 
 	public class YkiScriptReader : FileReader<YukaScript> {

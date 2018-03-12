@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Yuka.IO.Formats;
@@ -10,6 +11,9 @@ namespace Yuka.IO {
 		public abstract string Extension { get; }
 		public abstract string Description { get; }
 		public abstract FormatType Type { get; }
+
+		public virtual FileCategory GetFileType(FileSystem fs, string fileName) => FileCategory.Primary;
+		public virtual IEnumerable<string> GetSecondaryFiles(FileSystem fs, string fileName) => Array.Empty<string>();
 
 		#region Format instances
 
@@ -34,6 +38,12 @@ namespace Yuka.IO {
 		public static Format[] GraphicsFormats = { Png, Bmp, Gnp, Ykg };
 		public static Format[] AnimationFormats = { Ani, Frm };
 
+		public static Format ForFile(FileSystem fs, string fileName) {
+			using(var s = fs.OpenFile(fileName)) {
+				var readers = FileReader.FindReaders(fileName, s.NewReader());
+				return readers.FirstOrDefault()?.Format;
+			}
+		}
 	}
 
 	public class FormatPreference : IComparer<FileWriter>, IComparer<Format> {
@@ -96,5 +106,9 @@ namespace Yuka.IO {
 
 	public enum FormatType {
 		None, Packed, Unpacked
+	}
+
+	public enum FileCategory {
+		Primary, Secondary, Ignore
 	}
 }

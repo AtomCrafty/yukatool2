@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Yuka.Script;
@@ -13,6 +14,18 @@ namespace Yuka.IO.Formats {
 		public override string Extension => ".ykd";
 		public override string Description => "Decompiled Yuka script";
 		public override FormatType Type => FormatType.Unpacked;
+
+		public override IEnumerable<string> GetSecondaryFiles(FileSystem fs, string fileName) {
+			string ykiFileName = fileName.WithExtension(Yki.Extension);
+			string csvFileName = fileName.WithExtension(Csv.Extension);
+
+			// if both a ykd and yki file exist, the ykd should take precedence
+
+			var list = new List<string>();
+			if(fs.FileExists(csvFileName)) list.Add(csvFileName);
+			if(fs.FileExists(ykiFileName)) list.Add(ykiFileName);
+			return list;
+		}
 	}
 
 	public class YkdScriptReader : FileReader<YukaScript> {

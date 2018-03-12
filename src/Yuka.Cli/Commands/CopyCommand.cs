@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Yuka.Cli.Util;
 using Yuka.IO;
 using Yuka.Util;
 
@@ -27,20 +28,22 @@ namespace Yuka.Cli.Commands {
 		};
 
 		public override (char shorthand, string name, string fallback, string description)[] Flags => new[] {
-			('s', "source", "false", "Source archive"),
-			('d', "destination", "false", "Destination folder"),
+			('s', "source", null, "Source location"),
+			('d', "destination", null, "Destination location"),
 			('f', "format", "keep", "The preferred output format (valid values: \abkeep\a-, \abpacked\a-, \abunpacked\a-)"),
-			('m', "move", "false", "Delete each file after successfully copying it"),
-			('o', "overwrite", "false", "Delete existing destination archive/folder"),
-			('q', "quiet", "false", "Disable user-friendly output"),
-			('v', "verbose", "false", "Whether to enable detailed output"),
-			('w', "wait", "false", "Whether to wait after the command finished")
+			('r', "raw", null, "Short form of \ac--format=keep\a-, overwrites the format flag if set"),
+			('m', "move", null, "Delete each file after successfully copying it"),
+			('o', "overwrite", null, "Delete existing destination archive/folder"),
+			('q', "quiet", null, "Disable user-friendly output"),
+			('v', "verbose", null, "Whether to enable detailed output"),
+			('w', "wait", null, "Whether to wait after the command finished")
 		};
 
 		public override bool Execute() {
 			string sourcePath, destinationPath;
 			string[] filters = { "*.*" };
 			int fileCount = 0;
+			bool verbose = Parameters.GetBool("verbose", 'v', false);
 
 			switch(Arguments.Length) {
 				case 0:
@@ -76,14 +79,13 @@ namespace Yuka.Cli.Commands {
 					string format = Parameters.GetString("format", 'f', "keep").ToLower();
 					if(!format.IsOneOf("keep", "packed", "unpacked")) throw new ArgumentOutOfRangeException(nameof(format), format, "Format must be one of the following: keep, packed, unpacked");
 					var formatPreference = new FormatPreference(null, format == "packed" ? FormatType.Packed : format == "unpacked" ? FormatType.Unpacked : FormatType.None);
-					bool rawCopy = format == "keep";
+					bool rawCopy = format == "keep" || Parameters.GetBool("raw", 'r', false);
 					bool deleteAfterCopy = Parameters.GetBool("move", 'm', false);
 
 					// main loop
 					foreach(string file in files.Distinct()) {
-						// TODO verbose logging
-
 						if(rawCopy) {
+							if(verbose) Output.WriteLine($"Copying {file}", ConsoleColor.Green);
 							using(var sourceStream = sourceFs.OpenFile(file)) {
 								using(var destinationStream = destinationFs.CreateFile(file)) {
 									sourceStream.CopyTo(destinationStream);
@@ -92,14 +94,24 @@ namespace Yuka.Cli.Commands {
 							}
 						}
 						else {
-							// TODO skip auxiliary files (csv, frm, ani, etc...)
+							// skip auxiliary files (csv, frm, ani, etc...)
+							var fileFormat = Format.ForFile(sourceFs, file);
+							if(fileFormat.GetFileType(sourceFs, file) != FileCategory.Primary) {
+								if(verbose) Output.WriteLine($"Skipping {file}", ConsoleColor.Yellow);
+								continue;
+							}
 
 							var obj = FileReader.DecodeObject(file, sourceFs);
+							if(verbose) Output.WriteLine($"Decoded {file} to {obj.GetType().Name}", ConsoleColor.Green);
 							FileWriter.EncodeObject(obj, file, destinationFs, formatPreference);
 
 							if(deleteAfterCopy) {
-								// TODO delete auxiliary files (csv, frm, ani, etc...)
-
+								// delete auxiliary files (csv, frm, ani, etc...)
+								foreach(string secondaryFile in fileFormat.GetSecondaryFiles(sourceFs, file)) {
+									if(verbose) Output.WriteLine($"Deleting {secondaryFile}", ConsoleColor.Red);
+									sourceFs.DeleteFile(secondaryFile);
+								}
+								if(verbose) Output.WriteLine($"Deleting {file}", ConsoleColor.Red);
 								sourceFs.DeleteFile(file);
 							}
 
@@ -113,6 +125,8 @@ namespace Yuka.Cli.Commands {
 			Wait(false);
 			return true;
 		}
+
+		// TODO move these to somewhere else
 
 		public static FileSystem OpenFileSystem(string path) {
 			if(Directory.Exists(path)) {

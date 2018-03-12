@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Yuka.Script.Data;
+using Yuka.Util;
 using static Yuka.IO.Format;
 
 namespace Yuka.IO.Formats {
@@ -13,6 +14,15 @@ namespace Yuka.IO.Formats {
 		public override string Extension => ".csv";
 		public override string Description => "String table for a decompiled Yuka script";
 		public override FormatType Type => FormatType.Unpacked;
+
+		public override FileCategory GetFileType(FileSystem fs, string fileName) {
+			if(fs.FileExists(fileName.WithExtension(Ykd.Extension))) {
+				// this csv file contains the string table for a decompiled script
+				return FileCategory.Secondary;
+			}
+			// it is a standalone csv file
+			return FileCategory.Primary;
+		}
 	}
 
 	public class CsvStringTableReader : FileReader<StringTable> {

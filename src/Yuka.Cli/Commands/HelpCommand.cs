@@ -69,7 +69,7 @@ namespace Yuka.Cli.Commands {
 				Output.WriteLine("  " + command.Name, ConsoleColor.Green);
 
 				foreach(string desc in command.Description) {
-					Output.WriteLine("   " + desc);
+					Output.WriteLineColored("   " + desc);
 				}
 			}
 

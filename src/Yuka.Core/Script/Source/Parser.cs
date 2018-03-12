@@ -36,7 +36,7 @@ namespace Yuka.Script.Source {
 
 			return new YukaScript(FileName, new BlockStmt {
 				Statements = statements
-			});
+			}) { Strings = StringTable };
 		}
 
 		public void ParseDirectives() {
