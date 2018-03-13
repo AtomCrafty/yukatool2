@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,23 +12,24 @@ namespace Yuka.Cli.Util {
 		private static readonly ConsoleColor DefaultForegroundColor = Console.ForegroundColor;
 		private static readonly ConsoleColor DefaultBackgroundColor = Console.BackgroundColor;
 
+		private static readonly AutoResetEvent QueueEmpty = new AutoResetEvent(false);
+
 		static Output() {
 			Task.Run(() => {
-				while(true) {
-					var (text, foregroundColor, backgroundColor) = WriteBuffer.Take();
+				foreach(var (text, foregroundColor, backgroundColor) in WriteBuffer.GetConsumingEnumerable()) {
+
 					Console.ForegroundColor = foregroundColor;
 					Console.BackgroundColor = backgroundColor;
-					Console.Write(text);
+					Console.Out.Write(text);
 					Console.ResetColor();
 				}
-				// ReSharper disable once FunctionNeverReturns
+				QueueEmpty.Set();
 			});
 		}
 
 		public static void Flush() {
-			while(WriteBuffer.Count > 0) {
-				Thread.Sleep(10);
-			}
+			WriteBuffer.CompleteAdding();
+			QueueEmpty.WaitOne();
 		}
 
 		#region Text output methods

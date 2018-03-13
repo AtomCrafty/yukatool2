@@ -39,30 +39,36 @@ namespace Yuka.Cli.Commands {
 		};
 
 		public override bool Execute() {
-			var (sourcePath, destinationPath, filters) = GetPaths();
-			var (formatPreference, rawCopy, deleteAfterCopy) = GetCopyModes();
+			try {
+				var (sourcePath, destinationPath, filters) = GetPaths();
+				var (formatPreference, rawCopy, deleteAfterCopy, overwriteExisting) = GetCopyModes();
 
-			int fileCount;
-			using(var sourceFs = OpenFileSystem(sourcePath)) {
-				bool overwriteExisting = Parameters.GetBool("overwrite", 'o', false);
-				using(var destinationFs = OpenOrCreateFileSystem(destinationPath, sourceFs is SingleFileSystem, overwriteExisting)) {
+				CheckPaths(sourcePath, destinationPath);
 
-					// collect files
-					var files = new List<string>();
-					foreach(string filter in filters) {
-						files.AddRange(sourceFs.GetFiles(filter));
+				int fileCount;
+				using(var sourceFs = FileSystem.OpenExisting(sourcePath)) {
+					using(var destinationFs = FileSystem.OpenOrCreate(destinationPath, sourceFs is SingleFileSystem, overwriteExisting)) {
+
+						// collect files
+						var files = new List<string>();
+						foreach(string filter in filters) {
+							files.AddRange(sourceFs.GetFiles(filter));
+						}
+
+						// call copy loop
+						fileCount = CopyFiles(sourceFs, destinationFs, files.Distinct(), formatPreference, rawCopy, deleteAfterCopy);
 					}
-
-					// Call copy loop
-					fileCount = CopyFiles(sourceFs, destinationFs, files.Distinct(), formatPreference, rawCopy, deleteAfterCopy);
 				}
+
+				Success($"Successfully copied {fileCount} files");
+			}
+			catch(Exception e) {
+				Error(e.Message);
 			}
 
-			Success($"Successfully copied {fileCount} files");
 			Wait(false);
 			return true;
 		}
-
 
 		protected virtual (string sourcePath, string destinationPath, string[] filters) GetPaths() {
 			string sourcePath, destinationPath;
@@ -71,11 +77,11 @@ namespace Yuka.Cli.Commands {
 			switch(Arguments.Length) {
 				case 0:
 					sourcePath = Parameters.GetString("source", 's', null);
-					destinationPath = Parameters.GetString("destination", 'd', sourcePath.WithoutExtension());
+					destinationPath = Parameters.GetString("destination", 'd', null) ?? DeriveDestinationPath(sourcePath);
 					break;
 				case 1:
 					sourcePath = Arguments[0];
-					destinationPath = Parameters.GetString("destination", 'd', sourcePath.WithoutExtension());
+					destinationPath = Parameters.GetString("destination", 'd', null) ?? DeriveDestinationPath(sourcePath);
 					break;
 				case 2:
 					sourcePath = Arguments[0];
@@ -91,6 +97,10 @@ namespace Yuka.Cli.Commands {
 			return (sourcePath, destinationPath, filters);
 		}
 
+		protected virtual string DeriveDestinationPath(string sourcePath) {
+			return sourcePath;
+		}
+
 		protected virtual void CheckPaths(string sourcePath, string destinationPath) {
 			if(sourcePath == null) {
 				throw new ArgumentNullException(nameof(sourcePath), "No source path specified");
@@ -100,19 +110,20 @@ namespace Yuka.Cli.Commands {
 			}
 		}
 
-		protected virtual (FormatPreference formatPreference, bool rawCopy, bool deleteAfterCopy) GetCopyModes() {
+		protected virtual (FormatPreference formatPreference, bool rawCopy, bool deleteAfterCopy, bool overwriteExisting) GetCopyModes() {
 
 			string format = Parameters.GetString("format", 'f', "keep").ToLower();
 			bool rawCopy = Parameters.GetBool("raw", 'r', false);
 			bool deleteAfterCopy = Parameters.GetBool("move", 'm', false);
+			bool overwriteExisting = Parameters.GetBool("overwrite", 'o', false);
 
 			switch(format) {
 				case "keep":
-					return (new FormatPreference(null, FormatType.None), rawCopy: true, deleteAfterCopy);
+					return (new FormatPreference(null, FormatType.None), rawCopy: true, deleteAfterCopy, overwriteExisting);
 				case "packed":
-					return (new FormatPreference(null, FormatType.Packed), rawCopy, deleteAfterCopy);
+					return (new FormatPreference(null, FormatType.Packed), rawCopy, deleteAfterCopy, overwriteExisting);
 				case "unpacked":
-					return (new FormatPreference(null, FormatType.Unpacked), rawCopy, deleteAfterCopy);
+					return (new FormatPreference(null, FormatType.Unpacked), rawCopy, deleteAfterCopy, overwriteExisting);
 				default:
 					throw new ArgumentOutOfRangeException(nameof(format), format, "Format must be one of the following: keep, packed, unpacked");
 			}
@@ -130,6 +141,7 @@ namespace Yuka.Cli.Commands {
 						using(var destinationStream = destinationFs.CreateFile(file)) {
 							sourceStream.CopyTo(destinationStream);
 							destinationStream.Flush();
+							fileCount++;
 						}
 					}
 				}
@@ -143,7 +155,7 @@ namespace Yuka.Cli.Commands {
 					}
 
 					var obj = FileReader.DecodeObject(file, sourceFs);
-					if(verbose) Output.WriteLine($"Decoded {file} to {obj.GetType().Name}", ConsoleColor.Green);
+					Log($"Decoded \ae{file}\a- to \ab{obj.GetType().Name}");
 					FileWriter.EncodeObject(obj, file, destinationFs, formatPreference);
 
 					if(deleteAfterCopy) {
@@ -164,47 +176,5 @@ namespace Yuka.Cli.Commands {
 		}
 
 		// TODO move these to somewhere else
-
-		public static FileSystem OpenFileSystem(string path) {
-			if(Directory.Exists(path)) {
-				return FileSystem.FromFolder(path);
-			}
-
-			if(File.Exists(path)) {
-				try {
-					return FileSystem.FromArchive(path);
-				}
-				catch(Exception) {
-					return FileSystem.FromFile(path);
-				}
-			}
-
-			throw new FileNotFoundException(path);
-		}
-
-		public static FileSystem CreateFileSystem(string path, bool singleFile, bool deleteExisting = false) {
-			// TODO YkcFormat
-			if(path.EndsWith(".ykc")) {
-				if(deleteExisting && File.Exists(path)) File.Delete(path);
-				return FileSystem.NewArchive(path);
-			}
-			if(singleFile) {
-				if(deleteExisting && File.Exists(path)) File.Delete(path);
-				return FileSystem.NewFile(path);
-			}
-			if(deleteExisting && Directory.Exists(path)) File.Delete(path);
-			return FileSystem.NewFolder(path);
-		}
-
-		public static FileSystem OpenOrCreateFileSystem(string path, bool singleFile, bool overwriteExisting) {
-			if(overwriteExisting) return CreateFileSystem(path, singleFile, true);
-
-			try {
-				return OpenFileSystem(path);
-			}
-			catch(FileNotFoundException) {
-				return CreateFileSystem(path, singleFile);
-			}
-		}
 	}
 }

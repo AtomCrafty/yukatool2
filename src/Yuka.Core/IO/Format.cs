@@ -31,6 +31,7 @@ namespace Yuka.IO {
 		public static readonly YkdFormat Ykd = new YkdFormat();
 		public static readonly CsvFormat Csv = new CsvFormat();
 		// other
+		public static readonly YkcFormat Ykc = new YkcFormat();
 		public static readonly RawFormat Raw = new RawFormat();
 
 		#endregion

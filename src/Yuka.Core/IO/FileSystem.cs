@@ -47,6 +47,47 @@ namespace Yuka.IO {
 			return Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), path).TrimEnd('/', '\\'));
 		}
 
+		public static FileSystem OpenExisting(string path) {
+			if(Directory.Exists(path)) {
+				return FromFolder(path);
+			}
+
+			if(File.Exists(path)) {
+				try {
+					return FromArchive(path);
+				}
+				catch(Exception) {
+					return FromFile(path);
+				}
+			}
+
+			throw new FileNotFoundException($"Unable to find '{path}'");
+		}
+
+		public static FileSystem CreateNew(string path, bool singleFile, bool deleteExisting = false) {
+			if(path.EndsWith(Format.Ykc.Extension)) {
+				if(deleteExisting && File.Exists(path)) File.Delete(path);
+				return NewArchive(path);
+			}
+			if(singleFile) {
+				if(deleteExisting && File.Exists(path)) File.Delete(path);
+				return NewFile(path);
+			}
+			if(deleteExisting && Directory.Exists(path)) Directory.Delete(path);
+			return NewFolder(path);
+		}
+
+		public static FileSystem OpenOrCreate(string path, bool singleFile, bool overwriteExisting) {
+			if(overwriteExisting) return CreateNew(path, singleFile, true);
+
+			try {
+				return OpenExisting(path);
+			}
+			catch(FileNotFoundException) {
+				return CreateNew(path, singleFile);
+			}
+		}
+
 		#endregion
 	}
 
