@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Yuka.Util;
 
 namespace Yuka.Script.Data {

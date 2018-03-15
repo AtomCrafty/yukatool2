@@ -5,7 +5,7 @@
 		public static bool YkgMergeAlphaChannelOnExport = true;
 
 		public static byte YksScriptDataXorKey = 0xAA;
-		public static bool YksEncryptScriptDataOnExport = true;
+		public static bool YksEncryptScriptDataOnExport = false;
 
 		public static bool YkdExternalizeStrings = true;
 		public static string[] YkdLineMethods = { "StrOut", "StrOutNW" };
@@ -17,7 +17,7 @@
 		public static string CsvSpeakerColumnName = "Speaker";
 		public static string CsvCommentColumnName = "Comment";
 		public static string CsvFallbackColumnName = "Original";
-		public static string CsvTextColumnNameRegex = @"^\[(.*)\]$"; //"(.*)"; 
+		public static string CsvTextColumnNameRegex = @"^\[(.*)\]$";
 		public static string CsvLinePrefix = "L";
 		public static string CsvNamePrefix = "N";
 		public static string CsvOtherPrefix = "S";

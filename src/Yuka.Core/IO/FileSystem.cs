@@ -53,12 +53,15 @@ namespace Yuka.IO {
 			}
 
 			if(File.Exists(path)) {
-				try {
-					return FromArchive(path);
+				if(path.EndsWith(Format.Ykc.Extension)) {
+					try {
+						return FromArchive(path);
+					}
+					catch(Exception) {
+						// ignored
+					}
 				}
-				catch(Exception) {
-					return FromFile(path);
-				}
+				return FromFile(path);
 			}
 
 			throw new FileNotFoundException($"Unable to find '{path}'");

@@ -1,20 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Text;
-using Newtonsoft.Json;
-using Yuka.Cli.Commands;
+﻿using Yuka.Cli.Commands;
 using Yuka.Cli.Util;
-using Yuka.Container;
-using Yuka.Graphics;
-using Yuka.IO;
-using Yuka.IO.Formats;
-using Yuka.Script;
-using Yuka.Script.Data;
-using Yuka.Script.Source;
-using Yuka.Util;
 
 namespace Yuka.Cli {
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Yuka.Script.Syntax;
 
 namespace Yuka.Script.Source {
 	public class TokenStream : IEnumerable<Token>, IEnumerator<Token> {

@@ -1,5 +1,4 @@
-﻿using Yuka.Script.Data;
-using Yuka.Script.Syntax.Stmt;
+﻿using Yuka.Script.Syntax.Stmt;
 
 namespace Yuka.Script.Syntax.Expr {
 	public class JumpLabelExpr : Expression {

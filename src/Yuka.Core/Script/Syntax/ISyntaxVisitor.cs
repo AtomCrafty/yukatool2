@@ -1,6 +1,4 @@
-﻿using System;
-using Yuka.Script.Data;
-using Yuka.Script.Syntax.Expr;
+﻿using Yuka.Script.Syntax.Expr;
 using Yuka.Script.Syntax.Stmt;
 
 namespace Yuka.Script.Syntax {

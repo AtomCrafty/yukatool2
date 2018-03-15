@@ -1,5 +1,4 @@
 ﻿using System;
-using Yuka.Script.Syntax;
 
 namespace Yuka.Script.Source {
 	public class UnexpectedTokenException : Exception {

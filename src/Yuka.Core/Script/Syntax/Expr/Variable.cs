@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using Yuka.Script.Data;
 
 namespace Yuka.Script.Syntax.Expr {
 	public class Variable : Expression {

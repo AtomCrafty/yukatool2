@@ -1,6 +1,4 @@
-﻿using Yuka.Script.Data;
-
-namespace Yuka.Script.Syntax {
+﻿namespace Yuka.Script.Syntax {
 	public abstract class SyntaxNode {
 	}
 

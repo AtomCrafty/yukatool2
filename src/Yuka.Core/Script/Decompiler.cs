@@ -215,7 +215,10 @@ namespace Yuka.Script {
 			switch(instruction) {
 
 				case LabelInstruction label:
-					Debug.Assert(label.Name != "else" && label.Name != "{" && label.Name != "}");
+					Debug.Assert(label.Name != "else" && label.Name != "}");
+					if(label.Name == "{") {
+						return ReadBlockStatement();
+					}
 					return new JumpLabelStmt { Name = label.Name };
 
 				case CallInstruction func:
@@ -225,7 +228,7 @@ namespace Yuka.Script {
 						if(_currentAssignmentTarget == null) throw new FormatException("No assignment target set");
 
 						Expression expr;
-						if(func.Arguments.Length == 0) {
+						 if(func.Arguments.Length == 0) {
 							// a call to =() with no arguments means the result of the following function call is assigned
 							if(CurrentInstruction is CallInstruction callInstruction) {
 								expr = new FunctionCallExpr { CallStmt = new FunctionCallStmt { MethodName = callInstruction.Name, Arguments = MapToExpressions(callInstruction.Arguments) } };

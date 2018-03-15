@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Yuka.Cli.Util;
 using Yuka.IO;
-using Yuka.Util;
 
 namespace Yuka.Cli.Commands {
 	public class CopyCommand : Command {
-
-		public CopyCommand(CommandParameters parameters) : base(parameters) { }
+		public CopyCommand(CommandParameters parameters) : base(parameters) {
+		}
 
 		public override string Name => "copy";
 
@@ -31,24 +29,27 @@ namespace Yuka.Cli.Commands {
 			('d', "destination", null, "Destination location"),
 			('f', "format", "keep", "The preferred output format (valid values: \abkeep\a-, \abpacked\a-, \abunpacked\a-)"),
 			('r', "raw", null, "Short form of \ac--format=keep\a-, overwrites the format flag if set"),
-			('m', "move", "false", "Delete each file after successfully copying it"),
+			('m', "move", "false", "Delete each fileName after successfully copying it"),
 			('o', "overwrite", "false", "Delete existing destination archive/folder"),
 			('q', "quiet", null, "Disable user-friendly output"),
 			('v', "verbose", null, "Whether to enable detailed output"),
 			('w', "wait", null, "Whether to wait after the command finished")
 		};
 
+		// copy modes
+		protected FormatType _prefererredFormatType;
+		protected bool _rawCopy, _deleteAfterCopy, _overwriteExisting;
+
 		public override bool Execute() {
 			try {
 				var (sourcePath, destinationPath, filters) = GetPaths();
-				var (formatPreference, rawCopy, deleteAfterCopy, overwriteExisting) = GetCopyModes();
+				SetCopyModes();
 
 				CheckPaths(sourcePath, destinationPath);
 
 				int fileCount;
 				using(var sourceFs = FileSystem.OpenExisting(sourcePath)) {
-					using(var destinationFs = FileSystem.OpenOrCreate(destinationPath, sourceFs is SingleFileSystem, overwriteExisting)) {
-
+					using(var destinationFs = FileSystem.OpenOrCreate(destinationPath, sourceFs is SingleFileSystem, _overwriteExisting)) {
 						// collect files
 						var files = new List<string>();
 						foreach(string filter in filters) {
@@ -56,14 +57,14 @@ namespace Yuka.Cli.Commands {
 						}
 
 						// call copy loop
-						fileCount = CopyFiles(sourceFs, destinationFs, files.Distinct(), formatPreference, rawCopy, deleteAfterCopy);
+						fileCount = CopyFiles(sourceFs, destinationFs, files.Distinct(), _rawCopy, _deleteAfterCopy);
 					}
 				}
 
 				Success($"Successfully copied {fileCount} files");
 			}
-			catch(Exception e) {
-				Error(e.Message);
+			catch(Exception e) when(!System.Diagnostics.Debugger.IsAttached) {
+				Error($"{e.GetType().Name}: {e.Message}");
 			}
 
 			Wait(false);
@@ -110,62 +111,80 @@ namespace Yuka.Cli.Commands {
 			}
 		}
 
-		protected virtual (FormatPreference formatPreference, bool rawCopy, bool deleteAfterCopy, bool overwriteExisting) GetCopyModes() {
+		protected virtual void SetCopyModes() {
 
 			string format = Parameters.GetString("format", 'f', "keep").ToLower();
-			bool rawCopy = Parameters.GetBool("raw", 'r', false);
-			bool deleteAfterCopy = Parameters.GetBool("move", 'm', false);
-			bool overwriteExisting = Parameters.GetBool("overwrite", 'o', false);
+			_rawCopy = Parameters.GetBool("raw", 'r', false);
+			_deleteAfterCopy = Parameters.GetBool("move", 'm', false);
+			_overwriteExisting = Parameters.GetBool("overwrite", 'o', false);
 
 			switch(format) {
 				case "keep":
-					return (new FormatPreference(null, FormatType.None), rawCopy: true, deleteAfterCopy, overwriteExisting);
+					_prefererredFormatType = FormatType.None;
+					_rawCopy = true;
+					break;
 				case "packed":
-					return (new FormatPreference(null, FormatType.Packed), rawCopy, deleteAfterCopy, overwriteExisting);
+					_prefererredFormatType = FormatType.Packed;
+					break;
 				case "unpacked":
-					return (new FormatPreference(null, FormatType.Unpacked), rawCopy, deleteAfterCopy, overwriteExisting);
+					_prefererredFormatType = FormatType.Unpacked;
+					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(format), format, "Format must be one of the following: keep, packed, unpacked");
 			}
 		}
 
-		protected virtual int CopyFiles(FileSystem sourceFs, FileSystem destinationFs, IEnumerable<string> files, FormatPreference formatPreference, bool rawCopy, bool deleteAfterCopy) {
+		protected virtual FormatPreference GetOutputFormat(object obj, string fileName, Format fileFormat) {
+			return new FormatPreference(null, _prefererredFormatType);
+		}
+
+		protected virtual (object obj, Format fileFormat) ReadFile(FileSystem sourceFs, string fileName) {
+			return FileReader.DecodeObject(fileName, sourceFs, true);
+		}
+
+		protected virtual Format WriteFile(object obj, Format inputFormat, FileSystem destinationFs, string fileName) {
+			return FileWriter.EncodeObject(obj, fileName, destinationFs, GetOutputFormat(obj, fileName, inputFormat));
+		}
+
+		protected virtual int CopyFiles(FileSystem sourceFs, FileSystem destinationFs, IEnumerable<string> files, bool rawCopy, bool deleteAfterCopy) {
 			bool verbose = Parameters.GetBool("verbose", 'v', false);
 			int fileCount = 0;
 
 			// main loop
-			foreach(string file in files) {
+			foreach(string fileName in files) {
 				if(rawCopy) {
-					if(verbose) Output.WriteLine($"Copying {file}", ConsoleColor.Green);
-					using(var sourceStream = sourceFs.OpenFile(file)) {
-						using(var destinationStream = destinationFs.CreateFile(file)) {
+					Log($"Copying \ae{fileName}");
+					using(var sourceStream = sourceFs.OpenFile(fileName)) {
+						using(var destinationStream = destinationFs.CreateFile(fileName)) {
 							sourceStream.CopyTo(destinationStream);
-							destinationStream.Flush();
 							fileCount++;
 						}
 					}
 				}
 				else {
-					// skip auxiliary files (csv, frm, ani, etc...)
-					var fileFormat = Format.ForFile(sourceFs, file);
-					var fileCategory = fileFormat.GetFileCategory(sourceFs, file);
-					if(fileCategory != FileCategory.Primary) {
-						if(verbose) Output.WriteLine($"Skipping {file} (file category: {fileCategory})", ConsoleColor.Yellow);
+
+					var (obj, fileFormat) = ReadFile(sourceFs, fileName);
+
+					if(obj == null) {
+						if(verbose) Output.WriteLine($"Skipping {fileName}", ConsoleColor.Yellow);
 						continue;
 					}
 
-					var obj = FileReader.DecodeObject(file, sourceFs);
-					Log($"Decoded \ae{file}\a- to \ab{obj.GetType().Name}");
-					FileWriter.EncodeObject(obj, file, destinationFs, formatPreference);
+					Log($"Decoded \ae{fileName}\a- to \ab{obj.GetType().Name}");
+
+					var outputFormat = WriteFile(obj, fileFormat, destinationFs, fileName);
+
+					Log($"Encoded \ab{obj.GetType().Name}\a- ({outputFormat.GetType().Name})");
 
 					if(deleteAfterCopy) {
 						// delete auxiliary files (csv, frm, ani, etc...)
-						foreach(string secondaryFile in fileFormat.GetSecondaryFiles(sourceFs, file)) {
+						foreach(string secondaryFile in fileFormat.GetSecondaryFiles(sourceFs, fileName)) {
 							if(verbose) Output.WriteLine($"Deleting {secondaryFile}", ConsoleColor.Red);
 							sourceFs.DeleteFile(secondaryFile);
 						}
-						if(verbose) Output.WriteLine($"Deleting {file}", ConsoleColor.Red);
-						sourceFs.DeleteFile(file);
+
+						if(verbose) Output.WriteLine($"Deleting {fileName}", ConsoleColor.Red);
+						sourceFs.DeleteFile(fileName);
 					}
 
 					fileCount++;
@@ -174,7 +193,5 @@ namespace Yuka.Cli.Commands {
 
 			return fileCount;
 		}
-
-		// TODO move these to somewhere else
 	}
 }

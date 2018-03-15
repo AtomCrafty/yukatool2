@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using Yuka.Script.Data;
 using Yuka.Script.Syntax.Stmt;
 
 namespace Yuka.Script.Syntax.Expr {

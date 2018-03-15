@@ -26,6 +26,7 @@ namespace Yuka.IO {
 			new GnpGraphicWriter(),
 			new PngBitmapWriter(),
 			new GnpBitmapWriter(),
+			new BmpBitmapWriter(),
 			new YkiScriptWriter(),
 			new YksScriptWriter(),
 			new CsvStringTableWriter(),
@@ -83,20 +84,24 @@ namespace Yuka.IO {
 			writers.First().Write(obj, baseName, fs);
 		}
 
-		public static void EncodeObject(object obj, Stream s, FormatPreference pref) {
+		public static Format EncodeObject(object obj, Stream s, FormatPreference pref) {
 			pref = pref ?? FormatPreference.Default;
 			var writers = FindWriters(obj, pref);
 			if(!writers.Any()) throw new InvalidOperationException("No writer found for object");
 
-			writers.First().WriteObject(obj, s);
+			var fileWriter = writers.First();
+			fileWriter.WriteObject(obj, s);
+			return fileWriter.Format;
 		}
 
-		public static void EncodeObject(object obj, string baseName, FileSystem fs, FormatPreference pref) {
+		public static Format EncodeObject(object obj, string baseName, FileSystem fs, FormatPreference pref) {
 			pref = pref ?? FormatPreference.Default;
 			var writers = FindWriters(obj, pref);
 			if(!writers.Any()) throw new InvalidOperationException("No writer found for object");
 
-			writers.First().WriteObject(obj, baseName, fs);
+			var fileWriter = writers.First();
+			fileWriter.WriteObject(obj, baseName, fs);
+			return fileWriter.Format;
 		}
 		#endregion
 	}

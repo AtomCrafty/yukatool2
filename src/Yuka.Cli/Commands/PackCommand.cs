@@ -1,9 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Reflection;
-using Yuka.Cli.Util;
 using Yuka.IO;
-using Yuka.Script;
 using Yuka.Util;
 
 namespace Yuka.Cli.Commands {
@@ -49,23 +45,12 @@ namespace Yuka.Cli.Commands {
 			}
 		}
 
-		protected override (FormatPreference formatPreference, bool rawCopy, bool deleteAfterCopy, bool overwriteExisting) GetCopyModes() {
+		protected override void SetCopyModes() {
+			base.SetCopyModes();
 
-			string format = Parameters.GetString("format", 'f', "packed").ToLower();
-			bool rawCopy = Parameters.GetBool("raw", 'r', false);
-			bool overwriteExisting = Parameters.GetBool("overwrite", 'o', true);
-			if(Parameters.GetBool("append", 'a', false)) overwriteExisting = false;
-
-			switch(format) {
-				case "keep":
-					return (new FormatPreference(null, FormatType.None), rawCopy: true, deleteAfterCopy: false, overwriteExisting);
-				case "packed":
-					return (new FormatPreference(null, FormatType.Packed), rawCopy, deleteAfterCopy: false, overwriteExisting);
-				case "unpacked":
-					return (new FormatPreference(null, FormatType.Unpacked), rawCopy, deleteAfterCopy: false, overwriteExisting);
-				default:
-					throw new ArgumentOutOfRangeException(nameof(format), format, "Format must be one of the following: keep, packed, unpacked");
-			}
+			// --move flag always false
+			_deleteAfterCopy = false;
+			_overwriteExisting = Parameters.GetBool("overwrite", 'o', true) && !Parameters.GetBool("append", 'a', false);
 		}
 	}
 }

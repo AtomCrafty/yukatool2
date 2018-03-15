@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Linq;
-using Yuka.Script.Data;
 
 namespace Yuka.Script.Syntax.Expr {
 	public class OperatorExpr : Expression {

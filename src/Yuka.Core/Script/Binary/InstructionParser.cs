@@ -43,6 +43,7 @@ namespace Yuka.Script.Binary {
 		}
 
 		public Instruction ParseInstruction(string line) {
+			if(line.TrimStart().StartsWith("#") || string.IsNullOrWhiteSpace(line)) return null;
 
 			// label instruction
 			if(line.StartsWith(":")) return ParseLabelInstruction(line);

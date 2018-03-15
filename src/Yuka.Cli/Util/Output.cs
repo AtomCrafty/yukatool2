@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Yuka.Cli.Util {
 	public static class Output {
 
-		private static readonly BlockingCollection<(string text, ConsoleColor foregroundColor, ConsoleColor backgroundColor)> WriteBuffer = new BlockingCollection<(string, ConsoleColor, ConsoleColor)>();
+		private static readonly BlockingCollection<(string text, ConsoleColor foregroundColor, ConsoleColor backgroundColor)> WriteQueue = new BlockingCollection<(string, ConsoleColor, ConsoleColor)>();
 		private static readonly ConsoleColor DefaultForegroundColor = Console.ForegroundColor;
 		private static readonly ConsoleColor DefaultBackgroundColor = Console.BackgroundColor;
 
@@ -16,11 +16,10 @@ namespace Yuka.Cli.Util {
 
 		static Output() {
 			Task.Run(() => {
-				foreach(var (text, foregroundColor, backgroundColor) in WriteBuffer.GetConsumingEnumerable()) {
-
+				foreach(var (text, foregroundColor, backgroundColor) in WriteQueue.GetConsumingEnumerable()) {
 					Console.ForegroundColor = foregroundColor;
 					Console.BackgroundColor = backgroundColor;
-					Console.Out.Write(text);
+					Console.Write(text);
 					Console.ResetColor();
 				}
 				QueueEmpty.Set();
@@ -28,7 +27,7 @@ namespace Yuka.Cli.Util {
 		}
 
 		public static void Flush() {
-			WriteBuffer.CompleteAdding();
+			WriteQueue.CompleteAdding();
 			QueueEmpty.WaitOne();
 		}
 
@@ -37,7 +36,7 @@ namespace Yuka.Cli.Util {
 		#region Write
 
 		public static void Write(string text, ConsoleColor foregroundColor, ConsoleColor backgroundColor)
-			=> WriteBuffer.Add((text, foregroundColor, backgroundColor));
+			=> WriteQueue.Add((text, foregroundColor, backgroundColor));
 
 		public static void Write(string text, ConsoleColor foregroundColor)
 			=> Write(text, foregroundColor, DefaultBackgroundColor);

@@ -23,8 +23,9 @@ namespace Yuka.IO {
 			new GnpGraphicReader(),
 			new BmpGraphicReader(),
 			new YkgGraphicReader(),
-			new GnpBitmapReader(),
 			new PngBitmapReader(),
+			new GnpBitmapReader(),
+			new BmpBitmapReader(),
 			new YksScriptReader(),
 			new YkdScriptReader(),
 			new CsvStringTableReader(),
@@ -76,24 +77,34 @@ namespace Yuka.IO {
 			}
 		}
 
-		public static object DecodeObject(string name, FileSystem fs) {
+		public static (object, Format) DecodeObject(string name, FileSystem fs, bool ignoreSecondary = false) {
 			List<FileReader> readers;
 			using(var s = fs.OpenFile(name)) {
 				readers = FindReaders(name, s.NewReader()).ToList();
 			}
 			if(!readers.Any()) throw new InvalidOperationException("No reader found for object");
 
-			return readers.First().ReadObject(name, fs);
+			var fileReader = readers.First();
+			var fileFormat = fileReader.Format;
+			var fileCategory = fileFormat.GetFileCategory(fs, name);
+
+			// skip auxiliary files (csv, frm, ani, etc...)
+			if(fileCategory == FileCategory.Ignore || ignoreSecondary && fileCategory == FileCategory.Secondary) {
+				return (null, fileFormat);
+			}
+
+			return (fileReader.ReadObject(name, fs), fileFormat);
 		}
 
-		public static object DecodeObject(string name, Stream s) {
+		public static (object, Format) DecodeObject(string name, Stream s) {
 			var readers = FindReaders(name, s.NewReader()).ToList();
 			if(!readers.Any()) throw new InvalidOperationException("No reader found for object");
 
-			return readers.First().ReadObject(name, s);
+			var fileReader = readers.First();
+			return (fileReader.ReadObject(name, s), fileReader.Format);
 		}
 
-		public static object DecodeObject(string name, byte[] data) {
+		public static (object, Format) DecodeObject(string name, byte[] data) {
 			using(var ms = new MemoryStream(data)) {
 				return DecodeObject(name, ms);
 			}
