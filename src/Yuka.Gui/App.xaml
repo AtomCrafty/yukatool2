@@ -11,6 +11,7 @@
             <converters:FileSystemEntryToImageConverter x:Key="FileSystemEntryToImageConverter"/>
             <converters:EnumerateConverter x:Key="EnumerateConverter"/>
             <converters:FileSizeConverter x:Key="FileSizeConverter"/>
+            <converters:YukaGraphicToImageConverter x:Key="YukaGraphicToImageConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -6,7 +7,7 @@ using Yuka.IO;
 using Yuka.Util;
 
 namespace Yuka.Graphics {
-	public class YukaGraphic {
+	public class YukaGraphic : IDisposable {
 
 		public byte[] ColorData, AlphaData;
 		public Bitmap ColorBitmap, AlphaBitmap;
@@ -48,7 +49,7 @@ namespace Yuka.Graphics {
 		public void EnsureDecoded() => Decode();
 		public void EnsureEncoded() => Encode();
 
-		public bool Decode() {
+		public bool Decode(bool merge = false) {
 			if(IsDecoded) return false;
 
 			Debug.Assert(ColorBitmap == null);
@@ -56,6 +57,8 @@ namespace Yuka.Graphics {
 
 			if(!ColorData.IsNullOrEmpty()) ColorBitmap = FileReader.Decode<Bitmap>("?" + nameof(ColorData), ColorData);
 			if(!AlphaData.IsNullOrEmpty()) AlphaBitmap = FileReader.Decode<Bitmap>("?" + nameof(AlphaData), AlphaData);
+
+			if(merge) MergeChannels();
 
 			ColorData = null;
 			AlphaData = null;
@@ -116,6 +119,17 @@ namespace Yuka.Graphics {
 		}
 
 		#endregion
+
+		// TODO call dispose
+		public void Dispose() {
+			ColorBitmap?.Dispose();
+			AlphaBitmap?.Dispose();
+			GC.SuppressFinalize(this);
+		}
+
+		~YukaGraphic() {
+			Dispose();
+		}
 	}
 
 	public enum ColorMode {

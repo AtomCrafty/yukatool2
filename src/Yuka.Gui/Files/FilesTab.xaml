@@ -41,10 +41,7 @@
 
         <!-- File preview -->
         <GroupBox Grid.Column="2" Grid.Row="2" Name="DocumentPreview" Header="Preview">
-            <Grid>
-                <gui:ImageDisplay Visibility="Hidden"></gui:ImageDisplay>
-                <gui:ImageDisplay Visibility="Hidden"></gui:ImageDisplay>
-            </Grid>
+            <views:FilePreviewPanel DataContext="{Binding ElementName=FileView, Path=SelectedValue.FileContent}"/>
         </GroupBox>
     </Grid>
 </UserControl>

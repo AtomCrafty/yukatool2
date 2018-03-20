@@ -14,9 +14,5 @@ namespace Yuka.Gui.Files {
 		public FilesTab() {
 			InitializeComponent();
 		}
-
-		private void BtnOpenArchive_OnClick(object sender, RoutedEventArgs e) {
-			//FileView.LoadArchive(@"S:\Games\Visual Novels\AkaSaka\data01.ykc");
-		}
 	}
 }

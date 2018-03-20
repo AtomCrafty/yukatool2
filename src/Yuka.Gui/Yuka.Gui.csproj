@@ -48,6 +48,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -67,6 +71,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ActionCommand.cs" />
+    <Compile Include="Converters\YukaGraphicToImageConverter.cs" />
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\EnumerateConverter.cs" />
     <Compile Include="Converters\FileSystemEntryToImageConverter.cs" />
@@ -74,8 +79,16 @@
     <Compile Include="ViewModels\FileSystemViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModel.cs" />
+    <Compile Include="ViewModels\YukaGraphicViewModel.cs" />
     <Compile Include="Views\FileInfoPanel.xaml.cs">
       <DependentUpon>FileInfoPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FilePreviewPanel.xaml.cs">
+      <DependentUpon>FilePreviewPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\YukaScriptViewModel.cs" />
+    <Compile Include="Views\Preview\YukaGraphicPreview.xaml.cs">
+      <DependentUpon>YukaGraphicPreview.xaml</DependentUpon>
     </Compile>
     <Page Include="Files\FileList.xaml">
       <SubType>Designer</SubType>
@@ -118,6 +131,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\FileInfoPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FilePreviewPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Preview\YukaGraphicPreview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -21,7 +21,7 @@ namespace Yuka.Gui.ViewModels {
 			CloseArchive();
 
 			// TODO file choose dialog
-			LoadedFileSystem = new FileSystemViewModel(FileSystem.FromArchive(@"S:\Games\Visual Novels\Lover Able\data01.ykc"));
+			LoadedFileSystem = new FileSystemViewModel(FileSystem.FromArchive(@"S:\Games\Visual Novels\Lover Able\data02.ykc"));
 
 			UpdateCommandAvailability();
 		}

@@ -4,9 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:Yuka.Gui.ViewModels"
-             xmlns:converters="clr-namespace:Yuka.Gui.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="250" d:DesignWidth="450" ItemsSource="{Binding Root, Converter={StaticResource EnumerateConverter}}">
+             d:DesignHeight="250" d:DesignWidth="450"
+             ItemsSource="{Binding Root, Converter={StaticResource EnumerateConverter}}">
 
     <TreeView.ItemTemplate>
         <HierarchicalDataTemplate x:Name="ItemTemplate" ItemsSource="{Binding Children}" DataType="{x:Type vm:FileSystemEntryViewModel}">
@@ -21,6 +21,7 @@
     <TreeView.ItemContainerStyle>
         <Style TargetType="{x:Type TreeViewItem}">
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
         </Style>
     </TreeView.ItemContainerStyle>
 
