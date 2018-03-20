@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Yuka.IO.Formats;
 using Yuka.Util;
@@ -32,7 +33,15 @@ namespace Yuka.IO {
 		public static readonly CsvFormat Csv = new CsvFormat();
 		// other
 		public static readonly YkcFormat Ykc = new YkcFormat();
+		public static readonly TxtFormat Txt = new TxtFormat();
 		public static readonly RawFormat Raw = new RawFormat();
+
+		public static readonly List<Format> RegisteredFormats = new List<Format> {
+			Png, Gnp, Bmp, Ykg,
+			Ani, Frm,
+			Yks, Yki, Ykd, Csv,
+			Ykc, Txt, Raw
+		};
 
 		#endregion
 
@@ -44,6 +53,14 @@ namespace Yuka.IO {
 				var readers = FileReader.FindReaders(fileName, s.NewReader());
 				return readers.FirstOrDefault()?.Format;
 			}
+		}
+
+		public static Format GuessFromFileName(string name) {
+			string extension = Path.GetExtension(name)?.ToLower();
+			foreach(var format in RegisteredFormats) {
+				if(format.Extension == extension) return format;
+			}
+			return extension.IsOneOf(".txt", ".ini", ".htm", ".html") ? (Format)Txt : Raw;
 		}
 	}
 

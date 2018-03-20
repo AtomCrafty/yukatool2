@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="Yuka.Gui.ImageDisplay"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Yuka.Gui"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="450">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- ScrollViewer for panning -->
+        <ScrollViewer Margin="0 5" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+
+            <Image Source="S:\Games\Visual Novels\Lover Able\data02-src\ykg\ev\kaev07_a0_003.png" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image.LayoutTransform>
+                    <ScaleTransform ScaleX="{Binding ElementName=ZoomSlider, Path=Value}" ScaleY="{Binding ElementName=ZoomSlider, Path=Value}" />
+                </Image.LayoutTransform>
+            </Image>
+
+        </ScrollViewer>
+
+        <!-- This Slider controls the zoom level -->
+        <Slider x:Name="ZoomSlider" Orientation="Horizontal" Grid.Row="1" Minimum="0.1" Maximum="8.0" LargeChange="0.25" SmallChange="0.01"  Value="0.5" />
+
+    </Grid>
+</UserControl>

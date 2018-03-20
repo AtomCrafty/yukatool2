@@ -17,6 +17,10 @@ namespace Yuka.Util {
 			return dict.ContainsKey(key) ? dict[key] : fallback;
 		}
 
+		public static TValue Fetch<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, Func<TValue> producer) {
+			return dict.ContainsKey(key) ? dict[key] : producer();
+		}
+
 		public static bool Matches(this byte[] a, byte[] b) {
 			if(a == b) return true;
 			if(a == null || b == null) return false;

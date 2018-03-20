@@ -1,0 +1,29 @@
+﻿<Window x:Class="Yuka.Gui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:container="clr-namespace:Yuka.Gui.Files"
+        mc:Ignorable="d" Height="550" Width="900"
+        Title="YukaTool Gui">
+    <Grid>
+        <TabControl>
+            <TabItem>
+                <TabItem.Header>
+                    Archive Tools
+                </TabItem.Header>
+                <container:FilesTab></container:FilesTab>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    Graphics Tools
+                </TabItem.Header>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    Script Tools
+                </TabItem.Header>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
