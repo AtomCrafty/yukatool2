@@ -13,16 +13,24 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Yuka.Gui.Views.Preview
-{
-    /// <summary>
-    /// Interaktionslogik für YukaGraphicPreview.xaml
-    /// </summary>
-    public partial class YukaGraphicPreview : UserControl
-    {
-        public YukaGraphicPreview()
-        {
-            InitializeComponent();
-        }
-    }
+namespace Yuka.Gui.Views.Preview {
+	/// <summary>
+	/// Interaktionslogik für YukaGraphicPreview.xaml
+	/// </summary>
+	public partial class YukaGraphicPreview : UserControl {
+		public YukaGraphicPreview() {
+			InitializeComponent();
+		}
+
+		private void ZoomSlider_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
+			ZoomSlider.Value = 1.0;
+		}
+
+		private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) {
+			if(!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl)) return;
+
+			ZoomSlider.Value += Math.Sign(e.Delta) * 0.1;
+			e.Handled = true;
+		}
+	}
 }

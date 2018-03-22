@@ -5,6 +5,7 @@
              xmlns:gui="clr-namespace:Yuka.Gui"
              xmlns:converters="clr-namespace:Yuka.Gui.Converters"
              StartupUri="MainWindow.xaml">
+
     <Application.Resources>
         <ResourceDictionary>
             <vm:FilesTabViewModel x:Key="FilesTabViewModel" />

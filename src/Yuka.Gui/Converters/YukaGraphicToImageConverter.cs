@@ -1,49 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using System.IO;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using Yuka.Graphics;
 
 namespace Yuka.Gui.Converters {
-	[ValueConversion(typeof(YukaGraphic), typeof(BitmapSource))]
+	[ValueConversion(typeof(YukaGraphic), typeof(BitmapImage))]
 	class YukaGraphicToImageConverter : IValueConverter {
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
 			if(!(value is YukaGraphic graphic)) return null;
 
-			graphic.Decode(true);
+			graphic.MergeChannels();
+			graphic.EnsureEncoded();
 
-			if(graphic.ColorBitmap == null) return null;
-			BitmapSource bitSrc;
+			if(graphic.ColorData == null) return null;
 
-			var hBitmap = graphic.ColorBitmap.GetHbitmap();
-
-			try {
-				bitSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-					hBitmap,
-					IntPtr.Zero,
-					Int32Rect.Empty,
-					BitmapSizeOptions.FromEmptyOptions());
+			using(var stream = new MemoryStream(graphic.ColorData)) {
+				var bitmap = new BitmapImage();
+				bitmap.BeginInit();
+				bitmap.StreamSource = stream;
+				bitmap.CacheOption = BitmapCacheOption.OnLoad;
+				bitmap.EndInit();
+				bitmap.Freeze();
+				return bitmap;
 			}
-			catch(Win32Exception) {
-				bitSrc = null;
-			}
-			finally {
-				DeleteObject(hBitmap);
-			}
-
-			return bitSrc;
 		}
-
-		[DllImport("gdi32.dll")]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		internal static extern bool DeleteObject(IntPtr hObject);
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
 			throw new NotImplementedException();
