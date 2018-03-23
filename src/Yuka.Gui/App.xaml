@@ -4,15 +4,21 @@
              xmlns:vm="clr-namespace:Yuka.Gui.ViewModels"
              xmlns:gui="clr-namespace:Yuka.Gui"
              xmlns:converters="clr-namespace:Yuka.Gui.Converters"
-             StartupUri="MainWindow.xaml">
+             xmlns:services="clr-namespace:Yuka.Gui.Services"
+             StartupUri="MainWindow.xaml" Startup="App_OnStartup">
 
     <Application.Resources>
         <ResourceDictionary>
-            <vm:FilesTabViewModel x:Key="FilesTabViewModel" />
+
+            <!-- static view models -->
+            <vm:FilesTabViewModel x:Key="FilesTabViewModel"/>
+
+            <!-- converters -->
             <converters:FileSystemEntryToImageConverter x:Key="FileSystemEntryToImageConverter"/>
             <converters:EnumerateConverter x:Key="EnumerateConverter"/>
             <converters:FileSizeConverter x:Key="FileSizeConverter"/>
             <converters:YukaGraphicToImageConverter x:Key="YukaGraphicToImageConverter"/>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

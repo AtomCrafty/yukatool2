@@ -17,7 +17,6 @@
         </HierarchicalDataTemplate>
     </TreeView.ItemTemplate>
 
-    <!-- Automatically expand treeview on load -->
     <TreeView.ItemContainerStyle>
         <Style TargetType="{x:Type TreeViewItem}">
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>

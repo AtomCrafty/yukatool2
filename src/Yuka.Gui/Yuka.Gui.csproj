@@ -75,6 +75,10 @@
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\EnumerateConverter.cs" />
     <Compile Include="Converters\FileSystemEntryToImageConverter.cs" />
+    <Compile Include="Services\Abstract\IFileService.cs" />
+    <Compile Include="Services\Abstract\IService.cs" />
+    <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\ServiceLocator.cs" />
     <Compile Include="ViewModels\FilesTabViewModel.cs" />
     <Compile Include="ViewModels\FileSystemViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
@@ -90,10 +94,6 @@
     <Compile Include="Views\Preview\YukaGraphicPreview.xaml.cs">
       <DependentUpon>YukaGraphicPreview.xaml</DependentUpon>
     </Compile>
-    <Page Include="Files\FileList.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Files\FilesTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -102,11 +102,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ImageDisplay.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -114,19 +110,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Files\FileList.xaml.cs">
-      <DependentUpon>FileList.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Files\FilesTab.xaml.cs">
       <DependentUpon>FilesTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="Files\FileTree.xaml.cs">
       <DependentUpon>FileTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ImageDisplay.xaml.cs">
-      <DependentUpon>ImageDisplay.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>

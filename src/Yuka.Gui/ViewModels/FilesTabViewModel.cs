@@ -1,5 +1,5 @@
-using System.ComponentModel;
-using System.Windows;
+using Yuka.Gui.Services;
+using Yuka.Gui.Services.Abstract;
 using Yuka.IO;
 
 namespace Yuka.Gui.ViewModels {
@@ -8,7 +8,7 @@ namespace Yuka.Gui.ViewModels {
 		public FilesTabViewModel() {
 			OpenArchiveCommand = new ActionCommand(OpenArchive);
 			CloseArchiveCommand = new ActionCommand(CloseArchive, false);
-			ExportAllCommand = new ActionCommand(() => { }, false);
+			ExportAllCommand = new ActionCommand(ExportAllFiles, false);
 		}
 
 		public FileSystemViewModel LoadedFileSystem { get; protected set; }
@@ -20,8 +20,11 @@ namespace Yuka.Gui.ViewModels {
 		private void OpenArchive() {
 			CloseArchive();
 
-			// TODO file choose dialog
-			LoadedFileSystem = new FileSystemViewModel(FileSystem.FromArchive(@"S:\Games\Visual Novels\Lover Able\data02.ykc"));
+			// select file
+			string path = ServiceLocator.GetService<IFileService>().SelectArchiveFile(@"S:\Games\Visual Novels\Lover Able\");
+			if(string.IsNullOrWhiteSpace(path)) return;
+
+			LoadedFileSystem = new FileSystemViewModel(FileSystem.FromArchive(path));
 
 			UpdateCommandAvailability();
 		}
@@ -46,6 +49,10 @@ namespace Yuka.Gui.ViewModels {
 				CloseArchiveCommand.Disable();
 				ExportAllCommand.Disable();
 			}
+		}
+
+		public void ExportAllFiles() {
+
 		}
 	}
 }

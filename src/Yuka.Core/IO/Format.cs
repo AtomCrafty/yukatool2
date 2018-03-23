@@ -60,7 +60,7 @@ namespace Yuka.IO {
 			foreach(var format in RegisteredFormats) {
 				if(format.Extension == extension) return format;
 			}
-			return extension.IsOneOf(".txt", ".ini", ".htm", ".html") ? (Format)Txt : Raw;
+			return extension.IsOneOf(Txt.TextExtensions) ? (Format)Txt : Raw;
 		}
 	}
 
