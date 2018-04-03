@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using Yuka.IO;
 
 namespace Yuka.Gui.ViewModels {
 	public class FileSystemViewModel : ViewModel {
+
+		public static readonly FileSystemViewModel Pending = new FileSystemPendingViewModel();
 
 		protected readonly FileSystem LoadedFileSystem;
 		public FileSystemEntryViewModel Root { get; protected set; }
@@ -50,5 +50,11 @@ namespace Yuka.Gui.ViewModels {
 		public void Close() {
 			LoadedFileSystem.Dispose();
 		}
+
+		public override string ToString() => LoadedFileSystem?.ToString() ?? "null";
+	}
+
+	internal sealed class FileSystemPendingViewModel : FileSystemViewModel {
+		public FileSystemPendingViewModel() : base(FileSystem.Dummy) { }
 	}
 }

@@ -30,6 +30,7 @@ namespace Yuka.IO {
 			new YkdScriptReader(),
 			new CsvStringTableReader(),
 			new YkiScriptReader(),
+			new TxtStringReader(),
 			new RawFileReader()
 		};
 

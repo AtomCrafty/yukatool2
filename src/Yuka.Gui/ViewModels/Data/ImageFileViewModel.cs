@@ -1,10 +1,10 @@
-using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Media.Imaging;
 using Yuka.Graphics;
 
-namespace Yuka.Gui.ViewModels {
-	public class YukaGraphicViewModel : ViewModel {
+namespace Yuka.Gui.ViewModels.Data {
+	public class ImageFileViewModel : FileViewModel {
 
 		public YukaGraphic Graphic { get; protected set; }
 
@@ -33,8 +33,13 @@ namespace Yuka.Gui.ViewModels {
 		public int Width => PreviewImage.PixelWidth;
 		public int Height => PreviewImage.PixelHeight;
 
-		public YukaGraphicViewModel(YukaGraphic graphic) {
+		public ImageFileViewModel(YukaGraphic graphic) {
 			Graphic = graphic;
 		}
+
+		public override Dictionary<string, object> FileInfo => new Dictionary<string, object> {
+			{"Width", Width },
+			{"Height", Height }
+		};
 	}
 }

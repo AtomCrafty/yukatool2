@@ -13,12 +13,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Yuka.Gui.Views.Preview {
+namespace Yuka.Gui.Views.Files.Preview {
 	/// <summary>
 	/// Interaktionslogik für YukaGraphicPreview.xaml
 	/// </summary>
-	public partial class YukaGraphicPreview : UserControl {
-		public YukaGraphicPreview() {
+	public partial class ImageFilePreview : UserControl {
+		public ImageFilePreview() {
 			InitializeComponent();
 		}
 

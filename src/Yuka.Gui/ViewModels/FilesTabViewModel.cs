@@ -1,3 +1,6 @@
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 using Yuka.Gui.Services;
 using Yuka.Gui.Services.Abstract;
 using Yuka.IO;
@@ -17,16 +20,27 @@ namespace Yuka.Gui.ViewModels {
 		public ActionCommand CloseArchiveCommand { get; protected set; }
 		public ActionCommand ExportAllCommand { get; protected set; }
 
-		private void OpenArchive() {
-			CloseArchive();
+		public bool IsFileSystemLoading { get; protected set; }
+		public bool IsFileSystemValid => !IsFileSystemLoading && LoadedFileSystem != null;
 
-			// select file
+		private void OpenArchive() {
+			// select archive file TODO remove default path
 			string path = ServiceLocator.GetService<IFileService>().SelectArchiveFile(@"S:\Games\Visual Novels\Lover Able\");
 			if(string.IsNullOrWhiteSpace(path)) return;
+			
+			IsFileSystemLoading = true;
+			CloseArchive();
+			LoadedFileSystem = FileSystemViewModel.Pending;
 
-			LoadedFileSystem = new FileSystemViewModel(FileSystem.FromArchive(path));
-
-			UpdateCommandAvailability();
+			Task.Run(() => {
+				Thread.Sleep(1000);
+				var fileSystem = new FileSystemViewModel(FileSystem.FromArchive(path));
+				Application.Current.Dispatcher.Invoke(() => {
+					LoadedFileSystem = fileSystem;
+					IsFileSystemLoading = false;
+					UpdateCommandAvailability();
+				});
+			});
 		}
 
 		public void CloseArchive() {
@@ -39,9 +53,9 @@ namespace Yuka.Gui.ViewModels {
 		}
 
 		public void UpdateCommandAvailability() {
-			OpenArchiveCommand.Enable();
+			OpenArchiveCommand.IsEnabled = !IsFileSystemLoading;
 
-			if(LoadedFileSystem != null) {
+			if(IsFileSystemValid) {
 				CloseArchiveCommand.Enable();
 				ExportAllCommand.Enable();
 			}
@@ -54,5 +68,7 @@ namespace Yuka.Gui.ViewModels {
 		public void ExportAllFiles() {
 
 		}
+
+		public override string ToString() => GetType().Name + ": " + LoadedFileSystem;
 	}
 }

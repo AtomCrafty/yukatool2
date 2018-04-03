@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.RightsManagement;
 using System.Windows;
 using Microsoft.Win32;
 using Yuka.Gui.Services.Abstract;
@@ -14,7 +13,8 @@ namespace Yuka.Gui.Services {
 		}
 
 		public string SelectDirectory(string initialDirectory) {
-			throw new NotImplementedException();
+			var dialog = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
+			return dialog.ShowDialog(ParentWindow) != true ? null : dialog.SelectedPath;
 		}
 
 		public string SelectFile(string initialDirectory, string[] filters = null) {

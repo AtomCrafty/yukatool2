@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Windows;
-using System.Windows.Controls;
-using Yuka.IO;
-
-namespace Yuka.Gui.Files {
+﻿namespace Yuka.Gui.Views.Files {
 	/// <summary>
 	/// Interaction logic for ArchiveTab.xaml
 	/// </summary>
