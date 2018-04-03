@@ -8,16 +8,16 @@ namespace Yuka.Gui.ViewModels {
 
 		public static readonly FileSystemViewModel Pending = new FileSystemPendingViewModel();
 
-		protected readonly FileSystem LoadedFileSystem;
+		internal readonly FileSystem FileSystem;
 		public FileSystemEntryViewModel Root { get; protected set; }
 
-		public FileSystemViewModel(FileSystem loadedFileSystem) {
-			LoadedFileSystem = loadedFileSystem ?? throw new ArgumentNullException(nameof(loadedFileSystem));
+		public FileSystemViewModel(FileSystem fileSystem) {
+			FileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
 
-			Root = new FileSystemEntryViewModel(LoadedFileSystem, loadedFileSystem.Name, FileSystemEntryType.Root);
+			Root = new FileSystemEntryViewModel(FileSystem, fileSystem.Name, FileSystemEntryType.Root);
 
 			var nodes = new Dictionary<string, FileSystemEntryViewModel>();
-			foreach(string file in LoadedFileSystem.GetFiles()) {
+			foreach(string file in FileSystem.GetFiles()) {
 				CreateNode(file, FileSystemEntryType.File, nodes);
 			}
 		}
@@ -33,7 +33,7 @@ namespace Yuka.Gui.ViewModels {
 			if(nodes.ContainsKey(path)) return nodes[path];
 
 			string parentPath = Path.GetDirectoryName(path);
-			var node = new FileSystemEntryViewModel(LoadedFileSystem, path, type);
+			var node = new FileSystemEntryViewModel(FileSystem, path, type);
 
 			if(!string.IsNullOrWhiteSpace(parentPath)) {
 				var parent = CreateNode(parentPath, FileSystemEntryType.Directory, nodes);
@@ -48,10 +48,10 @@ namespace Yuka.Gui.ViewModels {
 		}
 
 		public void Close() {
-			LoadedFileSystem.Dispose();
+			FileSystem.Dispose();
 		}
 
-		public override string ToString() => LoadedFileSystem?.ToString() ?? "null";
+		public override string ToString() => FileSystem?.ToString() ?? "null";
 	}
 
 	internal sealed class FileSystemPendingViewModel : FileSystemViewModel {

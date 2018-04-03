@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -27,7 +29,7 @@ namespace Yuka.Gui.ViewModels {
 			// select archive file TODO remove default path
 			string path = ServiceLocator.GetService<IFileService>().SelectArchiveFile(@"S:\Games\Visual Novels\Lover Able\");
 			if(string.IsNullOrWhiteSpace(path)) return;
-			
+
 			IsFileSystemLoading = true;
 			CloseArchive();
 			LoadedFileSystem = FileSystemViewModel.Pending;
@@ -66,7 +68,22 @@ namespace Yuka.Gui.ViewModels {
 		}
 
 		public void ExportAllFiles() {
-
+			// select archive file TODO default path
+			string path = ServiceLocator.GetService<IFileService>().SelectDirectory("");
+			try {
+				var srcFs = LoadedFileSystem.FileSystem;
+				using(var dstFs = FileSystem.NewFolder(path)) {
+					foreach(string file in srcFs.GetFiles()) {
+						using(var srcFile = srcFs.OpenFile(file))
+						using(var dstFile = dstFs.CreateFile(file)) {
+							srcFile.CopyTo(dstFile);
+						}
+					}
+				}
+			}
+			catch(IOException e) {
+				Console.WriteLine(e);
+			}
 		}
 
 		public override string ToString() => GetType().Name + ": " + LoadedFileSystem;
