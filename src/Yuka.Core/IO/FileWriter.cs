@@ -31,6 +31,7 @@ namespace Yuka.IO {
 			new YksScriptWriter(),
 			new CsvStringTableWriter(),
 			new YkdScriptWriter(),
+			new TxtStringWriter(),
 			new RawFileWriter()
 		};
 

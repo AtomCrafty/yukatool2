@@ -58,6 +58,7 @@
     <Compile Include="Container\ArchiveFile.cs" />
     <Compile Include="Container\ArchiveHelpers.cs" />
     <Compile Include="IO\Formats\Csv.cs" />
+    <Compile Include="IO\Formats\Txt.cs" />
     <Compile Include="IO\Formats\Ykc.cs" />
     <Compile Include="Script\Compiler.cs" />
     <Compile Include="Script\Data\DataElement.cs" />

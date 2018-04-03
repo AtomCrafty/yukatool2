@@ -1,4 +1,6 @@
-﻿namespace Yuka.IO {
+﻿using System.Text;
+
+namespace Yuka.IO {
 	public static class Options {
 
 		public static bool YkgConvertFrmToAniOnExport = true;
@@ -24,5 +26,7 @@
 		public static string CsvIgnorePrefix = "#";
 		public static string CsvSkipTextField = ".";
 		public static string[] CsvGeneratedColumns = { "ID", "Speaker", "Original", "[Translation]", "[TLC]", "[Edit]", "[QC]", "Comment" };
+
+		public static Encoding TextEncoding = Encoding.GetEncoding("Shift-JIS");
 	}
 }

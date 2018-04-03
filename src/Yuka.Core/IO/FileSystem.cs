@@ -6,6 +6,7 @@ using Yuka.Container;
 namespace Yuka.IO {
 	public abstract class FileSystem : IDisposable {
 
+		public abstract string Name { get; }
 		public abstract string[] GetFiles(string filter = "*.*");
 		public abstract bool FileExists(string name);
 		public abstract long GetFileSize(string name);
@@ -98,6 +99,8 @@ namespace Yuka.IO {
 
 		internal DummyFileSystem() { }
 
+		public override string Name => "Dummy";
+
 		public override string[] GetFiles(string filter = "*.*") => new string[0];
 
 		public override bool FileExists(string name) => false;
@@ -127,6 +130,8 @@ namespace Yuka.IO {
 				throw new FileNotFoundException(null, BasePath);
 			}
 		}
+
+		public override string Name => Path.GetFileName(BasePath);
 
 		public override string[] GetFiles(string filter = "*.*") {
 			var files = Directory.GetFiles(BasePath, filter, SearchOption.AllDirectories);
@@ -231,6 +236,8 @@ namespace Yuka.IO {
 		public ArchiveFileSystem(Archive archive) {
 			Archive = archive;
 		}
+
+		public override string Name => Path.GetFileName(Archive.Name);
 
 		public override string[] GetFiles(string filter = "*.*") {
 			return Archive.GetFiles(filter);

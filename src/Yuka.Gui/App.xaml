@@ -1,0 +1,28 @@
+﻿<Application x:Class="Yuka.Gui.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:viewmodels="clr-namespace:Yuka.Gui.ViewModels"
+             xmlns:converters="clr-namespace:Yuka.Gui.Converters"
+             StartupUri="Views/MainWindow.xaml" Startup="App_OnStartup">
+
+    <Application.Resources>
+        <ResourceDictionary>
+
+            <!-- static view models -->
+            <viewmodels:FilesTabViewModel x:Key="FilesTabViewModel"/>
+
+            <!-- converters -->
+            <BooleanToVisibilityConverter x:Key="VisibilityConverter"/>
+            <converters:FileSystemEntryToImageConverter x:Key="FileSystemEntryToImageConverter"/>
+            <converters:EnumerateConverter x:Key="EnumerateConverter"/>
+            <converters:FileSizeConverter x:Key="FileSizeConverter"/>
+            <converters:YukaGraphicToImageConverter x:Key="YukaGraphicToImageConverter"/>
+            <converters:DebugConverter x:Key="DebugConverter"/>
+
+            <!-- icons -->
+            <Image x:Key="Icons.Export" Source="pack://application:,,,/res/images/export.png"/>
+            <Image x:Key="Icons.Delete" Source="pack://application:,,,/res/images/delete.png"/>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
