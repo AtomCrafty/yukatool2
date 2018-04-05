@@ -22,6 +22,17 @@
         <Style TargetType="{x:Type TreeViewItem}">
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
             <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+            <Setter Property="ContextMenu">
+                <Setter.Value>
+                    <ContextMenu>
+                        <MenuItem/>
+                        <MenuItem/>
+                        <MenuItem/>
+                        <MenuItem/>
+                        <MenuItem/>
+                    </ContextMenu>
+                </Setter.Value>
+            </Setter>
         </Style>
     </TreeView.ItemContainerStyle>
 

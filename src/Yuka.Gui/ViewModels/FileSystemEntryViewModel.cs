@@ -2,11 +2,13 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows;
 using Yuka.Graphics;
 using Yuka.Gui.Converters;
 using Yuka.Gui.ViewModels.Data;
 using Yuka.IO;
 using Yuka.Script;
+using Yuka.Util;
 
 namespace Yuka.Gui.ViewModels {
 	public class FileSystemEntryViewModel : ViewModel {
@@ -55,16 +57,25 @@ namespace Yuka.Gui.ViewModels {
 				// avoid spawning multiple tasks
 				_previewLoading = true;
 				var task = Task.Run(() => {
-					_previewContent = _previewContent ?? FileReader.DecodeObject(FullPath, FileSystem).Item1;
-					// send PropertyChanged update to reload UI
-					Preview = _previewViewModel ?? GetPreviewViewModel(_previewContent);
+
+					if(Options.AlwaysUseHexPreview) {
+						using(var reader = FileSystem.OpenFile(FullPath).NewReader()) {
+							_previewContent = reader.ReadToEnd();
+						}
+					}
+					else {
+						_previewContent = _previewContent ?? FileReader.DecodeObject(FullPath, FileSystem).Item1;
+					}
 					_previewLoading = false;
+					// send PropertyChanged update to reload UI
+					//Application.Current.Dispatcher.Invoke(() => {
+					Preview = _previewViewModel ?? GetPreviewViewModel(_previewContent);
+					//});
 				});
 
 				// if loading takes longer than 10 ms, return pending viewmodel
 				task.Wait(TimeSpan.FromMilliseconds(10));
-				if(_previewContent == null) return FileViewModel.Pending;
-				return _previewViewModel;
+				return _previewContent == null ? FileViewModel.Pending : _previewViewModel;
 			}
 			protected set => _previewViewModel = value;
 		}
@@ -77,6 +88,8 @@ namespace Yuka.Gui.ViewModels {
 					return new ImageFileViewModel(graphic);
 				case string str:
 					return new TextFileViewModel(str);
+				case byte[] data:
+					return new HexFileViewModel(data);
 			}
 			return FileViewModel.Dummy;
 		}

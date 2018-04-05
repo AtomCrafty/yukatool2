@@ -7,21 +7,29 @@
              xmlns:files="clr-namespace:Yuka.Gui.ViewModels.Data"
              xmlns:generic="clr-namespace:Yuka.Gui.Views.Generic"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance files:DummyFileViewModel}">
+             d:DesignHeight="300" d:DesignWidth="300">
 
     <!-- Select fitting content template for currently selected file -->
     <UserControl.Resources>
-        <!-- file content templates -->
+
+        <!-- script file -->
+        <DataTemplate DataType="{x:Type files:ScriptFileViewModel}">
+            <TextBlock>TODO: Script preview</TextBlock>
+        </DataTemplate>
+
+        <!-- image file -->
+        <DataTemplate DataType="{x:Type files:ImageFileViewModel}">
+            <preview:ImageFilePreview/>
+        </DataTemplate>
+
+        <!-- text files -->
         <DataTemplate DataType="{x:Type files:TextFileViewModel}">
             <preview:TextFilePreview/>
         </DataTemplate>
 
-        <!--DataTemplate DataType="{x:Type files:ScriptFileViewModel}">
-            <TextBlock>SCRIPT PREVIEW</TextBlock>
-        </DataTemplate-->
-
-        <DataTemplate DataType="{x:Type files:ImageFileViewModel}">
-            <preview:ImageFilePreview/>
+        <!-- binary files -->
+        <DataTemplate DataType="{x:Type files:HexFileViewModel}">
+            <preview:HexFilePreview/>
         </DataTemplate>
 
         <!-- displayed while the preview is loading -->

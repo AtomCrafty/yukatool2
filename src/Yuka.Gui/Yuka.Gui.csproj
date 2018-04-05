@@ -79,6 +79,8 @@
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\EnumerateConverter.cs" />
     <Compile Include="Converters\FileSystemEntryToImageConverter.cs" />
+    <Compile Include="Options.cs" />
+    <Compile Include="ViewModels\Data\HexFileViewModel.cs" />
     <Compile Include="Views\Files\FileTree.xaml.cs">
       <DependentUpon>FileTree.xaml</DependentUpon>
     </Compile>
@@ -99,6 +101,9 @@
       <DependentUpon>FilePreviewPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Data\ScriptFileViewModel.cs" />
+    <Compile Include="Views\Files\Preview\HexFilePreview.xaml.cs">
+      <DependentUpon>HexFilePreview.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Files\Preview\TextFilePreview.xaml.cs">
       <DependentUpon>TextFilePreview.xaml</DependentUpon>
     </Compile>
@@ -113,7 +118,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Files\FileTreeScrapped.xaml">
+    <Page Include="Views\Files\Preview\HexFilePreview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -135,9 +140,6 @@
     </Compile>
     <Compile Include="Views\Files\FilesTab.xaml.cs">
       <DependentUpon>FilesTab.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Files\FileTreeScrapped.xaml.cs">
-      <DependentUpon>FileTreeScrapped.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Generic\MessageDisplay.xaml.cs">
       <DependentUpon>MessageDisplay.xaml</DependentUpon>

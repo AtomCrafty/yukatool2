@@ -35,7 +35,6 @@ namespace Yuka.Gui.ViewModels {
 			LoadedFileSystem = FileSystemViewModel.Pending;
 
 			Task.Run(() => {
-				Thread.Sleep(1000);
 				var fileSystem = new FileSystemViewModel(FileSystem.FromArchive(path));
 				Application.Current.Dispatcher.Invoke(() => {
 					LoadedFileSystem = fileSystem;
