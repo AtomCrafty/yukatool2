@@ -41,7 +41,16 @@
         <DataTemplate DataType="{x:Type files:DummyFileViewModel}">
             <generic:MessageDisplay Message="No preview available" Icon="pack://application:,,,/res/images/warning.png"/>
         </DataTemplate>
+
+        <!-- displayed if an exception occured while loading the preview -->
+        <DataTemplate DataType="{x:Type files:ErrorFileViewModel}">
+            <generic:MessageDisplay Message="{Binding Message}" Icon="pack://application:,,,/res/images/error.png"/>
+        </DataTemplate>
+
     </UserControl.Resources>
 
-    <ContentControl Content="{Binding}"/>
+    <Grid>
+        <ContentControl Content="{Binding}"/>
+        <!--TextBlock Text="{Binding}"/-->
+    </Grid>
 </UserControl>

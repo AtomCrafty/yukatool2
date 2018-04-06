@@ -13,10 +13,9 @@
 
             <!-- converters -->
             <BooleanToVisibilityConverter x:Key="VisibilityConverter"/>
-            <converters:FileSystemEntryToImageConverter x:Key="FileSystemEntryToImageConverter"/>
+            <converters:IconNameToImageConverter x:Key="IconNameToImageConverter"/>
             <converters:EnumerateConverter x:Key="EnumerateConverter"/>
             <converters:FileSizeConverter x:Key="FileSizeConverter"/>
-            <converters:YukaGraphicToImageConverter x:Key="YukaGraphicToImageConverter"/>
             <converters:DebugConverter x:Key="DebugConverter"/>
 
             <!-- icons -->

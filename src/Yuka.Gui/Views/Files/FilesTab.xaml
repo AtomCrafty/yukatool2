@@ -18,7 +18,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition Width="6"/>
-            <ColumnDefinition />
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
         <!-- Toolbar -->
@@ -45,7 +45,7 @@
 
         <!-- File preview -->
         <GroupBox Grid.Column="2" Grid.Row="2" Name="DocumentPreview" Header="Preview">
-            <files:FilePreviewPanel DataContext="{Binding ElementName=FileView, Path=SelectedValue.(viewModels:FileSystemEntryViewModel.Preview)}"/>
+            <files:FilePreviewPanel DataContext="{Binding ElementName=FileView, Path=SelectedValue.(viewModels:ShellItemViewModel.Preview)}"/>
         </GroupBox>
     </Grid>
 </UserControl>

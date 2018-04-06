@@ -2,7 +2,7 @@
 
 namespace Yuka.Gui.Views.Files {
 	/// <summary>
-	/// Interaktionslogik für FileInfoPanel.xaml
+	/// Interaction logic for FileInfoPanel.xaml
 	/// </summary>
 	public partial class FileInfoPanel : UserControl {
 		public FileInfoPanel() {

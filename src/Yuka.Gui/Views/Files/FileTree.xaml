@@ -10,9 +10,9 @@
              ItemsSource="{Binding Root, Converter={StaticResource EnumerateConverter}}">
 
     <TreeView.ItemTemplate>
-        <HierarchicalDataTemplate x:Name="ItemTemplate" ItemsSource="{Binding Children}" DataType="{x:Type vm:FileSystemEntryViewModel}">
+        <HierarchicalDataTemplate x:Name="ItemTemplate" ItemsSource="{Binding Children}" DataType="{x:Type vm:ShellItemViewModel}">
             <StackPanel Orientation="Horizontal">
-                <Image Source="{Binding Icon, Converter={StaticResource FileSystemEntryToImageConverter}}" Height="24"/>
+                <Image Source="{Binding Icon, Converter={StaticResource IconNameToImageConverter}}" Height="24"/>
                 <TextBlock VerticalAlignment="Center" Padding="2 0 4 0" Text="{Binding Name}"/>
             </StackPanel>
         </HierarchicalDataTemplate>

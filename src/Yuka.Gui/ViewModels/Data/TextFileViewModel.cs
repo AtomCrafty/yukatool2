@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Yuka.Gui.ViewModels.Data {
+﻿namespace Yuka.Gui.ViewModels.Data {
 	public class TextFileViewModel : FileViewModel {
 
 		public string Value { get; set; }

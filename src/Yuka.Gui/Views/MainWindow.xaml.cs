@@ -2,7 +2,7 @@
 
 namespace Yuka.Gui.Views {
 	/// <summary>
-	/// Interaktionslogik für MainWindow.xaml
+	/// Interaction logic for MainWindow.xaml
 	/// </summary>
 	public partial class MainWindow : Window {
 		public MainWindow() {

@@ -9,16 +9,16 @@ namespace Yuka.Gui.ViewModels {
 		public static readonly FileSystemViewModel Pending = new FileSystemPendingViewModel();
 
 		internal readonly FileSystem FileSystem;
-		public FileSystemEntryViewModel Root { get; protected set; }
+		public ShellItemViewModel Root { get; protected set; }
 
 		public FileSystemViewModel(FileSystem fileSystem) {
 			FileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
 
-			Root = new FileSystemEntryViewModel(FileSystem, fileSystem.Name, FileSystemEntryType.Root);
+			Root = new ShellItemViewModel(FileSystem, fileSystem.Name, ShellItemType.Root);
 
-			var nodes = new Dictionary<string, FileSystemEntryViewModel>();
+			var nodes = new Dictionary<string, ShellItemViewModel>();
 			foreach(string file in FileSystem.GetFiles()) {
-				CreateNode(file, FileSystemEntryType.File, nodes);
+				CreateNode(file, ShellItemType.File, nodes);
 			}
 		}
 
@@ -29,14 +29,14 @@ namespace Yuka.Gui.ViewModels {
 		/// <param name="type">Type of the element to be added (file/directory)</param>
 		/// <param name="nodes">A directory containing all previously created nodes</param>
 		/// <returns>The node corresponding to the specified path</returns>
-		protected FileSystemEntryViewModel CreateNode(string path, FileSystemEntryType type, Dictionary<string, FileSystemEntryViewModel> nodes) {
+		protected ShellItemViewModel CreateNode(string path, ShellItemType type, Dictionary<string, ShellItemViewModel> nodes) {
 			if(nodes.ContainsKey(path)) return nodes[path];
 
 			string parentPath = Path.GetDirectoryName(path);
-			var node = new FileSystemEntryViewModel(FileSystem, path, type);
+			var node = new ShellItemViewModel(FileSystem, path, type);
 
 			if(!string.IsNullOrWhiteSpace(parentPath)) {
-				var parent = CreateNode(parentPath, FileSystemEntryType.Directory, nodes);
+				var parent = CreateNode(parentPath, ShellItemType.Directory, nodes);
 				parent.Children.Add(node);
 			}
 			else {

@@ -2,25 +2,24 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
-using System.Windows;
 using Yuka.Graphics;
-using Yuka.Gui.Converters;
 using Yuka.Gui.ViewModels.Data;
 using Yuka.IO;
+using Yuka.IO.Formats;
 using Yuka.Script;
 using Yuka.Util;
 
 namespace Yuka.Gui.ViewModels {
-	public class FileSystemEntryViewModel : ViewModel {
+	public class ShellItemViewModel : ViewModel {
 
 		protected readonly FileSystem FileSystem;
 
-		public FileSystemEntryType Type { get; set; }
+		public ShellItemType Type { get; set; }
 
 		public string FullPath { get; set; }
 		public string Name { get; set; }
 		public long Size { get; set; }
-		public ObservableCollection<FileSystemEntryViewModel> Children { get; } = new ObservableCollection<FileSystemEntryViewModel>();
+		public ObservableCollection<ShellItemViewModel> Children { get; } = new ObservableCollection<ShellItemViewModel>();
 
 		public bool IsExpanded { get; set; } = true;
 
@@ -39,8 +38,8 @@ namespace Yuka.Gui.ViewModels {
 		public ActionCommand ExportCommand { get; protected set; }
 		public ActionCommand DeleteCommand { get; protected set; }
 
-		public string Icon => FileSystemEntryToImageConverter.GetIconNameForFileSystemEntry(Type, Name, IsExpanded);
-		public Format Format => Type == FileSystemEntryType.Directory ? null : Format.GuessFromFileName(Name);
+		public string Icon => GetIconName();
+		public Format Format => Type == ShellItemType.Directory ? null : Format.GuessFromFileName(Name);
 
 		protected object _previewContent;
 		protected FileViewModel _previewViewModel;
@@ -57,25 +56,30 @@ namespace Yuka.Gui.ViewModels {
 				// avoid spawning multiple tasks
 				_previewLoading = true;
 				var task = Task.Run(() => {
-
-					if(Options.AlwaysUseHexPreview) {
-						using(var reader = FileSystem.OpenFile(FullPath).NewReader()) {
-							_previewContent = reader.ReadToEnd();
+					try {
+						if(Options.AlwaysUseHexPreview) {
+							using(var reader = FileSystem.OpenFile(FullPath).NewReader()) {
+								_previewContent = reader.ReadToEnd();
+							}
 						}
+						else {
+							_previewContent = FileReader.DecodeObject(FullPath, FileSystem).Item1;
+						}
+
+						// send PropertyChanged update to reload UI
+						_previewLoading = false;
+						Preview = GetPreviewViewModel(_previewContent);
 					}
-					else {
-						_previewContent = _previewContent ?? FileReader.DecodeObject(FullPath, FileSystem).Item1;
+					catch(Exception e) {
+						// send PropertyChanged update to reload UI
+						_previewLoading = false;
+						Preview = FileViewModel.Error(e);
 					}
-					_previewLoading = false;
-					// send PropertyChanged update to reload UI
-					//Application.Current.Dispatcher.Invoke(() => {
-					Preview = _previewViewModel ?? GetPreviewViewModel(_previewContent);
-					//});
 				});
 
 				// if loading takes longer than 10 ms, return pending viewmodel
 				task.Wait(TimeSpan.FromMilliseconds(10));
-				return _previewContent == null ? FileViewModel.Pending : _previewViewModel;
+				return _previewViewModel ?? FileViewModel.Pending;
 			}
 			protected set => _previewViewModel = value;
 		}
@@ -94,7 +98,7 @@ namespace Yuka.Gui.ViewModels {
 			return FileViewModel.Dummy;
 		}
 
-		public FileSystemEntryViewModel(FileSystem fs, string fullPath, FileSystemEntryType type) {
+		public ShellItemViewModel(FileSystem fs, string fullPath, ShellItemType type) {
 			Type = type;
 			FileSystem = fs;
 			FullPath = fullPath;
@@ -112,9 +116,51 @@ namespace Yuka.Gui.ViewModels {
 		public void Delete() {
 			Console.WriteLine("Deleting " + FullPath);
 		}
+
+		public string GetIconName() {
+			switch(Type) {
+
+				case ShellItemType.Directory:
+					return IsExpanded ? "folder-open" : "folder";
+
+				case ShellItemType.File:
+					switch(Format) {
+						case AniFormat _:
+						case CsvFormat _:
+						case TxtFormat _:
+							return "file-text";
+
+						case YkcFormat _:
+							return "folder-archive";
+
+						case BmpFormat _:
+						case GnpFormat _:
+						case PngFormat _:
+						case YkgFormat _:
+							return "file-image";
+
+						case YkdFormat _:
+						case YkiFormat _:
+						case YksFormat _:
+							return "file-script";
+
+						case FrmFormat _:
+							return "file-binary";
+
+						default:
+							return Path.GetExtension(Name).IsOneOf(".mp3", ".ogg") ? "file-audio" : "file";
+					}
+
+				case ShellItemType.Root:
+					return "folder-archive";
+
+				default:
+					throw new ArgumentOutOfRangeException(nameof(Type), Type, null);
+			}
+		}
 	}
 
-	public enum FileSystemEntryType {
+	public enum ShellItemType {
 		Directory, File, Root
 	}
 }
