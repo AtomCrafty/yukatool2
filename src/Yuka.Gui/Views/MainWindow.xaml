@@ -4,8 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:files="clr-namespace:Yuka.Gui.Views.Files"
+        xmlns:log="clr-namespace:Yuka.Gui.Views.Log"
         mc:Ignorable="d" Height="550" Width="900"
-        Title="YukaTool Gui">
+        Title="YukaTool Gui"
+        
+        Loaded="MainWindow_OnLoaded">
 
     <TabControl>
         <TabItem>
@@ -17,6 +20,10 @@
         </TabItem>
         <TabItem>
             <TabItem.Header>Script Tools</TabItem.Header>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>Log</TabItem.Header>
+            <log:LogPanel/>
         </TabItem>
     </TabControl>
 </Window>

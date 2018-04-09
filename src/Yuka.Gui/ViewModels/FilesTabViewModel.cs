@@ -29,6 +29,10 @@ namespace Yuka.Gui.ViewModels {
 			string path = ServiceLocator.GetService<IFileService>().SelectArchiveFile(@"S:\Games\Visual Novels\Lover Able\");
 			if(string.IsNullOrWhiteSpace(path)) return;
 
+			LoadArchive(path);
+		}
+
+		public void LoadArchive(string path) {
 			IsFileSystemLoading = true;
 			CloseArchive();
 			LoadedFileSystem = FileSystemViewModel.Pending;

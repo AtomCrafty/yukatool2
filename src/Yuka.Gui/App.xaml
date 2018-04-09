@@ -17,6 +17,8 @@
             <converters:EnumerateConverter x:Key="EnumerateConverter"/>
             <converters:FileSizeConverter x:Key="FileSizeConverter"/>
             <converters:DebugConverter x:Key="DebugConverter"/>
+            <converters:SeverityToBrushConverter x:Key="SeverityToBrushConverter"/>
+            <converters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
 
             <!-- icons -->
             <Image x:Key="Icons.Export" Source="pack://application:,,,/res/images/export.png"/>

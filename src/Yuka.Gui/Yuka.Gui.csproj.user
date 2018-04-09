@@ -3,4 +3,7 @@
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartArguments>"S:\Games\Visual Novels\Lover Able\data02.ykc"</StartArguments>
+  </PropertyGroup>
 </Project>
