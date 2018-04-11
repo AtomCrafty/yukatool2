@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using Yuka.Gui.Properties;
 using Yuka.Gui.Services;
 using Yuka.Gui.Services.Abstract;
 using Yuka.IO;
@@ -25,7 +26,8 @@ namespace Yuka.Gui.ViewModels {
 		public bool IsFileSystemValid => !IsFileSystemLoading && LoadedFileSystem != null;
 
 		private void OpenArchive() {
-			// select archive file TODO remove default path
+			// select archive file
+			// TODO remove default path
 			string path = ServiceLocator.GetService<IFileService>().SelectArchiveFile(@"S:\Games\Visual Novels\Lover Able\");
 			if(string.IsNullOrWhiteSpace(path)) return;
 
@@ -37,18 +39,28 @@ namespace Yuka.Gui.ViewModels {
 			CloseArchive();
 			LoadedFileSystem = FileSystemViewModel.Pending;
 
+			Log.Info(string.Format(Resources.IO_ArchiveLoading, path), Resources.Tag_IO);
+
 			Task.Run(() => {
-				var fileSystem = new FileSystemViewModel(FileSystem.FromArchive(path));
-				Application.Current.Dispatcher.Invoke(() => {
-					LoadedFileSystem = fileSystem;
-					IsFileSystemLoading = false;
-					UpdateCommandAvailability();
-				});
+				try {
+					var fileSystem = new FileSystemViewModel(FileSystem.FromArchive(path));
+					Application.Current.Dispatcher.Invoke(() => {
+						LoadedFileSystem = fileSystem;
+						IsFileSystemLoading = false;
+						UpdateCommandAvailability();
+					});
+				}
+				catch(Exception e) {
+					Log.Fail(string.Format(Resources.IO_ArchiveLoadFailed, e.GetType().Name, e.Message), Resources.Tag_IO);
+					Log.Fail(e.StackTrace, Resources.Tag_IO);
+				}
 			});
 		}
 
 		public void CloseArchive() {
 			if(LoadedFileSystem == null) return;
+
+			Log.Info(string.Format(Resources.IO_ArchiveClosing, LoadedFileSystem), "IO");
 
 			LoadedFileSystem.Close();
 			LoadedFileSystem = null;
@@ -70,7 +82,8 @@ namespace Yuka.Gui.ViewModels {
 		}
 
 		public void ExportAllFiles() {
-			// select archive file TODO default path
+			// select archive file 
+			// TODO default path
 			string path = ServiceLocator.GetService<IFileService>().SelectDirectory("");
 			try {
 				var srcFs = LoadedFileSystem.FileSystem;

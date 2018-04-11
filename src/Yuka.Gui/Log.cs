@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Windows;
 using PropertyChanged;
+using Yuka.Gui.Properties;
 
 namespace Yuka.Gui {
 	public static class Log {
@@ -33,23 +37,36 @@ namespace Yuka.Gui {
 				FileEndPoint.Close();
 				FileEndPoint = null;
 			}
-			
-			Info("Started logging session", "Logger");
+
+			if(Options.IsInDesignMode) {
+				Debug(Resources.System_LoggingSessionStarted, Resources.Tag_System);
+				Note(Resources.System_LoggingSessionStarted, Resources.Tag_System);
+				Info(Resources.System_LoggingSessionStarted, Resources.Tag_System);
+				Warn(Resources.System_LoggingSessionStarted, Resources.Tag_System);
+				Fail(Resources.System_LoggingSessionStarted, Resources.Tag_System);
+			}
+			else {
+				Info(Resources.System_LoggingSessionStarted, Resources.Tag_System);
+			}
 		}
 
-		public static void Note(string message, string tag = null)
+		[Conditional("DEBUG")]
+		public static void Debug([Localizable(true)] string message, string tag = null)
+			=> Write(message, LogSeverity.Debug, tag);
+
+		public static void Note([Localizable(true)] string message, string tag = null)
 			=> Write(message, LogSeverity.Note, tag);
 
-		public static void Info(string message, string tag = null)
+		public static void Info([Localizable(true)] string message, string tag = null)
 			=> Write(message, LogSeverity.Info, tag);
 
-		public static void Warn(string message, string tag = null)
+		public static void Warn([Localizable(true)] string message, string tag = null)
 			=> Write(message, LogSeverity.Warn, tag);
 
-		public static void Fail(string message, string tag = null)
+		public static void Fail([Localizable(true)] string message, string tag = null)
 			=> Write(message, LogSeverity.Error, tag);
 
-		public static void Write(string message, LogSeverity severity, string tag = null)
+		public static void Write([Localizable(true)] string message, LogSeverity severity, string tag = null)
 			=> Write(new LogEntry(message, severity, tag));
 
 		public static void Write(LogEntry entry)
@@ -62,8 +79,8 @@ namespace Yuka.Gui {
 		public LogSeverity Severity { get; }
 		public DateTime Time { get; } = DateTime.Now;
 
-		public LogEntry(string message, LogSeverity severity, string tag = "General") {
-			Tag = tag;
+		public LogEntry(string message, LogSeverity severity, string tag = null) {
+			Tag = tag ?? Resources.Tag_General;
 			Message = message;
 			Severity = severity;
 		}
@@ -74,7 +91,7 @@ namespace Yuka.Gui {
 	}
 
 	public enum LogSeverity {
-		Note, Info, Warn, Error
+		Debug, Note, Info, Warn, Error
 	}
 
 	public abstract class LoggerEndPoint {
@@ -107,7 +124,7 @@ namespace Yuka.Gui {
 			public ObservableCollection<LogEntry> Entries { get; } = new ObservableCollection<LogEntry>();
 
 			public override void Write(LogEntry entry) {
-				Entries.Add(entry);
+				Application.Current.Dispatcher.Invoke(() => Entries.Add(entry));
 			}
 		}
 	}

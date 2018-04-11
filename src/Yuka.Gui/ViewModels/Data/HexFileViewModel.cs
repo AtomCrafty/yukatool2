@@ -41,7 +41,7 @@ namespace Yuka.Gui.ViewModels.Data {
 				sb.Append(char.IsControl(ch) ? '.' : ch);
 
 				if((i & 15) == 15) sb.Append(Environment.NewLine);
-				else if((i & 7) == 7) sb.Append(' ');
+				//else if((i & 7) == 7) sb.Append(' ');
 			}
 
 			HexText = sb.ToString();

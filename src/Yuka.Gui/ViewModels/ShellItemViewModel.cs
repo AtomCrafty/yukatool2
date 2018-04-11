@@ -92,7 +92,7 @@ namespace Yuka.Gui.ViewModels {
 					return new ImageFileViewModel(graphic);
 				case string str:
 					return new TextFileViewModel(str);
-				case byte[] data:
+				case byte[] data when !Options.NeverShowHexPreview:
 					return new HexFileViewModel(data);
 			}
 			return FileViewModel.Dummy;

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using Microsoft.Win32;
+using Yuka.Gui.Properties;
 using Yuka.Gui.Services.Abstract;
 using Yuka.IO;
 
@@ -12,8 +14,12 @@ namespace Yuka.Gui.Services {
 			ParentWindow = parentWindow;
 		}
 
-		public string SelectDirectory(string initialDirectory) {
-			var dialog = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
+		public string SelectDirectory(string initialDirectory, [Localizable(true)] string description = null) {
+			var dialog = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog() {
+				SelectedPath = initialDirectory,
+				Description = description
+			};
+
 			return dialog.ShowDialog(ParentWindow) != true ? null : dialog.SelectedPath;
 		}
 
@@ -26,10 +32,10 @@ namespace Yuka.Gui.Services {
 				CheckFileExists = true,
 				DefaultExt = Format.Ykc.Extension,
 				InitialDirectory = initialDirectory,
-				Title = "Open archive",
+				Title = Resources.UI_OpenArchiveDialogTitle,
 				DereferenceLinks = true,
-				Filter = "Yuka container (*.ykc)|*.ykc|All files (*.*)|*.*",
-				FilterIndex = 0
+				Filter = Resources.UI_ArchiveFilter,
+				FilterIndex = 0,
 			};
 
 			return dialog.ShowDialog(ParentWindow) != true ? null : dialog.FileName;

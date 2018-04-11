@@ -11,6 +11,7 @@ namespace Yuka.Gui.Converters {
 			if(!(value is LogSeverity severity)) throw new ArgumentOutOfRangeException(nameof(value), value, null);
 
 			switch(severity) {
+				case LogSeverity.Debug: return Brushes.LimeGreen;
 				case LogSeverity.Note: return Brushes.Gray;
 				case LogSeverity.Info: return Brushes.DodgerBlue;
 				case LogSeverity.Warn: return Brushes.Orange;

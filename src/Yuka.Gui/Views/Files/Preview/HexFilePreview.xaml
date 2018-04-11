@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="300">
+
     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -13,15 +14,15 @@
             </Grid.ColumnDefinitions>
 
             <TextBox FontFamily="Consolas" FontSize="14" BorderThickness="0" Padding="5 5 0 0"
-                 HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled"
-                 AcceptsReturn="True" AcceptsTab="True" TextWrapping="NoWrap"
-                 Text="{Binding HexNumbers, Mode=OneWay}" IsReadOnly="True">
+                     HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled"
+                     AcceptsReturn="True" AcceptsTab="True" TextWrapping="NoWrap"
+                     Text="{Binding HexNumbers, Mode=OneWay}" IsReadOnly="True">
             </TextBox>
 
             <TextBox Grid.Column="1" FontFamily="Consolas" FontSize="14" BorderThickness="0" Padding="15 5 0 0"
                      HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled"
-                 AcceptsReturn="True" AcceptsTab="True" TextWrapping="NoWrap"
-                 Text="{Binding HexText, Mode=OneWay}" IsReadOnly="True">
+                     AcceptsReturn="True" AcceptsTab="True" TextWrapping="NoWrap"
+                     Text="{Binding HexText, Mode=OneWay}" IsReadOnly="True">
             </TextBox>
         </Grid>
     </ScrollViewer>
