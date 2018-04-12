@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -14,9 +15,12 @@ namespace Yuka.Gui {
 
 		public static bool AlwaysUseHexPreview = false;
 		public static bool NeverShowHexPreview = false;
+		public static long HexPreviewMaxFileSize = 1024 * 1024; // 1 MB
 
 		public static bool EnableCollectorLogging = true;
 		public static bool EnableFileLogging = true;
 		public static string LogFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? ".", "yuka.log");
+
+		public static Dictionary<string, bool> RememberedConfirmations = new Dictionary<string, bool>();
 	}
 }

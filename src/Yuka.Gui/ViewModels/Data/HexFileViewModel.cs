@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Yuka.Gui.Properties;
 
 namespace Yuka.Gui.ViewModels.Data {
 	public class HexFileViewModel : FileViewModel {
@@ -19,6 +20,10 @@ namespace Yuka.Gui.ViewModels.Data {
 		}
 
 		public void UpdateHexNumbers() {
+			if(Data.LongLength > Options.HexPreviewMaxFileSize) {
+				HexNumbers = Resources.UI_FileTooLongForHexPreview;
+				return;
+			}
 			var sb = new StringBuilder();
 
 			for(int i = 0; i < Data.Length; i++) {
@@ -33,6 +38,10 @@ namespace Yuka.Gui.ViewModels.Data {
 		}
 
 		public void UpdateHexText() {
+			if(Data.LongLength > Options.HexPreviewMaxFileSize) {
+				HexText = "";
+				return;
+			}
 			var sb = new StringBuilder();
 
 			for(int i = 0; i < Data.Length; i++) {

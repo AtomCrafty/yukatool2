@@ -13,11 +13,14 @@ namespace Yuka.Gui.Converters {
 		protected readonly Dictionary<string, WeakReference<BitmapImage>> ImageCache = new Dictionary<string, WeakReference<BitmapImage>>();
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+
 			if(!(value is string icon)) return null;
-			if(ImageCache.ContainsKey(icon)) return ImageCache[icon];
+			if(ImageCache.ContainsKey(icon) && ImageCache[icon].TryGetTarget(out var image)) return image;
+
 			Log.Debug(string.Format(Resources.System_IconLoadCacheMiss, icon), "IO");
 			var uri = new Uri($@"pack://application:,,,/{Assembly.GetExecutingAssembly().GetName().Name};component/res/images/{icon}.png");
-			var image = new BitmapImage(uri);
+
+			image = new BitmapImage(uri);
 			ImageCache[icon] = new WeakReference<BitmapImage>(image);
 			return image;
 		}

@@ -84,8 +84,11 @@
     <Compile Include="Converters\EnumerateConverter.cs" />
     <Compile Include="Converters\SeverityToBrushConverter.cs" />
     <Compile Include="Converters\IconNameToImageConverter.cs" />
+    <Compile Include="Jobs\ExportAllJob.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Options.cs" />
+    <Compile Include="Services\ConfirmationService.cs" />
+    <Compile Include="Services\Abstract\IConfirmationService.cs" />
     <Compile Include="ViewModels\Data\HexFileViewModel.cs" />
     <Compile Include="Views\Files\FileTree.xaml.cs">
       <DependentUpon>FileTree.xaml</DependentUpon>
@@ -93,7 +96,7 @@
     <Compile Include="Services\Abstract\IFileService.cs" />
     <Compile Include="Services\Abstract\IService.cs" />
     <Compile Include="Services\FileService.cs" />
-    <Compile Include="Services\ServiceLocator.cs" />
+    <Compile Include="Services\Service.cs" />
     <Compile Include="ViewModels\FilesTabViewModel.cs" />
     <Compile Include="ViewModels\FileSystemViewModel.cs" />
     <Compile Include="ViewModel.cs" />

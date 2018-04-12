@@ -5,9 +5,10 @@ namespace Yuka.Gui {
 	/// <summary>
 	/// Interaction logic for "App.xaml"
 	/// </summary>
-	public partial class App : Application {
+	public partial class App {
 		private void App_OnStartup(object sender, StartupEventArgs e) {
-			ServiceLocator.Register(new FileService(MainWindow));
+			Service.Register(new FileService(MainWindow));
+			Service.Register(new ConfirmationService(MainWindow));
 		}
 	}
 }

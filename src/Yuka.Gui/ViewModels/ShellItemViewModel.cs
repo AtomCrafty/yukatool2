@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using Yuka.Graphics;
+using Yuka.Gui.Properties;
 using Yuka.Gui.ViewModels.Data;
 using Yuka.IO;
 using Yuka.IO.Formats;
@@ -74,6 +75,8 @@ namespace Yuka.Gui.ViewModels {
 						// send PropertyChanged update to reload UI
 						_previewLoading = false;
 						Preview = FileViewModel.Error(e);
+						Log.Fail(string.Format(Resources.UI_PreviewFailed, e.GetType().Name, e.Message), Resources.Tag_UI);
+						Log.Fail(e.StackTrace, Resources.Tag_UI);
 					}
 				});
 

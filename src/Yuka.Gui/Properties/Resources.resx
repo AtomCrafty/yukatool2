@@ -134,6 +134,7 @@
   </data>
   <data name="System_IconLoadCacheMiss" xml:space="preserve">
     <value>Chache miss; loading icon '{0}'</value>
+    <comment>0: icon name</comment>
   </data>
   <data name="Tag_General" xml:space="preserve">
     <value>General</value>
@@ -149,5 +150,49 @@
   </data>
   <data name="UI_OpenArchiveDialogTitle" xml:space="preserve">
     <value>Select an archive file</value>
+  </data>
+  <data name="IO_FolderSelectionAbortedByUser" xml:space="preserve">
+    <value>Export aborted by user</value>
+  </data>
+  <data name="IO_ArchiveSelectionAbortedByUser" xml:space="preserve">
+    <value>Archive selection aborted by user</value>
+  </data>
+  <data name="IO_ArchiveSelectionStarted" xml:space="preserve">
+    <value>Selecting archive file...</value>
+  </data>
+  <data name="IO_ExportAllFailed" xml:space="preserve">
+    <value>Failed to export entire archive: [{0}] {1}</value>
+    <comment>0: exception type, 1: error message</comment>
+  </data>
+  <data name="IO_ExportFolderSelectionStarted" xml:space="preserve">
+    <value>Selecting folder for archive export...</value>
+  </data>
+  <data name="IO_ExportFolderSelectionEnded" xml:space="preserve">
+    <value>Export folder selected: '{0}'</value>
+    <comment>0: folder path</comment>
+  </data>
+  <data name="IO_ArchiveSelectionEnded" xml:space="preserve">
+    <value>Archive file selected: '{0}'</value>
+    <comment>0: archive path</comment>
+  </data>
+  <data name="UI_FileTooLongForHexPreview" xml:space="preserve">
+    <value>File too long for hex preview</value>
+  </data>
+  <data name="Tag_UI" xml:space="preserve">
+    <value>UI</value>
+  </data>
+  <data name="UI_PreviewFailed" xml:space="preserve">
+    <value>Failed to generate preview: [{0}] {1}</value>
+    <comment>0: exception type, 1: error message</comment>
+  </data>
+  <data name="UI_ConfirmationRememberSelection" xml:space="preserve">
+    <value>Remember selection</value>
+  </data>
+  <data name="UI_ConfirmationDialogWindowTitle" xml:space="preserve">
+    <value>Confirm action</value>
+  </data>
+  <data name="UI_ConfirmationUsingRememberedValue" xml:space="preserve">
+    <value>Remembered selection '{0}' for confirmation '{1}'</value>
+    <comment>0: selected value, 1: confirmation message</comment>
   </data>
 </root>

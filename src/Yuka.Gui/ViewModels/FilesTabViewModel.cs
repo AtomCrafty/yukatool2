@@ -27,9 +27,14 @@ namespace Yuka.Gui.ViewModels {
 
 		private void OpenArchive() {
 			// select archive file
-			// TODO remove default path
-			string path = ServiceLocator.GetService<IFileService>().SelectArchiveFile(@"S:\Games\Visual Novels\Lover Able\");
-			if(string.IsNullOrWhiteSpace(path)) return;
+			// TODO default path
+			Log.Note(Resources.IO_ArchiveSelectionStarted, Resources.Tag_IO);
+			string path = Service.Get<IFileService>().SelectArchiveFile(@"S:\Games\Visual Novels\Lover Able\");
+			if(string.IsNullOrWhiteSpace(path)) {
+				Log.Warn(Resources.IO_ArchiveSelectionAbortedByUser, Resources.Tag_IO);
+				return;
+			}
+			Log.Note(string.Format(Resources.IO_ArchiveSelectionEnded, path), Resources.Tag_IO);
 
 			LoadArchive(path);
 		}
@@ -60,7 +65,7 @@ namespace Yuka.Gui.ViewModels {
 		public void CloseArchive() {
 			if(LoadedFileSystem == null) return;
 
-			Log.Info(string.Format(Resources.IO_ArchiveClosing, LoadedFileSystem), "IO");
+			Log.Info(string.Format(Resources.IO_ArchiveClosing, LoadedFileSystem.FileSystem.Name), Resources.Tag_IO);
 
 			LoadedFileSystem.Close();
 			LoadedFileSystem = null;
@@ -84,7 +89,14 @@ namespace Yuka.Gui.ViewModels {
 		public void ExportAllFiles() {
 			// select archive file 
 			// TODO default path
-			string path = ServiceLocator.GetService<IFileService>().SelectDirectory("");
+			Log.Note(Resources.IO_ExportFolderSelectionStarted, Resources.Tag_IO);
+			string path = Service.Get<IFileService>().SelectDirectory("");
+			if(string.IsNullOrWhiteSpace(path)) {
+				Log.Warn(Resources.IO_FolderSelectionAbortedByUser, Resources.Tag_IO);
+				return;
+			}
+			Log.Note(string.Format(Resources.IO_ExportFolderSelectionEnded, path), Resources.Tag_IO);
+
 			try {
 				var srcFs = LoadedFileSystem.FileSystem;
 				using(var dstFs = FileSystem.NewFolder(path)) {
@@ -96,8 +108,9 @@ namespace Yuka.Gui.ViewModels {
 					}
 				}
 			}
-			catch(IOException e) {
-				Console.WriteLine(e);
+			catch(Exception e) {
+				Log.Fail(string.Format(Resources.IO_ExportAllFailed, e.GetType().Name, e.Message), Resources.Tag_IO);
+				Log.Fail(e.StackTrace, Resources.Tag_IO);
 			}
 		}
 

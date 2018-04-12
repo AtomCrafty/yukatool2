@@ -125,6 +125,7 @@ namespace Yuka.Gui {
 
 			public override void Write(LogEntry entry) {
 				Application.Current.Dispatcher.Invoke(() => Entries.Add(entry));
+				//Application.Current.Dispatcher.Invoke(() => Entries.Insert(0, entry));
 			}
 		}
 	}

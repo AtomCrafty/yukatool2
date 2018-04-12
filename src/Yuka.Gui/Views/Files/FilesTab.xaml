@@ -26,6 +26,7 @@
             <Button Width="100" Margin="5 5 5 5" Content="Open archive" Command="{Binding OpenArchiveCommand}"/>
             <Button Width="100" Margin="0 5 5 5" Content="Close archive" Command="{Binding CloseArchiveCommand}"/>
             <Button Width="100" Margin="0 5 5 5" Content="Export all" Command="{Binding ExportAllCommand}"/>
+            <Button Width="100" Margin="0 5 5 5" Content="Test" Click="Button_Click"/>
         </StackPanel>
 
         <!-- File list -->

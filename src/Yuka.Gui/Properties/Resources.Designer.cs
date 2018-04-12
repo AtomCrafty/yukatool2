@@ -88,6 +88,69 @@ namespace Yuka.Gui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Archive selection aborted by user ähnelt.
+        /// </summary>
+        internal static string IO_ArchiveSelectionAbortedByUser {
+            get {
+                return ResourceManager.GetString("IO_ArchiveSelectionAbortedByUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Archive file selected: &apos;{0}&apos; ähnelt.
+        /// </summary>
+        internal static string IO_ArchiveSelectionEnded {
+            get {
+                return ResourceManager.GetString("IO_ArchiveSelectionEnded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Selecting archive file... ähnelt.
+        /// </summary>
+        internal static string IO_ArchiveSelectionStarted {
+            get {
+                return ResourceManager.GetString("IO_ArchiveSelectionStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to export entire archive: [{0}] {1} ähnelt.
+        /// </summary>
+        internal static string IO_ExportAllFailed {
+            get {
+                return ResourceManager.GetString("IO_ExportAllFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Export folder selected: &apos;{0}&apos; ähnelt.
+        /// </summary>
+        internal static string IO_ExportFolderSelectionEnded {
+            get {
+                return ResourceManager.GetString("IO_ExportFolderSelectionEnded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Selecting folder for archive export... ähnelt.
+        /// </summary>
+        internal static string IO_ExportFolderSelectionStarted {
+            get {
+                return ResourceManager.GetString("IO_ExportFolderSelectionStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Export aborted by user ähnelt.
+        /// </summary>
+        internal static string IO_FolderSelectionAbortedByUser {
+            get {
+                return ResourceManager.GetString("IO_FolderSelectionAbortedByUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Chache miss; loading icon &apos;{0}&apos; ähnelt.
         /// </summary>
         internal static string System_IconLoadCacheMiss {
@@ -133,6 +196,15 @@ namespace Yuka.Gui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die UI ähnelt.
+        /// </summary>
+        internal static string Tag_UI {
+            get {
+                return ResourceManager.GetString("Tag_UI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Yuka container (*.ykc)|*.ykc|All files (*.*)|*.* ähnelt.
         /// </summary>
         internal static string UI_ArchiveFilter {
@@ -142,11 +214,56 @@ namespace Yuka.Gui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Confirm action ähnelt.
+        /// </summary>
+        internal static string UI_ConfirmationDialogWindowTitle {
+            get {
+                return ResourceManager.GetString("UI_ConfirmationDialogWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Remember selection ähnelt.
+        /// </summary>
+        internal static string UI_ConfirmationRememberSelection {
+            get {
+                return ResourceManager.GetString("UI_ConfirmationRememberSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Remembered selection &apos;{0}&apos; for confirmation &apos;{1}&apos; ähnelt.
+        /// </summary>
+        internal static string UI_ConfirmationUsingRememberedValue {
+            get {
+                return ResourceManager.GetString("UI_ConfirmationUsingRememberedValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die File too long for hex preview ähnelt.
+        /// </summary>
+        internal static string UI_FileTooLongForHexPreview {
+            get {
+                return ResourceManager.GetString("UI_FileTooLongForHexPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Select an archive file ähnelt.
         /// </summary>
         internal static string UI_OpenArchiveDialogTitle {
             get {
                 return ResourceManager.GetString("UI_OpenArchiveDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to generate preview: [{0}] {1} ähnelt.
+        /// </summary>
+        internal static string UI_PreviewFailed {
+            get {
+                return ResourceManager.GetString("UI_PreviewFailed", resourceCulture);
             }
         }
     }
