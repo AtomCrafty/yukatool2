@@ -115,6 +115,15 @@ namespace Yuka.Gui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to perform drag&apos;n drop operation: [{0}] {1} ähnelt.
+        /// </summary>
+        internal static string IO_DragNDropReceiveFailed {
+            get {
+                return ResourceManager.GetString("IO_DragNDropReceiveFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Failed to export entire archive: [{0}] {1} ähnelt.
         /// </summary>
         internal static string IO_ExportAllFailed {
@@ -147,6 +156,51 @@ namespace Yuka.Gui.Properties {
         internal static string IO_FolderSelectionAbortedByUser {
             get {
                 return ResourceManager.GetString("IO_FolderSelectionAbortedByUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to import file: [{0}] {1} ähnelt.
+        /// </summary>
+        internal static string IO_ImportFileFailed {
+            get {
+                return ResourceManager.GetString("IO_ImportFileFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Imported file &apos;{0}&apos; to &apos;{1}&apos; ähnelt.
+        /// </summary>
+        internal static string IO_ImportFileFinished {
+            get {
+                return ResourceManager.GetString("IO_ImportFileFinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Unable to import file &apos;{0}&apos;: File not found ähnelt.
+        /// </summary>
+        internal static string IO_ImportFileNotFound {
+            get {
+                return ResourceManager.GetString("IO_ImportFileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to import folder: [{0}] {1} ähnelt.
+        /// </summary>
+        internal static string IO_ImportFolderFailed {
+            get {
+                return ResourceManager.GetString("IO_ImportFolderFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Imported {0} files from &apos;{1}&apos; to &apos;{2}&apos; ähnelt.
+        /// </summary>
+        internal static string IO_ImportFolderFinished {
+            get {
+                return ResourceManager.GetString("IO_ImportFolderFinished", resourceCulture);
             }
         }
         
@@ -214,11 +268,20 @@ namespace Yuka.Gui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die You are about to export into an existing folder. Continue? ähnelt.
+        /// </summary>
+        internal static string UI_Confirmation_ExportIntoNonEmptyFolder_Message {
+            get {
+                return ResourceManager.GetString("UI_Confirmation_ExportIntoNonEmptyFolder_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Confirm action ähnelt.
         /// </summary>
-        internal static string UI_ConfirmationDialogWindowTitle {
+        internal static string UI_ConfirmationDefaultWindowTitle {
             get {
-                return ResourceManager.GetString("UI_ConfirmationDialogWindowTitle", resourceCulture);
+                return ResourceManager.GetString("UI_ConfirmationDefaultWindowTitle", resourceCulture);
             }
         }
         
@@ -237,6 +300,15 @@ namespace Yuka.Gui.Properties {
         internal static string UI_ConfirmationUsingRememberedValue {
             get {
                 return ResourceManager.GetString("UI_ConfirmationUsingRememberedValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Deleting preview because &apos;{0}&apos; was deselected ähnelt.
+        /// </summary>
+        internal static string UI_DeletingPreviewOnDeselect {
+            get {
+                return ResourceManager.GetString("UI_DeletingPreviewOnDeselect", resourceCulture);
             }
         }
         

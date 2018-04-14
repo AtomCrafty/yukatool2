@@ -8,7 +8,8 @@
         mc:Ignorable="d" Height="550" Width="900"
         Title="YukaTool Gui"
         
-        Loaded="MainWindow_OnLoaded">
+        Loaded="MainWindow_OnLoaded"
+        Closed="MainWindow_OnClosed">
 
     <TabControl>
         <TabItem>

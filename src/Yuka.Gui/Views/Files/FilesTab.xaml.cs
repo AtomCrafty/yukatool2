@@ -13,7 +13,7 @@ namespace Yuka.Gui.Views.Files {
 		}
 
 		private void Button_Click(object sender, System.Windows.RoutedEventArgs e) {
-			Service.Get<ConfirmationService>().ConfirmRemember("SampleConfirmation", "Main message", "Operation details", "Window title");
+			Service.Get<ConfirmationService>().ConfirmAndRemember("SampleConfirmation", "Main message", "Operation details", "Window title");
 		}
 	}
 }

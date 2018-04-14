@@ -50,7 +50,7 @@ namespace Yuka.Gui {
 			}
 		}
 
-		[Conditional("DEBUG")]
+		//[Conditional("DEBUG")] // not conditional to support verbose logging in release builds
 		public static void Debug([Localizable(true)] string message, string tag = null)
 			=> Write(message, LogSeverity.Debug, tag);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using Yuka.Gui.ViewModels;
+using Yuka.Gui.Views.Log;
 using Yuka.IO;
 using Yuka.IO.Formats;
 
@@ -14,6 +15,12 @@ namespace Yuka.Gui.Views {
 		}
 
 		private void MainWindow_OnLoaded(object sender, RoutedEventArgs e) {
+			// TODO temp
+			new LogWindow { WindowStartupLocation = WindowStartupLocation.Manual, Left = 10, Top = 50, Height = 1000 }.Show();
+			Left = 550;
+			Top = 300;
+			Focus();
+
 			var args = Environment.GetCommandLineArgs();
 			if(args.Length <= 1) return;
 
@@ -46,6 +53,10 @@ namespace Yuka.Gui.Views {
 				case YksFormat _:
 					break;
 			}
+		}
+
+		private void MainWindow_OnClosed(object sender, EventArgs e) {
+			Application.Current.Shutdown();
 		}
 	}
 }

@@ -17,7 +17,7 @@ namespace Yuka.Gui.Converters {
 			if(!(value is string icon)) return null;
 			if(ImageCache.ContainsKey(icon) && ImageCache[icon].TryGetTarget(out var image)) return image;
 
-			Log.Debug(string.Format(Resources.System_IconLoadCacheMiss, icon), "IO");
+			Log.Debug(string.Format(Resources.System_IconLoadCacheMiss, icon), Resources.Tag_UI);
 			var uri = new Uri($@"pack://application:,,,/{Assembly.GetExecutingAssembly().GetName().Name};component/res/images/{icon}.png");
 
 			image = new BitmapImage(uri);

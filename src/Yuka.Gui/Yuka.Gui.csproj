@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B920E02B-E009-4ABB-BCF4-E720FA456A19}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>Yuka.Gui</RootNamespace>
     <AssemblyName>yuka_gui</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
@@ -89,6 +89,7 @@
     <Compile Include="Options.cs" />
     <Compile Include="Services\ConfirmationService.cs" />
     <Compile Include="Services\Abstract\IConfirmationService.cs" />
+    <Compile Include="Util\Extensions.cs" />
     <Compile Include="ViewModels\Data\HexFileViewModel.cs" />
     <Compile Include="Views\Files\FileTree.xaml.cs">
       <DependentUpon>FileTree.xaml</DependentUpon>
@@ -143,6 +144,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Log\LogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -159,6 +164,9 @@
     </Compile>
     <Compile Include="Views\Log\LogPanel.xaml.cs">
       <DependentUpon>LogPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Log\LogWindow.xaml.cs">
+      <DependentUpon>LogWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -195,6 +203,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

@@ -188,11 +188,41 @@
   <data name="UI_ConfirmationRememberSelection" xml:space="preserve">
     <value>Remember selection</value>
   </data>
-  <data name="UI_ConfirmationDialogWindowTitle" xml:space="preserve">
+  <data name="UI_ConfirmationDefaultWindowTitle" xml:space="preserve">
     <value>Confirm action</value>
   </data>
   <data name="UI_ConfirmationUsingRememberedValue" xml:space="preserve">
     <value>Remembered selection '{0}' for confirmation '{1}'</value>
     <comment>0: selected value, 1: confirmation message</comment>
+  </data>
+  <data name="UI_Confirmation_ExportIntoNonEmptyFolder_Message" xml:space="preserve">
+    <value>You are about to export into an existing folder. Continue?</value>
+  </data>
+  <data name="UI_DeletingPreviewOnDeselect" xml:space="preserve">
+    <value>Deleting preview because '{0}' was deselected</value>
+    <comment>0: file path</comment>
+  </data>
+  <data name="IO_DragNDropReceiveFailed" xml:space="preserve">
+    <value>Failed to perform drag'n drop operation: [{0}] {1}</value>
+  </data>
+  <data name="IO_ImportFileNotFound" xml:space="preserve">
+    <value>Unable to import file '{0}': File not found</value>
+    <comment>0: source path</comment>
+  </data>
+  <data name="IO_ImportFileFailed" xml:space="preserve">
+    <value>Failed to import file: [{0}] {1}</value>
+    <comment>0: exception type, 1: error message</comment>
+  </data>
+  <data name="IO_ImportFolderFailed" xml:space="preserve">
+    <value>Failed to import folder: [{0}] {1}</value>
+    <comment>0: exception type, 1: error message</comment>
+  </data>
+  <data name="IO_ImportFolderFinished" xml:space="preserve">
+    <value>Imported {0} files from '{1}' to '{2}'</value>
+    <comment>0: file count, 1: source path, 2: local path</comment>
+  </data>
+  <data name="IO_ImportFileFinished" xml:space="preserve">
+    <value>Imported file '{0}' to '{1}'</value>
+    <comment>0: source path, 1: local path</comment>
   </data>
 </root>

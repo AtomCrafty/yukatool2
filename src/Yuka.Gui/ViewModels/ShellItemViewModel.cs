@@ -12,27 +12,29 @@ using Yuka.Util;
 
 namespace Yuka.Gui.ViewModels {
 	public class ShellItemViewModel : ViewModel {
-
 		protected readonly FileSystem FileSystem;
+		protected readonly FileSystemViewModel FileSystemViewModel;
 
 		public ShellItemType Type { get; set; }
 
 		public string FullPath { get; set; }
 		public string Name { get; set; }
 		public long Size { get; set; }
-		public ObservableCollection<ShellItemViewModel> Children { get; } = new ObservableCollection<ShellItemViewModel>();
+		public ObservableCollection<ShellItemViewModel> Children { get; set; }
 
 		public bool IsExpanded { get; set; } = true;
 
 		private bool _isSelected;
+
 		public bool IsSelected {
 			get => _isSelected;
 			set {
-				if(_isSelected == value) return;
-
 				_isSelected = value;
-				(_previewContent as IDisposable)?.Dispose();
-				_previewContent = null;
+				if(_isSelected) return;
+
+				if(!Options.DeletePreviewOnItemDeselect) return;
+				Log.Debug(string.Format(Resources.UI_DeletingPreviewOnDeselect, FullPath));
+				_previewViewModel = null;
 			}
 		}
 
@@ -42,7 +44,6 @@ namespace Yuka.Gui.ViewModels {
 		public string Icon => GetIconName();
 		public Format Format => Type == ShellItemType.Directory ? null : Format.GuessFromFileName(Name);
 
-		protected object _previewContent;
 		protected FileViewModel _previewViewModel;
 		protected bool _previewLoading;
 
@@ -58,18 +59,20 @@ namespace Yuka.Gui.ViewModels {
 				_previewLoading = true;
 				var task = Task.Run(() => {
 					try {
+						// read file content
+						object fileContent;
 						if(Options.AlwaysUseHexPreview) {
 							using(var reader = FileSystem.OpenFile(FullPath).NewReader()) {
-								_previewContent = reader.ReadToEnd();
+								fileContent = reader.ReadToEnd();
 							}
 						}
 						else {
-							_previewContent = FileReader.DecodeObject(FullPath, FileSystem).Item1;
+							fileContent = FileReader.DecodeObject(FullPath, FileSystem).Item1;
 						}
 
 						// send PropertyChanged update to reload UI
 						_previewLoading = false;
-						Preview = GetPreviewViewModel(_previewContent);
+						Preview = GetPreviewViewModel(fileContent);
 					}
 					catch(Exception e) {
 						// send PropertyChanged update to reload UI
@@ -88,7 +91,7 @@ namespace Yuka.Gui.ViewModels {
 		}
 
 		protected FileViewModel GetPreviewViewModel(object content) {
-			switch(_previewContent) {
+			switch(content) {
 				case YukaScript script:
 					return new ScriptFileViewModel(script);
 				case YukaGraphic graphic:
@@ -98,15 +101,19 @@ namespace Yuka.Gui.ViewModels {
 				case byte[] data when !Options.NeverShowHexPreview:
 					return new HexFileViewModel(data);
 			}
+
 			return FileViewModel.Dummy;
 		}
 
-		public ShellItemViewModel(FileSystem fs, string fullPath, ShellItemType type) {
+		public ShellItemViewModel(FileSystemViewModel fs, string fullPath, ShellItemType type) {
 			Type = type;
-			FileSystem = fs;
+			FileSystemViewModel = fs;
+			FileSystem = fs.FileSystem;
 			FullPath = fullPath;
 			Name = Path.GetFileName(fullPath);
 			Size = FileSystem.GetFileSize(fullPath);
+
+			if(Type != ShellItemType.File) Children = new ObservableCollection<ShellItemViewModel>();
 
 			ExportCommand = new ActionCommand(Export);
 			DeleteCommand = new ActionCommand(Delete);
@@ -122,7 +129,6 @@ namespace Yuka.Gui.ViewModels {
 
 		public string GetIconName() {
 			switch(Type) {
-
 				case ShellItemType.Directory:
 					return IsExpanded ? "folder-open" : "folder";
 
@@ -161,9 +167,20 @@ namespace Yuka.Gui.ViewModels {
 					throw new ArgumentOutOfRangeException(nameof(Type), Type, null);
 			}
 		}
+
+		public string DropTargetPath => Type == ShellItemType.File ? Path.GetDirectoryName(FullPath) : Type == ShellItemType.Root ? "" : FullPath;
+
+		public void ImportFiles(string[] paths) {
+			string localBasePath = DropTargetPath;
+			foreach(string path in paths) {
+				FileSystemViewModel.ImportFileOrFolder(path, localBasePath);
+			}
+		}
 	}
 
 	public enum ShellItemType {
-		Directory, File, Root
+		Directory,
+		File,
+		Root
 	}
 }

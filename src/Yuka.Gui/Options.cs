@@ -13,10 +13,13 @@ namespace Yuka.Gui {
 #endif
 		public static bool IsInDesignMode = DesignerProperties.GetIsInDesignMode(new DependencyObject());
 
+		// preview settings
 		public static bool AlwaysUseHexPreview = false;
 		public static bool NeverShowHexPreview = false;
 		public static long HexPreviewMaxFileSize = 1024 * 1024; // 1 MB
+		public static bool DeletePreviewOnItemDeselect = false;
 
+		// logging settings
 		public static bool EnableCollectorLogging = true;
 		public static bool EnableFileLogging = true;
 		public static string LogFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? ".", "yuka.log");

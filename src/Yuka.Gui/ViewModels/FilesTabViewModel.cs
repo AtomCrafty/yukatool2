@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using Yuka.Gui.Jobs;
 using Yuka.Gui.Properties;
 using Yuka.Gui.Services;
 using Yuka.Gui.Services.Abstract;
@@ -13,6 +14,7 @@ namespace Yuka.Gui.ViewModels {
 		public FilesTabViewModel() {
 			OpenArchiveCommand = new ActionCommand(OpenArchive);
 			CloseArchiveCommand = new ActionCommand(CloseArchive, false);
+			SaveArchiveCommand = new ActionCommand(SaveArchive, false);
 			ExportAllCommand = new ActionCommand(ExportAllFiles, false);
 		}
 
@@ -20,6 +22,7 @@ namespace Yuka.Gui.ViewModels {
 
 		public ActionCommand OpenArchiveCommand { get; protected set; }
 		public ActionCommand CloseArchiveCommand { get; protected set; }
+		public ActionCommand SaveArchiveCommand { get; protected set; }
 		public ActionCommand ExportAllCommand { get; protected set; }
 
 		public bool IsFileSystemLoading { get; protected set; }
@@ -73,15 +76,21 @@ namespace Yuka.Gui.ViewModels {
 			UpdateCommandAvailability();
 		}
 
+		public void SaveArchive() {
+			(LoadedFileSystem?.FileSystem as ArchiveFileSystem)?.Flush();
+		}
+
 		public void UpdateCommandAvailability() {
 			OpenArchiveCommand.IsEnabled = !IsFileSystemLoading;
 
 			if(IsFileSystemValid) {
 				CloseArchiveCommand.Enable();
+				SaveArchiveCommand.Enable();
 				ExportAllCommand.Enable();
 			}
 			else {
 				CloseArchiveCommand.Disable();
+				SaveArchiveCommand.Disable();
 				ExportAllCommand.Disable();
 			}
 		}
@@ -96,6 +105,10 @@ namespace Yuka.Gui.ViewModels {
 				return;
 			}
 			Log.Note(string.Format(Resources.IO_ExportFolderSelectionEnded, path), Resources.Tag_IO);
+
+			// TODO Temp
+			//new ExportAllJob(LoadedFileSystem.FileSystem, path).Execute();
+			//return;
 
 			try {
 				var srcFs = LoadedFileSystem.FileSystem;

@@ -20,20 +20,20 @@ namespace Yuka.Gui.Services {
 			if(id != null) Options.RememberedConfirmations[id] = choice;
 		}
 
-		public bool ConfirmRemember(string id, [Localizable(true)]string message = null, [Localizable(true)]string description = null, [Localizable(true)]string title = null, DialogIcon icon = DialogIcon.Information, bool allowCancellation = true) {
+		public bool ConfirmAndRemember(string id, [Localizable(true)]string message = null, [Localizable(true)]string description = null, [Localizable(true)]string title = null, DialogIcon icon = DialogIcon.Information, bool allowCancellation = true) {
 			var remembered = GetRememberedConfirmation(id);
 			if(remembered != null) {
-				Log.Note(string.Format(Resources.UI_ConfirmationUsingRememberedValue, remembered, message));
+				Log.Note(string.Format(Resources.UI_ConfirmationUsingRememberedValue, remembered, id));
 				return remembered.Value;
 			}
 
 			if(TaskDialog.OSSupportsTaskDialogs) {
 				using(var dialog = new TaskDialog {
 					AllowDialogCancellation = allowCancellation,
-					WindowTitle = title ?? Resources.ResourceManager.GetString("UI_ConfirmationTitle_" + id) ?? Resources.UI_ConfirmationDialogWindowTitle,
+					WindowTitle = title ?? Resources.ResourceManager.GetString($"UI_Confirmation_{id}_Title") ?? Resources.UI_ConfirmationDefaultWindowTitle,
 					MainIcon = (TaskDialogIcon)icon,
-					MainInstruction = message ?? Resources.ResourceManager.GetString("UI_ConfirmationMessage_" + id),
-					Content = description ?? Resources.ResourceManager.GetString("UI_ConfirmationDescription_" + id),
+					MainInstruction = message ?? Resources.ResourceManager.GetString($"UI_Confirmation_{id}_Message") ?? id,
+					Content = description ?? Resources.ResourceManager.GetString($"UI_Confirmation_{id}_Description"),
 					VerificationText = Resources.UI_ConfirmationRememberSelection
 				}) {
 					dialog.Buttons.Add(new TaskDialogButton {
@@ -56,7 +56,7 @@ namespace Yuka.Gui.Services {
 			if(TaskDialog.OSSupportsTaskDialogs) {
 				using(var dialog = new TaskDialog {
 					AllowDialogCancellation = allowCancellation,
-					WindowTitle = title ?? Resources.UI_ConfirmationDialogWindowTitle,
+					WindowTitle = title ?? Resources.UI_ConfirmationDefaultWindowTitle,
 					MainIcon = (TaskDialogIcon)icon,
 					MainInstruction = message,
 					Content = description

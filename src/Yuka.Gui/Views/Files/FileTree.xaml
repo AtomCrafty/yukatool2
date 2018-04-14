@@ -5,7 +5,7 @@
           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
           xmlns:vm="clr-namespace:Yuka.Gui.ViewModels"
           mc:Ignorable="d" 
-          d:DesignHeight="250" d:DesignWidth="450"
+          d:DesignHeight="250" d:DesignWidth="450" d:DataContext="{x:Static vm:FileSystemViewModel.Design}"
 
           Background="Transparent" BorderThickness="0" Margin="0 5 0 0"
 
@@ -16,7 +16,9 @@
 
     <TreeView.ItemTemplate>
         <HierarchicalDataTemplate x:Name="ItemTemplate" ItemsSource="{Binding Children}" DataType="{x:Type vm:ShellItemViewModel}">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal"
+                        DragEnter="TreeItem_OnDragEnter"
+                        Drop="TreeItem_OnDrop">
                 <Image Source="{Binding Icon, Converter={StaticResource IconNameToImageConverter}}" Height="24"/>
                 <TextBlock VerticalAlignment="Center" Padding="2 0 4 0" Text="{Binding Name}"/>
             </StackPanel>
@@ -25,8 +27,13 @@
 
     <TreeView.ItemContainerStyle>
         <Style TargetType="{x:Type TreeViewItem}">
+            <Setter Property="AllowDrop" Value="True"/>
+
+            <!--  -->
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
             <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+
+
             <Setter Property="ToolTip" Value="{Binding FullPath, Mode=OneWay}"/>
             <Setter Property="ContextMenu">
                 <Setter.Value>

@@ -1,24 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Yuka.Gui.Properties;
 using Yuka.IO;
 
 namespace Yuka.Gui.ViewModels {
 	public class FileSystemViewModel : ViewModel {
 
 		public static readonly FileSystemViewModel Pending = new FileSystemPendingViewModel();
+		public static readonly FileSystemViewModel Design = new DesignModeFileSystemViewModel();
 
 		internal readonly FileSystem FileSystem;
 		public ShellItemViewModel Root { get; protected set; }
+		protected readonly Dictionary<string, ShellItemViewModel> Nodes = new Dictionary<string, ShellItemViewModel>();
 
 		public FileSystemViewModel(FileSystem fileSystem) {
 			FileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
 
-			Root = new ShellItemViewModel(FileSystem, fileSystem.Name, ShellItemType.Root);
+			Root = new ShellItemViewModel(this, fileSystem.Name, ShellItemType.Root);
 
-			var nodes = new Dictionary<string, ShellItemViewModel>();
 			foreach(string file in FileSystem.GetFiles()) {
-				CreateNode(file, ShellItemType.File, nodes);
+				CreateNode(file, ShellItemType.File, Nodes);
 			}
 		}
 
@@ -33,7 +35,7 @@ namespace Yuka.Gui.ViewModels {
 			if(nodes.ContainsKey(path)) return nodes[path];
 
 			string parentPath = Path.GetDirectoryName(path);
-			var node = new ShellItemViewModel(FileSystem, path, type);
+			var node = new ShellItemViewModel(this, path, type);
 
 			if(!string.IsNullOrWhiteSpace(parentPath)) {
 				var parent = CreateNode(parentPath, ShellItemType.Directory, nodes);
@@ -47,6 +49,56 @@ namespace Yuka.Gui.ViewModels {
 			return node;
 		}
 
+		public void AddFile(string localFilePath, Stream srcStream) {
+			using(var dstStream = FileSystem.CreateFile(localFilePath)) {
+				srcStream.CopyTo(dstStream);
+				dstStream.Flush();
+				CreateNode(localFilePath, ShellItemType.File, Nodes);
+			}
+		}
+
+		public void ImportFolder(string folderPath, string localBasePath) {
+			try {
+				string localPath = Path.Combine(localBasePath, Path.GetFileName(folderPath) ?? "");
+				int fileCount = 0;
+
+				using(var srcFs = FileSystem.FromFolder(folderPath)) {
+					foreach(string file in srcFs.GetFiles()) {
+						string localFilePath = Path.Combine(localPath, file);
+						using(var srcStream = srcFs.OpenFile(file)) {
+							AddFile(localFilePath, srcStream);
+							fileCount++;
+						}
+					}
+				}
+				Log.Note(string.Format(Resources.IO_ImportFolderFinished, fileCount, folderPath, localPath), Resources.Tag_IO);
+			}
+			catch(Exception e) {
+				Log.Fail(string.Format(Resources.IO_ImportFolderFailed, e.GetType().Name, e.Message), Resources.Tag_IO);
+				Log.Fail(e.StackTrace, Resources.Tag_IO);
+			}
+		}
+
+		public void ImportFile(string filePath, string localBasePath) {
+			try {
+				string localFilePath = Path.Combine(localBasePath, Path.GetFileName(filePath) ?? "");
+				using(var srcStream = File.Open(filePath, FileMode.Open)) {
+					AddFile(localFilePath, srcStream);
+				}
+				Log.Note(string.Format(Resources.IO_ImportFileFinished, filePath, localFilePath), Resources.Tag_IO);
+			}
+			catch(Exception e) {
+				Log.Fail(string.Format(Resources.IO_ImportFileFailed, e.GetType().Name, e.Message), Resources.Tag_IO);
+				Log.Fail(e.StackTrace, Resources.Tag_IO);
+			}
+		}
+
+		public void ImportFileOrFolder(string path, string localBasePath) {
+			if(Directory.Exists(path)) ImportFolder(path, localBasePath);
+			else if(File.Exists(path)) ImportFile(path, localBasePath);
+			else Log.Warn(string.Format(Resources.IO_ImportFileNotFound, path), Resources.Tag_IO);
+		}
+
 		public void Close() {
 			FileSystem.Dispose();
 		}
@@ -56,5 +108,9 @@ namespace Yuka.Gui.ViewModels {
 
 	internal sealed class FileSystemPendingViewModel : FileSystemViewModel {
 		public FileSystemPendingViewModel() : base(FileSystem.Dummy) { }
+	}
+
+	internal sealed class DesignModeFileSystemViewModel : FileSystemViewModel {
+		public DesignModeFileSystemViewModel() : base(FileSystem.Dummy) { }
 	}
 }
