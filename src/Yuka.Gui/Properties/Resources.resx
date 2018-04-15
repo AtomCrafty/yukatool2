@@ -225,4 +225,10 @@
     <value>Imported file '{0}' to '{1}'</value>
     <comment>0: source path, 1: local path</comment>
   </data>
+  <data name="System_LogFileCannotBeOpened" xml:space="preserve">
+    <value>Failed to open log file: [{0}] {1}</value>
+  </data>
+  <data name="System_LogCleared" xml:space="preserve">
+    <value>Log cleared</value>
+  </data>
 </root>

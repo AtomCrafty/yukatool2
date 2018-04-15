@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Windows;
@@ -29,8 +28,14 @@ namespace Yuka.Gui {
 			}
 
 			if(Options.EnableFileLogging) {
-				FileEndPoint = new LoggerEndPoint.File(new StreamWriter(File.Open(Options.LogFilePath, FileMode.Append, FileAccess.Write)));
-				EndPoints.Add(FileEndPoint);
+				try {
+					FileEndPoint = new LoggerEndPoint.File(new StreamWriter(File.Open(Options.LogFilePath, FileMode.Append, FileAccess.Write)));
+					EndPoints.Add(FileEndPoint);
+				}
+				catch(IOException e) {
+					Fail(string.Format(Resources.System_LogFileCannotBeOpened, e.GetType().Name, e.Message), Resources.Tag_System);
+					Fail(e.StackTrace, Resources.Tag_System);
+				}
 			}
 			else if(FileEndPoint != null) {
 				EndPoints.Remove(FileEndPoint);
@@ -71,6 +76,9 @@ namespace Yuka.Gui {
 
 		public static void Write(LogEntry entry)
 			=> EndPoints.ForEach(endpoint => endpoint.Write(entry));
+
+		public static void Clear()
+			=> CollectorEndPoint?.Entries.Clear();
 	}
 
 	public class LogEntry {

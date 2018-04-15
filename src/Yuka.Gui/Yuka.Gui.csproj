@@ -85,10 +85,12 @@
     <Compile Include="Converters\SeverityToBrushConverter.cs" />
     <Compile Include="Converters\IconNameToImageConverter.cs" />
     <Compile Include="Jobs\ExportAllJob.cs" />
+    <Compile Include="Jobs\Job.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Services\ConfirmationService.cs" />
     <Compile Include="Services\Abstract\IConfirmationService.cs" />
+    <Compile Include="Services\JobService.cs" />
     <Compile Include="Util\Extensions.cs" />
     <Compile Include="ViewModels\Data\HexFileViewModel.cs" />
     <Compile Include="Views\Files\FileTree.xaml.cs">
@@ -140,6 +142,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Log\LogList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Log\LogPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -161,6 +167,9 @@
     </Compile>
     <Compile Include="Views\Generic\MessageDisplay.xaml.cs">
       <DependentUpon>MessageDisplay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Log\LogList.xaml.cs">
+      <DependentUpon>LogList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Log\LogPanel.xaml.cs">
       <DependentUpon>LogPanel.xaml</DependentUpon>
@@ -250,6 +259,27 @@
     <Resource Include="res\images\save.png" />
     <Resource Include="res\images\settings.png" />
     <Resource Include="res\images\source-code.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="res\images\scroll-down.png" />
+    <Resource Include="res\images\scroll-up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="res\images\arrow-down.png" />
+    <Resource Include="res\images\arrow-up.png" />
+    <Resource Include="res\images\ext-csv.png" />
+    <Resource Include="res\images\ext-mp3.png" />
+    <Resource Include="res\images\ext-ogg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="res\images\cleanup.png" />
+    <Resource Include="res\images\erase.png" />
+    <Resource Include="res\images\trashcan.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="res\images\cross.png" />
+    <Resource Include="res\images\double-down.png" />
+    <Resource Include="res\images\double-up.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

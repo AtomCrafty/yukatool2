@@ -214,6 +214,24 @@ namespace Yuka.Gui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Log cleared ähnelt.
+        /// </summary>
+        internal static string System_LogCleared {
+            get {
+                return ResourceManager.GetString("System_LogCleared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to open log file: [{0}] {1} ähnelt.
+        /// </summary>
+        internal static string System_LogFileCannotBeOpened {
+            get {
+                return ResourceManager.GetString("System_LogFileCannotBeOpened", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Started logging session ähnelt.
         /// </summary>
         internal static string System_LoggingSessionStarted {

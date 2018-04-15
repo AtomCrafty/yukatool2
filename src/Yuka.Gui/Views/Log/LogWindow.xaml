@@ -7,7 +7,5 @@
         mc:Ignorable="d"
         Title="LogWindow" Height="450" Width="800">
 
-    <Grid>
-        <local:LogPanel/>
-    </Grid>
+    <local:LogPanel/>
 </Window>
