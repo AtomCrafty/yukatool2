@@ -35,7 +35,7 @@ namespace Yuka.Gui.ViewModels {
 				if(_isSelected) return;
 
 				if(!Config.Config.Current.DeletePreviewOnItemDeselect) return;
-				Log.Debug(string.Format(Resources.UI_DeletingPreviewOnDeselect, FullPath));
+				Log.Debug(string.Format(Resources.UI_DeletingPreviewOnDeselect, FullPath), Resources.Tag_UI);
 				_previewViewModel = null;
 			}
 		}

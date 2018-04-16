@@ -57,22 +57,22 @@ namespace Yuka.Gui {
 		}
 
 		//[Conditional("DEBUG")] // not conditional to support verbose logging in release builds
-		public static void Debug([Localizable(true)] string message, string tag = null)
+		public static void Debug([Localizable(true)] string message, string tag)
 			=> Write(message, LogSeverity.Debug, tag);
 
-		public static void Note([Localizable(true)] string message, string tag = null)
+		public static void Note([Localizable(true)] string message, string tag)
 			=> Write(message, LogSeverity.Note, tag);
 
-		public static void Info([Localizable(true)] string message, string tag = null)
+		public static void Info([Localizable(true)] string message, string tag)
 			=> Write(message, LogSeverity.Info, tag);
 
-		public static void Warn([Localizable(true)] string message, string tag = null)
+		public static void Warn([Localizable(true)] string message, string tag)
 			=> Write(message, LogSeverity.Warn, tag);
 
-		public static void Fail([Localizable(true)] string message, string tag = null)
+		public static void Fail([Localizable(true)] string message, string tag)
 			=> Write(message, LogSeverity.Error, tag);
 
-		public static void Write([Localizable(true)] string message, LogSeverity severity, string tag = null)
+		public static void Write([Localizable(true)] string message, LogSeverity severity, string tag)
 			=> Write(new LogEntry(message, severity, tag));
 
 		public static void Write(LogEntry entry)

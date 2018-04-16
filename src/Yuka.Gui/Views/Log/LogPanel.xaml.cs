@@ -1,8 +1,4 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media;
+﻿using System.Windows;
 
 namespace Yuka.Gui.Views.Log {
 	/// <summary>
@@ -15,7 +11,7 @@ namespace Yuka.Gui.Views.Log {
 
 		private void ClearButton_Click(object sender, RoutedEventArgs e) {
 			Gui.Log.Clear();
-			Gui.Log.Note(Properties.Resources.System_LogCleared);
+			Gui.Log.Note(Properties.Resources.System_LogCleared, Properties.Resources.Tag_System);
 		}
 	}
 }

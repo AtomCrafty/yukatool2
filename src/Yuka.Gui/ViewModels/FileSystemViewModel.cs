@@ -13,6 +13,7 @@ namespace Yuka.Gui.ViewModels {
 
 		internal readonly FileSystem FileSystem;
 		public ShellItemViewModel Root { get; protected set; }
+
 		protected readonly Dictionary<string, ShellItemViewModel> Nodes = new Dictionary<string, ShellItemViewModel>();
 
 		#region Initialization
@@ -111,7 +112,7 @@ namespace Yuka.Gui.ViewModels {
 			switch(item.Type) {
 
 				case ShellItemType.Directory:
-					Log.Info(string.Format(Resources.IO_DeletingDirectoryFromArchive, item.FullPath));
+					Log.Info(string.Format(Resources.IO_DeletingDirectoryFromArchive, item.FullPath), Resources.Tag_IO);
 					// create shallow copy to iterate over (because collection is modified in loop)
 					foreach(var child in item.Children.ToList()) {
 						DeleteFileOrFolder(child);
@@ -143,7 +144,7 @@ namespace Yuka.Gui.ViewModels {
 		#region Export
 
 		public void ExportFileOrFolder(ShellItemViewModel shellItemViewModel) {
-			Log.Fail("FileSystemViewModel.ExportFileOrFolder is not implemented yet");
+			Log.Fail("FileSystemViewModel.ExportFileOrFolder is not implemented yet", Resources.Tag_System);
 		}
 
 		#endregion

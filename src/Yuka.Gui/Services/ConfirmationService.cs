@@ -24,7 +24,7 @@ namespace Yuka.Gui.Services {
 		public bool ConfirmAndRemember(string id, [Localizable(true)]string message = null, [Localizable(true)]string description = null, [Localizable(true)]string title = null, DialogIcon icon = DialogIcon.Information, bool allowCancellation = true) {
 			var remembered = GetRememberedConfirmation(id);
 			if(remembered != null) {
-				Log.Note(string.Format(Resources.UI_ConfirmationUsingRememberedValue, remembered, id));
+				Log.Note(string.Format(Resources.UI_ConfirmationUsingRememberedValue, remembered, id), Resources.Tag_System);
 				return remembered.Value;
 			}
 
