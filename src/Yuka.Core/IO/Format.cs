@@ -12,6 +12,7 @@ namespace Yuka.IO {
 		public abstract string Extension { get; }
 		public abstract string Description { get; }
 		public abstract FormatType Type { get; }
+		public virtual string Name => GetType().Name.Replace("Format", "");
 
 		public virtual FileCategory GetFileCategory(FileSystem fs, string fileName) => FileCategory.Primary;
 		public virtual IEnumerable<string> GetSecondaryFiles(FileSystem fs, string fileName) => Array.Empty<string>();

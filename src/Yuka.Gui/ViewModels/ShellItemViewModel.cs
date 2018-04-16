@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using Yuka.Graphics;
@@ -14,6 +15,7 @@ namespace Yuka.Gui.ViewModels {
 	public class ShellItemViewModel : ViewModel {
 		protected readonly FileSystem FileSystem;
 		protected readonly FileSystemViewModel FileSystemViewModel;
+		public readonly ShellItemViewModel Parent;
 
 		public ShellItemType Type { get; set; }
 
@@ -32,7 +34,7 @@ namespace Yuka.Gui.ViewModels {
 				_isSelected = value;
 				if(_isSelected) return;
 
-				if(!Options.DeletePreviewOnItemDeselect) return;
+				if(!Config.Config.Current.DeletePreviewOnItemDeselect) return;
 				Log.Debug(string.Format(Resources.UI_DeletingPreviewOnDeselect, FullPath));
 				_previewViewModel = null;
 			}
@@ -61,7 +63,7 @@ namespace Yuka.Gui.ViewModels {
 					try {
 						// read file content
 						object fileContent;
-						if(Options.AlwaysUseHexPreview) {
+						if(Config.Config.Current.AlwaysUseHexPreview) {
 							using(var reader = FileSystem.OpenFile(FullPath).NewReader()) {
 								fileContent = reader.ReadToEnd();
 							}
@@ -98,17 +100,18 @@ namespace Yuka.Gui.ViewModels {
 					return new ImageFileViewModel(graphic);
 				case string str:
 					return new TextFileViewModel(str);
-				case byte[] data when !Options.NeverShowHexPreview:
+				case byte[] data when !Config.Config.Current.NeverShowHexPreview:
 					return new HexFileViewModel(data);
 			}
 
 			return FileViewModel.Dummy;
 		}
 
-		public ShellItemViewModel(FileSystemViewModel fs, string fullPath, ShellItemType type) {
+		public ShellItemViewModel(FileSystemViewModel fs, ShellItemViewModel parent, string fullPath, ShellItemType type) {
 			Type = type;
 			FileSystemViewModel = fs;
 			FileSystem = fs.FileSystem;
+			Parent = parent;
 			FullPath = fullPath;
 			Name = Path.GetFileName(fullPath);
 			Size = FileSystem.GetFileSize(fullPath);
@@ -120,11 +123,11 @@ namespace Yuka.Gui.ViewModels {
 		}
 
 		public void Export() {
-			Console.WriteLine("Exporting " + FullPath);
+			FileSystemViewModel.ExportFileOrFolder(this);
 		}
 
 		public void Delete() {
-			Console.WriteLine("Deleting " + FullPath);
+			FileSystemViewModel.DeleteFileOrFolder(this);
 		}
 
 		public string GetIconName() {

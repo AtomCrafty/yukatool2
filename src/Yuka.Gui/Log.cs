@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Windows;
 using PropertyChanged;
+using Yuka.Gui.Config;
 using Yuka.Gui.Properties;
 
 namespace Yuka.Gui {
@@ -19,7 +20,7 @@ namespace Yuka.Gui {
 		static Log() => UpdateEndPoints();
 
 		public static void UpdateEndPoints() {
-			if(Options.EnableCollectorLogging) {
+			if(Config.Config.Current.EnableCollectorLogging) {
 				CollectorEndPoint = CollectorEndPoint ?? new LoggerEndPoint.Collector();
 				EndPoints.Add(CollectorEndPoint);
 			}
@@ -27,9 +28,9 @@ namespace Yuka.Gui {
 				EndPoints.Remove(CollectorEndPoint);
 			}
 
-			if(Options.EnableFileLogging) {
+			if(Config.Config.Current.EnableFileLogging) {
 				try {
-					FileEndPoint = new LoggerEndPoint.File(new StreamWriter(File.Open(Options.LogFilePath, FileMode.Append, FileAccess.Write)));
+					FileEndPoint = new LoggerEndPoint.File(new StreamWriter(File.Open(Config.Config.Current.LogFilePath, FileMode.Append, FileAccess.Write)));
 					EndPoints.Add(FileEndPoint);
 				}
 				catch(IOException e) {
@@ -43,7 +44,7 @@ namespace Yuka.Gui {
 				FileEndPoint = null;
 			}
 
-			if(Options.IsInDesignMode) {
+			if(Config.Config.Current.IsInDesignMode) {
 				Debug(Resources.System_LoggingSessionStarted, Resources.Tag_System);
 				Note(Resources.System_LoggingSessionStarted, Resources.Tag_System);
 				Info(Resources.System_LoggingSessionStarted, Resources.Tag_System);

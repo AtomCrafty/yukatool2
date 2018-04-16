@@ -19,6 +19,7 @@
             <converters:DebugConverter x:Key="DebugConverter"/>
             <converters:SeverityToBrushConverter x:Key="SeverityToBrushConverter"/>
             <converters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
+            <converters:SortConverter x:Key="SortConverter"/>
 
             <!-- icons -->
             <Image x:Key="Icons.Export" Source="pack://application:,,,/res/images/export.png"/>

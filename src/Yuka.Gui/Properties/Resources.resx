@@ -143,7 +143,7 @@
     <value>IO</value>
   </data>
   <data name="Tag_System" xml:space="preserve">
-    <value>Logger</value>
+    <value>System</value>
   </data>
   <data name="UI_ArchiveFilter" xml:space="preserve">
     <value>Yuka container (*.ykc)|*.ykc|All files (*.*)|*.*</value>
@@ -193,7 +193,7 @@
   </data>
   <data name="UI_ConfirmationUsingRememberedValue" xml:space="preserve">
     <value>Remembered selection '{0}' for confirmation '{1}'</value>
-    <comment>0: selected value, 1: confirmation message</comment>
+    <comment>0: selected value, 1: confirmation id</comment>
   </data>
   <data name="UI_Confirmation_ExportIntoNonEmptyFolder_Message" xml:space="preserve">
     <value>You are about to export into an existing folder. Continue?</value>
@@ -230,5 +230,14 @@
   </data>
   <data name="System_LogCleared" xml:space="preserve">
     <value>Log cleared</value>
+  </data>
+  <data name="IO_CannotDeleteRootNode" xml:space="preserve">
+    <value>Cannot delete root node</value>
+  </data>
+  <data name="IO_DeletingFileFromArchive" xml:space="preserve">
+    <value>Deleting file '{0}' from archive</value>
+  </data>
+  <data name="IO_DeletingDirectoryFromArchive" xml:space="preserve">
+    <value>Deleting directory '{0}' from archive</value>
   </data>
 </root>

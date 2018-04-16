@@ -115,6 +115,33 @@ namespace Yuka.Gui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Cannot delete root node ähnelt.
+        /// </summary>
+        internal static string IO_CannotDeleteRootNode {
+            get {
+                return ResourceManager.GetString("IO_CannotDeleteRootNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Deleting directory &apos;{0}&apos; from archive ähnelt.
+        /// </summary>
+        internal static string IO_DeletingDirectoryFromArchive {
+            get {
+                return ResourceManager.GetString("IO_DeletingDirectoryFromArchive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Deleting file &apos;{0}&apos; from archive ähnelt.
+        /// </summary>
+        internal static string IO_DeletingFileFromArchive {
+            get {
+                return ResourceManager.GetString("IO_DeletingFileFromArchive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Failed to perform drag&apos;n drop operation: [{0}] {1} ähnelt.
         /// </summary>
         internal static string IO_DragNDropReceiveFailed {
@@ -259,7 +286,7 @@ namespace Yuka.Gui.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Logger ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die System ähnelt.
         /// </summary>
         internal static string Tag_System {
             get {

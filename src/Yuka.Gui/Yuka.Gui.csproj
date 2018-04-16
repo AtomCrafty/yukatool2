@@ -84,10 +84,12 @@
     <Compile Include="Converters\EnumerateConverter.cs" />
     <Compile Include="Converters\SeverityToBrushConverter.cs" />
     <Compile Include="Converters\IconNameToImageConverter.cs" />
+    <Compile Include="Converters\SortConverter.cs" />
     <Compile Include="Jobs\ExportAllJob.cs" />
     <Compile Include="Jobs\Job.cs" />
     <Compile Include="Log.cs" />
-    <Compile Include="Options.cs" />
+    <Compile Include="Config\Config.cs" />
+    <Compile Include="Services\Abstract\IJobService.cs" />
     <Compile Include="Services\ConfirmationService.cs" />
     <Compile Include="Services\Abstract\IConfirmationService.cs" />
     <Compile Include="Services\JobService.cs" />
@@ -280,6 +282,9 @@
     <Resource Include="res\images\cross.png" />
     <Resource Include="res\images\double-down.png" />
     <Resource Include="res\images\double-up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\Config\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

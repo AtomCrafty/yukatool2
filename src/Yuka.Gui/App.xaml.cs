@@ -9,6 +9,7 @@ namespace Yuka.Gui {
 		private void App_OnStartup(object sender, StartupEventArgs e) {
 			Service.Register(new FileService(MainWindow));
 			Service.Register(new ConfirmationService(MainWindow));
+			Service.Register(new JobService(MainWindow));
 		}
 	}
 }

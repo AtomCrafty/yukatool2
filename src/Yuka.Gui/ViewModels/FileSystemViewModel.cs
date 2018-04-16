@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Yuka.Gui.Properties;
 using Yuka.IO;
 
@@ -14,10 +15,12 @@ namespace Yuka.Gui.ViewModels {
 		public ShellItemViewModel Root { get; protected set; }
 		protected readonly Dictionary<string, ShellItemViewModel> Nodes = new Dictionary<string, ShellItemViewModel>();
 
+		#region Initialization
+
 		public FileSystemViewModel(FileSystem fileSystem) {
 			FileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
 
-			Root = new ShellItemViewModel(this, fileSystem.Name, ShellItemType.Root);
+			Root = new ShellItemViewModel(this, null, fileSystem.Name, ShellItemType.Root);
 
 			foreach(string file in FileSystem.GetFiles()) {
 				CreateNode(file, ShellItemType.File, Nodes);
@@ -35,19 +38,20 @@ namespace Yuka.Gui.ViewModels {
 			if(nodes.ContainsKey(path)) return nodes[path];
 
 			string parentPath = Path.GetDirectoryName(path);
-			var node = new ShellItemViewModel(this, path, type);
+			var parent = !string.IsNullOrWhiteSpace(parentPath) ? CreateNode(parentPath, ShellItemType.Directory, nodes) : Root;
 
-			if(!string.IsNullOrWhiteSpace(parentPath)) {
-				var parent = CreateNode(parentPath, ShellItemType.Directory, nodes);
-				parent.Children.Add(node);
-			}
-			else {
-				Root.Children.Add(node);
-			}
+			var node = new ShellItemViewModel(this, parent, path, type);
+			parent.Children.Add(node);
 
 			nodes[path] = node;
 			return node;
 		}
+
+		#endregion
+
+		#region IO Methods
+
+		#region Import
 
 		public void AddFile(string localFilePath, Stream srcStream) {
 			using(var dstStream = FileSystem.CreateFile(localFilePath)) {
@@ -99,10 +103,54 @@ namespace Yuka.Gui.ViewModels {
 			else Log.Warn(string.Format(Resources.IO_ImportFileNotFound, path), Resources.Tag_IO);
 		}
 
-		public void Close() {
-			FileSystem.Dispose();
+		#endregion
+
+		#region Delete
+
+		public void DeleteFileOrFolder(ShellItemViewModel item) {
+			switch(item.Type) {
+
+				case ShellItemType.Directory:
+					Log.Info(string.Format(Resources.IO_DeletingDirectoryFromArchive, item.FullPath));
+					// create shallow copy to iterate over (because collection is modified in loop)
+					foreach(var child in item.Children.ToList()) {
+						DeleteFileOrFolder(child);
+					}
+					item.Parent.Children.Remove(item);
+					Nodes.Remove(item.FullPath);
+					break;
+
+				case ShellItemType.File:
+					Log.Info(string.Format(Resources.IO_DeletingFileFromArchive, item.FullPath), Resources.Tag_IO);
+					// delete file from archive
+					FileSystem.DeleteFile(item.FullPath);
+					// remove node from tree view
+					item.Parent.Children.Remove(item);
+					Nodes.Remove(item.FullPath);
+					break;
+
+				case ShellItemType.Root:
+					Log.Fail(Resources.IO_CannotDeleteRootNode, Resources.Tag_IO);
+					break;
+
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
 		}
 
+		#endregion
+
+		#region Export
+
+		public void ExportFileOrFolder(ShellItemViewModel shellItemViewModel) {
+			Log.Fail("FileSystemViewModel.ExportFileOrFolder is not implemented yet");
+		}
+
+		#endregion
+
+		#endregion
+
+		public void Close() => FileSystem.Dispose();
 		public override string ToString() => FileSystem?.ToString() ?? "null";
 	}
 
@@ -114,3 +162,4 @@ namespace Yuka.Gui.ViewModels {
 		public DesignModeFileSystemViewModel() : base(FileSystem.Dummy) { }
 	}
 }
+

@@ -15,7 +15,7 @@
           ItemsSource="{Binding Root, Converter={StaticResource EnumerateConverter}}">
 
     <TreeView.ItemTemplate>
-        <HierarchicalDataTemplate x:Name="ItemTemplate" ItemsSource="{Binding Children}" DataType="{x:Type vm:ShellItemViewModel}">
+        <HierarchicalDataTemplate x:Name="ItemTemplate" ItemsSource="{Binding Children, Converter={StaticResource SortConverter}, ConverterParameter=Name}" DataType="{x:Type vm:ShellItemViewModel}">
             <StackPanel Orientation="Horizontal"
                         DragEnter="TreeItem_OnDragEnter"
                         Drop="TreeItem_OnDrop">
@@ -29,16 +29,14 @@
         <Style TargetType="{x:Type TreeViewItem}">
             <Setter Property="AllowDrop" Value="True"/>
 
-            <!--  -->
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
             <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
-
 
             <Setter Property="ToolTip" Value="{Binding FullPath, Mode=OneWay}"/>
             <Setter Property="ContextMenu">
                 <Setter.Value>
                     <ContextMenu>
-                        <MenuItem/>
+                        <MenuItem Header="Delete" Icon="{StaticResource Icons.Delete}" Command="{Binding DeleteCommand}"/>
                         <MenuItem/>
                         <MenuItem/>
                         <MenuItem/>
@@ -48,5 +46,4 @@
             </Setter>
         </Style>
     </TreeView.ItemContainerStyle>
-
 </TreeView>
