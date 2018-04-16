@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using Ookii.Dialogs.Wpf;
-using Yuka.Gui.Config;
 using Yuka.Gui.Properties;
 using Yuka.Gui.Services.Abstract;
 

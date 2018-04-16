@@ -227,6 +227,7 @@
   </data>
   <data name="System_LogFileCannotBeOpened" xml:space="preserve">
     <value>Failed to open log file: [{0}] {1}</value>
+    <comment>0: exception type, 1: error message</comment>
   </data>
   <data name="System_LogCleared" xml:space="preserve">
     <value>Log cleared</value>
@@ -236,8 +237,10 @@
   </data>
   <data name="IO_DeletingFileFromArchive" xml:space="preserve">
     <value>Deleting file '{0}' from archive</value>
+    <comment>0: file path</comment>
   </data>
   <data name="IO_DeletingDirectoryFromArchive" xml:space="preserve">
     <value>Deleting directory '{0}' from archive</value>
+    <comment>0: directory path</comment>
   </data>
 </root>

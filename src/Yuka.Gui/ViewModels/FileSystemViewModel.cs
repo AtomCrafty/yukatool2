@@ -119,6 +119,7 @@ namespace Yuka.Gui.ViewModels {
 					}
 					item.Parent.Children.Remove(item);
 					Nodes.Remove(item.FullPath);
+					var files = FileSystem.GetFiles();
 					break;
 
 				case ShellItemType.File:

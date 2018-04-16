@@ -84,6 +84,7 @@ namespace Yuka.Container {
 
 			Files[lower].CloseAll();
 			Files.Remove(lower);
+			IsDirty = true;
 			return true;
 		}
 
