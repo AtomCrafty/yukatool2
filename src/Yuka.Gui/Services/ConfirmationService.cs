@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using Ookii.Dialogs.Wpf;
+using Yuka.Gui.Configuration;
 using Yuka.Gui.Properties;
 using Yuka.Gui.Services.Abstract;
 
@@ -13,11 +14,11 @@ namespace Yuka.Gui.Services {
 		}
 
 		public bool? GetRememberedConfirmation(string id) {
-			return id != null && Config.Config.Current.RememberedConfirmations.ContainsKey(id) ? (bool?)Config.Config.Current.RememberedConfirmations[id] : null;
+			return id != null && Config.Current.RememberedConfirmations.ContainsKey(id) ? (bool?)Config.Current.RememberedConfirmations[id] : null;
 		}
 
 		public void RememberConfirmation(string id, bool choice) {
-			if(id != null) Config.Config.Current.RememberedConfirmations[id] = choice;
+			if(id != null) Config.Current.RememberedConfirmations[id] = choice;
 		}
 
 		public bool ConfirmAndRemember(string id, [Localizable(true)]string message = null, [Localizable(true)]string description = null, [Localizable(true)]string title = null, DialogIcon icon = DialogIcon.Information, bool allowCancellation = true) {

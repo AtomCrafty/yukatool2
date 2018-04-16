@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows;
 using Microsoft.Win32;
+using Ookii.Dialogs.Wpf;
 using Yuka.Gui.Properties;
 using Yuka.Gui.Services.Abstract;
 using Yuka.IO;
@@ -15,7 +16,7 @@ namespace Yuka.Gui.Services {
 		}
 
 		public string SelectDirectory(string initialDirectory, [Localizable(true)] string description = null) {
-			var dialog = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog() {
+			var dialog = new VistaFolderBrowserDialog {
 				SelectedPath = initialDirectory,
 				Description = description
 			};
@@ -35,7 +36,7 @@ namespace Yuka.Gui.Services {
 				Title = Resources.UI_OpenArchiveDialogTitle,
 				DereferenceLinks = true,
 				Filter = Resources.UI_ArchiveFilter,
-				FilterIndex = 0,
+				FilterIndex = 0
 			};
 
 			return dialog.ShowDialog(ParentWindow) != true ? null : dialog.FileName;

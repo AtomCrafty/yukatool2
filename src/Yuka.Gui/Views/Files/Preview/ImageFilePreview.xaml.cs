@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Yuka.Gui.Views.Files.Preview {

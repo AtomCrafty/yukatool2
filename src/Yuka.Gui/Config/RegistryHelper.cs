@@ -2,7 +2,7 @@
 using System.Reflection;
 using Microsoft.Win32;
 
-namespace Yuka.Gui.Config {
+namespace Yuka.Gui.Configuration {
 	public class RegistryHelper {
 		internal static string AppPaths = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\";
 		internal static string ClassPath = @"HKEY_CLASSES_ROOT\Applications\";

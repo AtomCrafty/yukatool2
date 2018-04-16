@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using Yuka.Graphics;
+using Yuka.Gui.Configuration;
 using Yuka.Gui.Properties;
 using Yuka.Gui.ViewModels.Data;
 using Yuka.IO;
@@ -34,7 +34,7 @@ namespace Yuka.Gui.ViewModels {
 				_isSelected = value;
 				if(_isSelected) return;
 
-				if(!Config.Config.Current.DeletePreviewOnItemDeselect) return;
+				if(!Config.Current.DeletePreviewOnItemDeselect) return;
 				Log.Debug(string.Format(Resources.UI_DeletingPreviewOnDeselect, FullPath), Resources.Tag_UI);
 				_previewViewModel = null;
 			}
@@ -63,7 +63,7 @@ namespace Yuka.Gui.ViewModels {
 					try {
 						// read file content
 						object fileContent;
-						if(Config.Config.Current.AlwaysUseHexPreview) {
+						if(Config.Current.AlwaysUseHexPreview) {
 							using(var reader = FileSystem.OpenFile(FullPath).NewReader()) {
 								fileContent = reader.ReadToEnd();
 							}
@@ -100,7 +100,7 @@ namespace Yuka.Gui.ViewModels {
 					return new ImageFileViewModel(graphic);
 				case string str:
 					return new TextFileViewModel(str);
-				case byte[] data when !Config.Config.Current.NeverShowHexPreview:
+				case byte[] data when !Config.Current.NeverShowHexPreview:
 					return new HexFileViewModel(data);
 			}
 

@@ -8,7 +8,7 @@ using System.Windows;
 using PropertyChanged;
 using Yuka.IO;
 
-namespace Yuka.Gui.Config {
+namespace Yuka.Gui.Configuration {
 	[AddINotifyPropertyChangedInterface]
 	public sealed class Config {
 		public static Config Current { get; private set; } = new Config();

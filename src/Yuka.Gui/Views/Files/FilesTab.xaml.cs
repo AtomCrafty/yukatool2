@@ -1,6 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Windows;
 using Yuka.Gui.Services;
-using Yuka.Gui.Services.Abstract;
 
 namespace Yuka.Gui.Views.Files {
 	/// <summary>
@@ -12,7 +11,7 @@ namespace Yuka.Gui.Views.Files {
 			InitializeComponent();
 		}
 
-		private void Button_Click(object sender, System.Windows.RoutedEventArgs e) {
+		private void Button_Click(object sender, RoutedEventArgs e) {
 			Service.Get<ConfirmationService>().ConfirmAndRemember("SampleConfirmation", "Main message", "Operation details", "Window title");
 		}
 	}
