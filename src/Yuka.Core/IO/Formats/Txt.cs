@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Yuka.Util;
 using static Yuka.IO.Format;
 
@@ -13,7 +8,7 @@ namespace Yuka.IO.Formats {
 		public override string Description => "Text data";
 		public override FormatType Type => FormatType.None;
 
-		public string[] TextExtensions = { ".txt", ".ini", ".htm", ".html" };
+		public string[] TextExtensions = { ".txt", ".log", ".ini", ".htm", ".html" };
 	}
 
 	public class TxtStringReader : FileReader<string> {

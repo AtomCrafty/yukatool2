@@ -199,7 +199,7 @@ namespace Yuka.IO {
 			string name = Path.GetFileName(path);
 			string baseName = Path.GetFileNameWithoutExtension(path) ?? throw new ArgumentNullException(nameof(path));
 			foreach(string file in base.GetFiles()) {
-				if(file.StartsWith(baseName + '.') || file == name /* extensionless files */) {
+				if(file.StartsWith(baseName + '.') || file == baseName /* extensionless files */) {
 					Files.Add(file);
 				}
 			}

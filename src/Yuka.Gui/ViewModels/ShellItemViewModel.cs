@@ -127,7 +127,7 @@ namespace Yuka.Gui.ViewModels {
 		}
 
 		public void Delete() {
-			FileSystemViewModel.DeleteFileOrFolder(this);
+			FileSystemViewModel.DeleteNode(this);
 		}
 
 		public string GetIconName() {
@@ -172,13 +172,7 @@ namespace Yuka.Gui.ViewModels {
 		}
 
 		public string DropTargetPath => Type == ShellItemType.File ? Path.GetDirectoryName(FullPath) : Type == ShellItemType.Root ? "" : FullPath;
-
-		public void ImportFiles(string[] paths) {
-			string localBasePath = DropTargetPath;
-			foreach(string path in paths) {
-				FileSystemViewModel.ImportFileOrFolder(path, localBasePath);
-			}
-		}
+		public void ImportPaths(string[] paths, bool convert) => FileSystemViewModel.ImportPaths(paths, DropTargetPath, convert);
 	}
 
 	public enum ShellItemType {

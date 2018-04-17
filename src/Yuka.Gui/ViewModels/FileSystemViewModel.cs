@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Yuka.Gui.Jobs;
 using Yuka.Gui.Properties;
+using Yuka.Gui.Services;
+using Yuka.Gui.Services.Abstract;
 using Yuka.IO;
 
 namespace Yuka.Gui.ViewModels {
 	public class FileSystemViewModel : ViewModel {
-
 		public static readonly FileSystemViewModel Pending = new FileSystemPendingViewModel();
 		public static readonly FileSystemViewModel Design = new DesignModeFileSystemViewModel();
 
@@ -23,9 +25,7 @@ namespace Yuka.Gui.ViewModels {
 
 			Root = new ShellItemViewModel(this, null, fileSystem.Name, ShellItemType.Root);
 
-			foreach(string file in FileSystem.GetFiles()) {
-				CreateNode(file, ShellItemType.File, Nodes);
-			}
+			foreach(string file in FileSystem.GetFiles()) AddFile(file);
 		}
 
 		/// <summary>
@@ -48,21 +48,32 @@ namespace Yuka.Gui.ViewModels {
 			return node;
 		}
 
+		public void AddFile(string path) => CreateNode(path, ShellItemType.File, Nodes);
+		public void AddDirectory(string path) => CreateNode(path, ShellItemType.Directory, Nodes);
+
 		#endregion
 
 		#region IO Methods
 
 		#region Import
 
-		public void AddFile(string localFilePath, Stream srcStream) {
-			using(var dstStream = FileSystem.CreateFile(localFilePath)) {
-				srcStream.CopyTo(dstStream);
-				dstStream.Flush();
-				CreateNode(localFilePath, ShellItemType.File, Nodes);
+		[Obsolete]
+		public void CopyFile(string localFilePath, Stream srcStream, bool rawCopy) {
+			if(rawCopy) {
+				using(var dstStream = FileSystem.CreateFile(localFilePath)) {
+					srcStream.CopyTo(dstStream);
+					dstStream.Flush();
+					CreateNode(localFilePath, ShellItemType.File, Nodes);
+				}
+			}
+			else {
+				// TODO convert-copy
+				Log.Warn("Convert-copy not implemented", Resources.Tag_IO);
 			}
 		}
 
-		public void ImportFolder(string folderPath, string localBasePath) {
+		[Obsolete]
+		public void ImportFolder(string folderPath, string localBasePath, bool rawCopy) {
 			try {
 				string localPath = Path.Combine(localBasePath, Path.GetFileName(folderPath) ?? "");
 				int fileCount = 0;
@@ -71,11 +82,12 @@ namespace Yuka.Gui.ViewModels {
 					foreach(string file in srcFs.GetFiles()) {
 						string localFilePath = Path.Combine(localPath, file);
 						using(var srcStream = srcFs.OpenFile(file)) {
-							AddFile(localFilePath, srcStream);
+							CopyFile(localFilePath, srcStream, rawCopy);
 							fileCount++;
 						}
 					}
 				}
+
 				Log.Note(string.Format(Resources.IO_ImportFolderFinished, fileCount, folderPath, localPath), Resources.Tag_IO);
 			}
 			catch(Exception e) {
@@ -84,12 +96,14 @@ namespace Yuka.Gui.ViewModels {
 			}
 		}
 
-		public void ImportFile(string filePath, string localBasePath) {
+		[Obsolete]
+		public void ImportFile(string filePath, string localBasePath, bool rawCopy) {
 			try {
 				string localFilePath = Path.Combine(localBasePath, Path.GetFileName(filePath) ?? "");
 				using(var srcStream = File.Open(filePath, FileMode.Open)) {
-					AddFile(localFilePath, srcStream);
+					CopyFile(localFilePath, srcStream, rawCopy);
 				}
+
 				Log.Note(string.Format(Resources.IO_ImportFileFinished, filePath, localFilePath), Resources.Tag_IO);
 			}
 			catch(Exception e) {
@@ -98,28 +112,78 @@ namespace Yuka.Gui.ViewModels {
 			}
 		}
 
-		public void ImportFileOrFolder(string path, string localBasePath) {
-			if(Directory.Exists(path)) ImportFolder(path, localBasePath);
-			else if(File.Exists(path)) ImportFile(path, localBasePath);
+		[Obsolete]
+		public void ImportFileOrFolder(string path, string localBasePath, bool rawCopy) {
+			if(Directory.Exists(path)) ImportFolder(path, localBasePath, rawCopy);
+			else if(File.Exists(path)) ImportFile(path, localBasePath, rawCopy);
 			else Log.Warn(string.Format(Resources.IO_ImportFileNotFound, path), Resources.Tag_IO);
+		}
+
+		public void ImportFiles(FileSystem sourceFs, string[] files, string localBasePath, bool convert) {
+			Service.Get<IJobService>().QueueJob(new ImportJob {
+				ViewModel = this,
+				SourceFileSystem = sourceFs,
+				DestinationFileSystem = FileSystem,
+				LocalBasePath = localBasePath,
+				Files = files,
+				AutoConvert = convert
+			});
+		}
+
+		public void ImportPaths(string[] paths, string localBasePath, bool convert) {
+			var absolutePaths = new List<string>();
+			string basePath = null;
+
+			// gather files
+			foreach(string path in paths) {
+				string parentDirectory = Path.GetDirectoryName(path) ?? "";
+
+				if(basePath == null) {
+					basePath = parentDirectory;
+				}
+				else if(parentDirectory != basePath) {
+					Log.Warn(Resources.IO_ImportBaseDirectoryMismatch, Resources.Tag_IO);
+					continue;
+				}
+
+				if(File.Exists(path)) {
+					absolutePaths.Add(path);
+				}
+				else if(Directory.Exists(path)) {
+					absolutePaths.AddRange(Directory.GetFiles(path, "*.*", SearchOption.AllDirectories));
+				}
+				else {
+					Log.Warn(string.Format(Resources.IO_ImportFileNotFound, path), Resources.Tag_IO);
+				}
+			}
+
+			// convert to relative paths
+			int basePathLength = FileSystem.NormalizePath(basePath).Length + 1; // +1 for the slash
+			var relativePaths = absolutePaths.Select(f => f.Substring(basePathLength)).ToArray();
+
+			// import files
+			ImportFiles(FileSystem.FromFolder(basePath), relativePaths, localBasePath, convert);
 		}
 
 		#endregion
 
 		#region Delete
 
-		public void DeleteFileOrFolder(ShellItemViewModel item) {
-			switch(item.Type) {
+		public void DeleteFileOrFolder(string path) {
+			if(Nodes.TryGetValue(path, out var node) && node != null) DeleteNode(node);
+		}
 
+		public void DeleteNode(ShellItemViewModel item) {
+			switch(item.Type) {
 				case ShellItemType.Directory:
 					Log.Info(string.Format(Resources.IO_DeletingDirectoryFromArchive, item.FullPath), Resources.Tag_IO);
-					// create shallow copy to iterate over (because collection is modified in loop)
+					// create shallow copy to iterate over, because the collection is modified in the loop
 					foreach(var child in item.Children.ToList()) {
-						DeleteFileOrFolder(child);
+						DeleteNode(child);
 					}
+
 					item.Parent.Children.Remove(item);
 					Nodes.Remove(item.FullPath);
-					var files = FileSystem.GetFiles();
 					break;
 
 				case ShellItemType.File:
@@ -157,11 +221,12 @@ namespace Yuka.Gui.ViewModels {
 	}
 
 	internal sealed class FileSystemPendingViewModel : FileSystemViewModel {
-		public FileSystemPendingViewModel() : base(FileSystem.Dummy) { }
+		public FileSystemPendingViewModel() : base(FileSystem.Dummy) {
+		}
 	}
 
 	internal sealed class DesignModeFileSystemViewModel : FileSystemViewModel {
-		public DesignModeFileSystemViewModel() : base(FileSystem.Dummy) { }
+		public DesignModeFileSystemViewModel() : base(FileSystem.Dummy) {
+		}
 	}
 }
-

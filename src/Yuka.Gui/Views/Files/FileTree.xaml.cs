@@ -30,7 +30,8 @@ namespace Yuka.Gui.Views.Files {
 				if(paths.IsNullOrEmpty()) return;
 
 				if(!((sender as FrameworkElement)?.FindAnchestor<TreeViewItem>()?.DataContext is ShellItemViewModel item)) return;
-				item.ImportFiles(paths);
+				// TODO auto convert
+				item.ImportPaths(paths, false);
 			}
 			catch(Exception ex) {
 				Gui.Log.Fail(string.Format(Properties.Resources.IO_DragNDropReceiveFailed, ex.GetType().Name, ex.Message), Properties.Resources.Tag_IO);

@@ -86,6 +86,7 @@
     <Compile Include="Converters\IconNameToImageConverter.cs" />
     <Compile Include="Converters\SortConverter.cs" />
     <Compile Include="Jobs\ExportAllJob.cs" />
+    <Compile Include="Jobs\ImportJob.cs" />
     <Compile Include="Jobs\Job.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Configuration\Config.cs" />

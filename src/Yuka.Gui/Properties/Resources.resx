@@ -243,4 +243,7 @@
     <value>Deleting directory '{0}' from archive</value>
     <comment>0: directory path</comment>
   </data>
+  <data name="IO_ImportBaseDirectoryMismatch" xml:space="preserve">
+    <value>Imported files must have a common base directory</value>
+  </data>
 </root>
