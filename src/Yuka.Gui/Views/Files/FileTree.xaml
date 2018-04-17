@@ -11,6 +11,8 @@
 
           VirtualizingStackPanel.IsVirtualizing="True"
           VirtualizingStackPanel.VirtualizationMode="Recycling"
+          
+          KeyDown="FileTree_OnKeyDown"
 
           ItemsSource="{Binding Root, Converter={StaticResource EnumerateConverter}}">
 

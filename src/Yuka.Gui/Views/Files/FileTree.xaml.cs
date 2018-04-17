@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Yuka.Gui.Util;
 using Yuka.Gui.ViewModels;
 using Yuka.Util;
@@ -37,6 +38,11 @@ namespace Yuka.Gui.Views.Files {
 				Gui.Log.Fail(string.Format(Properties.Resources.IO_DragNDropReceiveFailed, ex.GetType().Name, ex.Message), Properties.Resources.Tag_IO);
 				Gui.Log.Fail(ex.StackTrace, Properties.Resources.Tag_IO);
 			}
+		}
+
+		private void FileTree_OnKeyDown(object sender, KeyEventArgs e) {
+			if(!(SelectedValue is ShellItemViewModel item)) return;
+			if(e.Key == Key.Delete) item.Delete();
 		}
 	}
 }
