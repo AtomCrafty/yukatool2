@@ -40,9 +40,7 @@
                     <ContextMenu>
                         <MenuItem Header="Delete" Icon="{StaticResource Icons.Delete}" Command="{Binding DeleteCommand}"/>
                         <MenuItem Header="Export" Icon="{StaticResource Icons.Export}" Command="{Binding ExportCommand}"/>
-                        <MenuItem/>
-                        <MenuItem/>
-                        <MenuItem/>
+                        <MenuItem Header="Export Raw" Icon="{StaticResource Icons.ExportRaw}" Command="{Binding ExportRawCommand}"/>
                     </ContextMenu>
                 </Setter.Value>
             </Setter>

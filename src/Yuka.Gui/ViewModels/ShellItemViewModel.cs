@@ -40,9 +40,9 @@ namespace Yuka.Gui.ViewModels {
 			}
 		}
 
-		public ActionCommand ExportRawCommand { get; protected set; }
-		public ActionCommand ExportCommand { get; protected set; }
 		public ActionCommand DeleteCommand { get; protected set; }
+		public ActionCommand ExportCommand { get; protected set; }
+		public ActionCommand ExportRawCommand { get; protected set; }
 
 		public string Icon => GetIconName();
 		public Format Format => Type == ShellItemType.Directory ? null : Format.GuessFromFileName(Name);
@@ -113,20 +113,20 @@ namespace Yuka.Gui.ViewModels {
 			FileSystemViewModel = fs;
 			FileSystem = fs.FileSystem;
 			Parent = parent;
-			FullPath = fullPath;
+			FullPath = type == ShellItemType.Root ? "" : fullPath;
 			Name = Path.GetFileName(fullPath);
 			Size = FileSystem.GetFileSize(fullPath);
 
 			if(Type != ShellItemType.File) Children = new ObservableCollection<ShellItemViewModel>();
 
-			ExportRawCommand = new ActionCommand(ExportRaw);
-			ExportCommand = new ActionCommand(Export);
 			DeleteCommand = new ActionCommand(Delete);
+			ExportCommand = new ActionCommand(Export);
+			ExportRawCommand = new ActionCommand(ExportRaw);
 		}
 
-		public void ExportRaw() => FileSystemViewModel.ExportFileOrFolder(this, false);
-		public void Export() => FileSystemViewModel.ExportFileOrFolder(this, true);
 		public void Delete() => FileSystemViewModel.DeleteNode(this);
+		public void Export() => FileSystemViewModel.ExportFileOrFolder(this, true);
+		public void ExportRaw() => FileSystemViewModel.ExportFileOrFolder(this, false);
 
 		public string GetIconName() {
 			switch(Type) {

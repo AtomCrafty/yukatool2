@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using Yuka.Gui.Configuration;
 using Yuka.Gui.Properties;
 using Yuka.Gui.Services;

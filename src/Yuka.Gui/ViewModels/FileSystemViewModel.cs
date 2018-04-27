@@ -170,7 +170,7 @@ namespace Yuka.Gui.ViewModels {
 		}
 
 		public void ExportFileOrFolder(ShellItemViewModel item, bool convert, string targetFolder = null) {
-			ExportPaths(new[] { item.DropTargetPath }, (item.DropTargetPath + '\\').TrimStart('\\'), convert, targetFolder);
+			ExportPaths(new[] { item.FullPath }, (item.DropTargetPath + '\\').TrimStart('\\'), convert, targetFolder);
 		}
 
 		#endregion

@@ -22,8 +22,9 @@
             <converters:SortConverter x:Key="SortConverter"/>
 
             <!-- icons -->
-            <Image x:Key="Icons.Export" Source="pack://application:,,,/res/images/save.png"/>
             <Image x:Key="Icons.Delete" Source="pack://application:,,,/res/images/delete.png"/>
+            <Image x:Key="Icons.Export" Source="pack://application:,,,/res/images/save.png"/>
+            <Image x:Key="Icons.ExportRaw" Source="pack://application:,,,/res/images/save.png"/>
 
         </ResourceDictionary>
     </Application.Resources>
