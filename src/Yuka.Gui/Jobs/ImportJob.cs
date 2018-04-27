@@ -26,8 +26,8 @@ namespace Yuka.Gui.Jobs {
 					string localFilePath = Path.Combine(LocalBasePath, file);
 
 					// TODO status bar
-					Description = string.Format(Resources.IO_ImportProgressUpdate, i + 1, Files.Length, localFilePath);
-					Log.Note(Description, Resources.Tag_IO);
+					Status = string.Format(Resources.IO_ImportProgressUpdate, i + 1, Files.Length, localFilePath);
+					Log.Note(Status, Resources.Tag_IO);
 					Progress = (double)(i + 1) / Files.Length;
 
 					using(var srcStream = SourceFileSystem.OpenFile(file))
@@ -39,8 +39,8 @@ namespace Yuka.Gui.Jobs {
 				}
 
 				// TODO status bar
-				Description = string.Format(Resources.IO_ImportFinished, Files.Length);
-				Log.Note(Description, Resources.Tag_IO);
+				Status = string.Format(Resources.IO_ImportFinished, Files.Length);
+				Log.Note(Status, Resources.Tag_IO);
 				Progress = 1;
 			}
 

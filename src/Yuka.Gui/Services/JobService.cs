@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
 using Yuka.Gui.Jobs;
 using Yuka.Gui.Services.Abstract;
 
@@ -13,7 +15,7 @@ namespace Yuka.Gui.Services {
 
 		public void QueueJob(Job job) {
 			// TODO async execution
-			job.Execute();
+			Task.Run((Action)job.Execute);
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using Yuka.Gui.Configuration;
 using Yuka.Gui.Properties;
@@ -15,31 +16,34 @@ namespace Yuka.Gui.Jobs {
 		public bool AutoConvert = Config.Current.ConvertOnExport;
 
 		public override void Execute() {
+			if(TargetFolder == null) {
+				TargetFolder = Service.Get<IFileService>().SelectDirectory(null, Resources.IO_ExportSelectFolderDescription);
+				if(TargetFolder == null) {
+					Log.Note(Resources.IO_ExportTargetNull, Resources.Tag_IO);
+					return;
+				}
+			}
+
 			if(AutoConvert) {
 				// TODO convert-copy
 				throw new NotImplementedException("ExportJob convert-copy mode not implemented");
 			}
 			else {
-				if(TargetFolder == null) {
-					TargetFolder = Service.Get<IFileService>().SelectDirectory(null, Resources.IO_ExportSelectFolderDescription);
-					if(TargetFolder == null) {
-						Log.Note(Resources.IO_ExportTargetNull, Resources.Tag_IO);
-						return;
-					}
-				}
-
 				using(var dstFs = FileSystem.NewFolder(TargetFolder)) {
 
-					Description = Resources.IO_ExportWaitingForConfirmation;
+					Status = Resources.IO_ExportWaitingForConfirmation;
 					if(dstFs.GetFiles().Length > 0 && !Service.Get<ConfirmationService>().ConfirmAndRemember("ExportIntoNonEmptyFolder")) return;
+
+					var sw = new Stopwatch();
+					sw.Start();
 
 					for(int i = 0; i < Files.Length; i++) {
 						string file = Files[i];
 						string relativePath = file.Substring(LocalBasePath.Length);
 
 						// TODO status bar
-						Description = string.Format(Resources.IO_ExportProgressUpdate, i + 1, Files.Length, file);
-						Log.Note(Description, Resources.Tag_IO);
+						Status = string.Format(Resources.IO_ExportProgressUpdate, i + 1, Files.Length, file);
+						Log.Note(Status, Resources.Tag_IO);
 						Progress = (double)(i + 1) / Files.Length;
 
 						using(var srcFile = SourceFileSystem.OpenFile(file))
@@ -48,9 +52,11 @@ namespace Yuka.Gui.Jobs {
 						}
 					}
 
+					sw.Stop();
+
 					// TODO status bar
-					Description = string.Format(Resources.IO_ExportFinished, Files.Length);
-					Log.Note(Description, Resources.Tag_IO);
+					Status = string.Format(Resources.IO_ExportFinished, Files.Length, sw.Elapsed);
+					Log.Info(Status, Resources.Tag_IO);
 					Progress = 1;
 				}
 			}

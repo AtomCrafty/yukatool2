@@ -94,6 +94,9 @@ namespace Yuka.Gui.ViewModels {
 		}
 
 		public void ExportAllFiles() {
+			LoadedFileSystem.ExportFileOrFolder(LoadedFileSystem.Root, true);
+			return;
+
 			// select archive file 
 			// TODO default path
 			Log.Note(Resources.IO_ExportFolderSelectionStarted, Resources.Tag_IO);

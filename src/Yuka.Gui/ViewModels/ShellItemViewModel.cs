@@ -40,6 +40,7 @@ namespace Yuka.Gui.ViewModels {
 			}
 		}
 
+		public ActionCommand ExportRawCommand { get; protected set; }
 		public ActionCommand ExportCommand { get; protected set; }
 		public ActionCommand DeleteCommand { get; protected set; }
 
@@ -118,17 +119,14 @@ namespace Yuka.Gui.ViewModels {
 
 			if(Type != ShellItemType.File) Children = new ObservableCollection<ShellItemViewModel>();
 
+			ExportRawCommand = new ActionCommand(ExportRaw);
 			ExportCommand = new ActionCommand(Export);
 			DeleteCommand = new ActionCommand(Delete);
 		}
 
-		public void Export() {
-			FileSystemViewModel.ExportFileOrFolder(this);
-		}
-
-		public void Delete() {
-			FileSystemViewModel.DeleteNode(this);
-		}
+		public void ExportRaw() => FileSystemViewModel.ExportFileOrFolder(this, false);
+		public void Export() => FileSystemViewModel.ExportFileOrFolder(this, true);
+		public void Delete() => FileSystemViewModel.DeleteNode(this);
 
 		public string GetIconName() {
 			switch(Type) {

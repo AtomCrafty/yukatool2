@@ -147,16 +147,17 @@ namespace Yuka.Gui.ViewModels {
 
 		#region Export
 
-		public void ExportFiles(string[] files, string localBasePath, string targetFolder = null) {
+		public void ExportFiles(string[] files, string localBasePath, bool convert, string targetFolder = null) {
 			Service.Get<IJobService>().QueueJob(new ExportJob {
 				SourceFileSystem = FileSystem,
 				LocalBasePath = localBasePath,
 				Files = files,
-				TargetFolder = targetFolder
+				TargetFolder = targetFolder,
+				AutoConvert = convert
 			});
 		}
 
-		public void ExportPaths(string[] paths, string localBasePath, string targetFolder = null) {
+		public void ExportPaths(string[] paths, string localBasePath, bool convert, string targetFolder = null) {
 			var files = new List<string>();
 
 			// gather files
@@ -165,11 +166,11 @@ namespace Yuka.Gui.ViewModels {
 			}
 
 			// export files
-			ExportFiles(files.ToArray(), localBasePath, targetFolder);
+			ExportFiles(files.ToArray(), localBasePath, convert, targetFolder);
 		}
 
-		public void ExportFileOrFolder(ShellItemViewModel item, string targetFolder = null) {
-			ExportPaths(new[] { item.FullPath }, (item.DropTargetPath + '\\').TrimStart('\\'), targetFolder);
+		public void ExportFileOrFolder(ShellItemViewModel item, bool convert, string targetFolder = null) {
+			ExportPaths(new[] { item.DropTargetPath }, (item.DropTargetPath + '\\').TrimStart('\\'), convert, targetFolder);
 		}
 
 		#endregion

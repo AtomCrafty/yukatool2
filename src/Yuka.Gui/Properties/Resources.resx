@@ -259,10 +259,12 @@
     <value>({0}/{1}) Exporting {2}</value>
   </data>
   <data name="IO_ExportFinished" xml:space="preserve">
-    <value>Exported {0} files</value>
+    <value>Exported {0} files in {1:s\.ff} seconds</value>
+    <comment>0: file count, 1: elapsed time</comment>
   </data>
   <data name="IO_ImportFinished" xml:space="preserve">
-    <value>Imported {0} files</value>
+    <value>Imported {0} files in {1:s\.ff} seconds</value>
+    <comment>0: file count, 1: elapsed time</comment>
   </data>
   <data name="IO_ImportProgressUpdate" xml:space="preserve">
     <value>({0}/{1}) Importing {2}</value>
