@@ -45,6 +45,8 @@ namespace Yuka.Cli.Commands {
 			}
 		}
 
+		protected override string FormatTypeFallback => "packed";
+
 		protected override void SetCopyModes() {
 			base.SetCopyModes();
 

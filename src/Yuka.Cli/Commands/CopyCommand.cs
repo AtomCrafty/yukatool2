@@ -111,9 +111,11 @@ namespace Yuka.Cli.Commands {
 			}
 		}
 
+		protected virtual string FormatTypeFallback => "keep";
+
 		protected virtual void SetCopyModes() {
 
-			string format = Parameters.GetString("format", 'f', "keep").ToLower();
+			string format = Parameters.GetString("format", 'f', FormatTypeFallback).ToLower();
 			_rawCopy = Parameters.GetBool("raw", 'r', false);
 			_deleteAfterCopy = Parameters.GetBool("move", 'm', false);
 			_overwriteExisting = Parameters.GetBool("overwrite", 'o', false);
