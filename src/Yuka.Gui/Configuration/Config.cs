@@ -33,5 +33,7 @@ namespace Yuka.Gui.Configuration {
 
 		public FormatMapper ExportFormatMapping { get; set; } = new FormatMapper();
 		public FormatMapper ImportFormatMapping { get; set; } = new FormatMapper();
+		public bool ConvertOnExport { get; set; } = false;
+		public bool ConvertOnImport { get; set; } = false;
 	}
 }

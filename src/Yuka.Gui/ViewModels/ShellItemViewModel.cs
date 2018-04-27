@@ -172,6 +172,7 @@ namespace Yuka.Gui.ViewModels {
 		}
 
 		public string DropTargetPath => Type == ShellItemType.File ? Path.GetDirectoryName(FullPath) : Type == ShellItemType.Root ? "" : FullPath;
+
 		public void ImportPaths(string[] paths, bool convert) => FileSystemViewModel.ImportPaths(paths, DropTargetPath, convert);
 	}
 

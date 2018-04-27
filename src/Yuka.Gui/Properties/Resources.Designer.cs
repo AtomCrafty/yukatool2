@@ -160,6 +160,15 @@ namespace Yuka.Gui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Exported {0} files ähnelt.
+        /// </summary>
+        internal static string IO_ExportFinished {
+            get {
+                return ResourceManager.GetString("IO_ExportFinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Export folder selected: &apos;{0}&apos; ähnelt.
         /// </summary>
         internal static string IO_ExportFolderSelectionEnded {
@@ -174,6 +183,42 @@ namespace Yuka.Gui.Properties {
         internal static string IO_ExportFolderSelectionStarted {
             get {
                 return ResourceManager.GetString("IO_ExportFolderSelectionStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die ({0}/{1}) Exporting {2} ähnelt.
+        /// </summary>
+        internal static string IO_ExportProgressUpdate {
+            get {
+                return ResourceManager.GetString("IO_ExportProgressUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Select export destination ähnelt.
+        /// </summary>
+        internal static string IO_ExportSelectFolderDescription {
+            get {
+                return ResourceManager.GetString("IO_ExportSelectFolderDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die No export folder selected; aborting ähnelt.
+        /// </summary>
+        internal static string IO_ExportTargetNull {
+            get {
+                return ResourceManager.GetString("IO_ExportTargetNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Waiting for user confirmation ähnelt.
+        /// </summary>
+        internal static string IO_ExportWaitingForConfirmation {
+            get {
+                return ResourceManager.GetString("IO_ExportWaitingForConfirmation", resourceCulture);
             }
         }
         
@@ -223,6 +268,15 @@ namespace Yuka.Gui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Imported {0} files ähnelt.
+        /// </summary>
+        internal static string IO_ImportFinished {
+            get {
+                return ResourceManager.GetString("IO_ImportFinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Failed to import folder: [{0}] {1} ähnelt.
         /// </summary>
         internal static string IO_ImportFolderFailed {
@@ -237,6 +291,15 @@ namespace Yuka.Gui.Properties {
         internal static string IO_ImportFolderFinished {
             get {
                 return ResourceManager.GetString("IO_ImportFolderFinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die ({0}/{1}) Importing {2} ähnelt.
+        /// </summary>
+        internal static string IO_ImportProgressUpdate {
+            get {
+                return ResourceManager.GetString("IO_ImportProgressUpdate", resourceCulture);
             }
         }
         

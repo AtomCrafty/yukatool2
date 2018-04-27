@@ -246,4 +246,25 @@
   <data name="IO_ImportBaseDirectoryMismatch" xml:space="preserve">
     <value>Imported files must have a common base directory</value>
   </data>
+  <data name="IO_ExportTargetNull" xml:space="preserve">
+    <value>No export folder selected; aborting</value>
+  </data>
+  <data name="IO_ExportSelectFolderDescription" xml:space="preserve">
+    <value>Select export destination</value>
+  </data>
+  <data name="IO_ExportWaitingForConfirmation" xml:space="preserve">
+    <value>Waiting for user confirmation</value>
+  </data>
+  <data name="IO_ExportProgressUpdate" xml:space="preserve">
+    <value>({0}/{1}) Exporting {2}</value>
+  </data>
+  <data name="IO_ExportFinished" xml:space="preserve">
+    <value>Exported {0} files</value>
+  </data>
+  <data name="IO_ImportFinished" xml:space="preserve">
+    <value>Imported {0} files</value>
+  </data>
+  <data name="IO_ImportProgressUpdate" xml:space="preserve">
+    <value>({0}/{1}) Importing {2}</value>
+  </data>
 </root>

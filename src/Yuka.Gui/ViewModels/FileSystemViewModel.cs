@@ -119,14 +119,15 @@ namespace Yuka.Gui.ViewModels {
 			else Log.Warn(string.Format(Resources.IO_ImportFileNotFound, path), Resources.Tag_IO);
 		}
 
-		public void ImportFiles(FileSystem sourceFs, string[] files, string localBasePath, bool convert) {
+		public void ImportFiles(FileSystem sourceFs, string[] files, string localBasePath, bool convert, bool closeSourceFs = true) {
 			Service.Get<IJobService>().QueueJob(new ImportJob {
 				ViewModel = this,
 				SourceFileSystem = sourceFs,
 				DestinationFileSystem = FileSystem,
 				LocalBasePath = localBasePath,
 				Files = files,
-				AutoConvert = convert
+				AutoConvert = convert,
+				CloseSourceFileSystem = closeSourceFs
 			});
 		}
 
@@ -208,8 +209,29 @@ namespace Yuka.Gui.ViewModels {
 
 		#region Export
 
-		public void ExportFileOrFolder(ShellItemViewModel shellItemViewModel) {
-			Log.Fail("FileSystemViewModel.ExportFileOrFolder is not implemented yet", Resources.Tag_System);
+		public void ExportFiles(string[] files, string localBasePath, string targetFolder = null) {
+			Service.Get<IJobService>().QueueJob(new ExportJob {
+				SourceFileSystem = FileSystem,
+				LocalBasePath = localBasePath,
+				Files = files,
+				TargetFolder = targetFolder
+			});
+		}
+
+		public void ExportPaths(string[] paths, string localBasePath, string targetFolder = null) {
+			var files = new List<string>();
+
+			// gather files
+			foreach(string path in paths) {
+				files.AddRange(FileSystem.GetFiles().Where(f => f.StartsWith(path)));
+			}
+
+			// export files
+			ExportFiles(files.ToArray(), localBasePath, targetFolder);
+		}
+
+		public void ExportFileOrFolder(ShellItemViewModel item, string targetFolder = null) {
+			ExportPaths(new[] { item.FullPath }, (item.DropTargetPath + '\\').TrimStart('\\'), targetFolder);
 		}
 
 		#endregion
