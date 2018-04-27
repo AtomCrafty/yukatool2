@@ -57,68 +57,6 @@ namespace Yuka.Gui.ViewModels {
 
 		#region Import
 
-		[Obsolete]
-		public void CopyFile(string localFilePath, Stream srcStream, bool rawCopy) {
-			if(rawCopy) {
-				using(var dstStream = FileSystem.CreateFile(localFilePath)) {
-					srcStream.CopyTo(dstStream);
-					dstStream.Flush();
-					CreateNode(localFilePath, ShellItemType.File, Nodes);
-				}
-			}
-			else {
-				// TODO convert-copy
-				Log.Warn("Convert-copy not implemented", Resources.Tag_IO);
-			}
-		}
-
-		[Obsolete]
-		public void ImportFolder(string folderPath, string localBasePath, bool rawCopy) {
-			try {
-				string localPath = Path.Combine(localBasePath, Path.GetFileName(folderPath) ?? "");
-				int fileCount = 0;
-
-				using(var srcFs = FileSystem.FromFolder(folderPath)) {
-					foreach(string file in srcFs.GetFiles()) {
-						string localFilePath = Path.Combine(localPath, file);
-						using(var srcStream = srcFs.OpenFile(file)) {
-							CopyFile(localFilePath, srcStream, rawCopy);
-							fileCount++;
-						}
-					}
-				}
-
-				Log.Note(string.Format(Resources.IO_ImportFolderFinished, fileCount, folderPath, localPath), Resources.Tag_IO);
-			}
-			catch(Exception e) {
-				Log.Fail(string.Format(Resources.IO_ImportFolderFailed, e.GetType().Name, e.Message), Resources.Tag_IO);
-				Log.Fail(e.StackTrace, Resources.Tag_IO);
-			}
-		}
-
-		[Obsolete]
-		public void ImportFile(string filePath, string localBasePath, bool rawCopy) {
-			try {
-				string localFilePath = Path.Combine(localBasePath, Path.GetFileName(filePath) ?? "");
-				using(var srcStream = File.Open(filePath, FileMode.Open)) {
-					CopyFile(localFilePath, srcStream, rawCopy);
-				}
-
-				Log.Note(string.Format(Resources.IO_ImportFileFinished, filePath, localFilePath), Resources.Tag_IO);
-			}
-			catch(Exception e) {
-				Log.Fail(string.Format(Resources.IO_ImportFileFailed, e.GetType().Name, e.Message), Resources.Tag_IO);
-				Log.Fail(e.StackTrace, Resources.Tag_IO);
-			}
-		}
-
-		[Obsolete]
-		public void ImportFileOrFolder(string path, string localBasePath, bool rawCopy) {
-			if(Directory.Exists(path)) ImportFolder(path, localBasePath, rawCopy);
-			else if(File.Exists(path)) ImportFile(path, localBasePath, rawCopy);
-			else Log.Warn(string.Format(Resources.IO_ImportFileNotFound, path), Resources.Tag_IO);
-		}
-
 		public void ImportFiles(FileSystem sourceFs, string[] files, string localBasePath, bool convert, bool closeSourceFs = true) {
 			Service.Get<IJobService>().QueueJob(new ImportJob {
 				ViewModel = this,
