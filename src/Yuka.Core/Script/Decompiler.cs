@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Yuka.IO.Formats;
 using Yuka.Script.Data;
 using Yuka.Script.Instructions;
@@ -183,6 +184,11 @@ namespace Yuka.Script {
 		protected Expression ToExpression(DataElement[] parts) {
 			if(parts.Length == 1) return ToExpression(parts[0]);
 
+			if(parts[0] is DataElement.Ctrl ctrl && ctrl.Name.StringValue == "-") {
+				// first element is a negative sign -> prepend a 0 literal
+				parts = new[] { new DataElement.CInt(new ScriptValue.Int(0)) }.Concat(parts).ToArray();
+			}
+
 			// odd number of elements (one less operator than operands)
 			Debug.Assert(parts.Length % 2 == 1);
 			var operators = new string[parts.Length / 2];
@@ -228,7 +234,7 @@ namespace Yuka.Script {
 						if(_currentAssignmentTarget == null) throw new FormatException("No assignment target set");
 
 						Expression expr;
-						 if(func.Arguments.Length == 0) {
+						if(func.Arguments.Length == 0) {
 							// a call to =() with no arguments means the result of the following function call is assigned
 							if(CurrentInstruction is CallInstruction callInstruction) {
 								expr = new FunctionCallExpr { CallStmt = new FunctionCallStmt { MethodName = callInstruction.Name, Arguments = MapToExpressions(callInstruction.Arguments) } };
