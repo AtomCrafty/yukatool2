@@ -1,5 +1,20 @@
-﻿using Yuka.Cli.Commands;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Text;
+using Newtonsoft.Json;
+using Yuka.Cli.Commands;
 using Yuka.Cli.Util;
+using Yuka.Container;
+using Yuka.Graphics;
+using Yuka.IO;
+using Yuka.IO.Formats;
+using Yuka.Script;
+using Yuka.Script.Data;
+using Yuka.Script.Source;
+using Yuka.Util;
 
 namespace Yuka.Cli {
 
@@ -31,8 +46,18 @@ namespace Yuka.Cli {
 	public static class Tests {
 
 		public static void Main() {
-			Tests.DecompileGame();
-			Tests.CompileGame();
+			Disassemble();
+			//DecompileGame();
+			//CompileGame();
+		}
+
+		public static void Disassemble() {
+			const string path = @"S:\Games\Visual Novels\Imouto Sama FD\data01\yks\all\all_00030.yks";
+			var fs = FileSystem.FromFile(path);
+			string name = Path.GetFileName(path);
+
+			var script = FileReader.Decode<YukaScript>(name, fs);
+			FileWriter.Encode(script, name.WithExtension(Format.Yki.Extension), fs, new FormatPreference(Format.Yki));
 		}
 
 		public static void CompileGame() {

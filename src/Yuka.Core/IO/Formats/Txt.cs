@@ -8,7 +8,7 @@ namespace Yuka.IO.Formats {
 		public override string Description => "Text data";
 		public override FormatType Type => FormatType.None;
 
-		public string[] TextExtensions = { ".txt", ".log", ".ini", ".htm", ".html" };
+		public string[] TextExtensions = { ".txt", ".log", ".ini", ".htm", ".html", ".xml", ".json" };
 	}
 
 	public class TxtStringReader : FileReader<string> {

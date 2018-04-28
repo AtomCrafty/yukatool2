@@ -184,27 +184,32 @@ namespace Yuka.Script {
 		protected Expression ToExpression(DataElement[] parts) {
 			if(parts.Length == 1) return ToExpression(parts[0]);
 
-			if(parts[0] is DataElement.Ctrl ctrl && ctrl.Name.StringValue == "-") {
-				// first element is a negative sign -> prepend a 0 literal
-				parts = new[] { new DataElement.CInt(new ScriptValue.Int(0)) }.Concat(parts).ToArray();
-			}
-
 			// odd number of elements (one less operator than operands)
 			Debug.Assert(parts.Length % 2 == 1);
-			var operators = new string[parts.Length / 2];
-			var operands = new Expression[parts.Length / 2 + 1];
+			var operators = new List<string>();
+			var operands = new List<Expression>();
 
 			for(int i = 0; i < parts.Length; i++) {
-				if(i % 2 == 0) {
-					Debug.Assert(!(parts[i] is DataElement.Ctrl), "Operators are only allowed at odd indices");
-					operands[i / 2] = ToExpression(parts[i]);
+				// operand
+				if(parts[i] is DataElement.Ctrl ctrl) {
+					i++;
+					// create nested expression (0-x) to represent signed values -x
+					operands.Add(new OperatorExpr {
+						Operands = new[] { new IntegerLiteral { Value = 0 }, ToExpression(parts[i]) },
+						Operators = new[] { ctrl.Name.StringValue }
+					});
 				}
 				else {
-					Debug.Assert(parts[i] is DataElement.Ctrl, "Operands are only allowed at even indices");
-					operators[i / 2] = ((DataElement.Ctrl)parts[i]).Name.StringValue;
+					operands.Add(ToExpression(parts[i]));
+				}
+
+				// operator
+				i++;
+				if(i < parts.Length) {
+					operators.Add(((DataElement.Ctrl)parts[i]).Name.StringValue);
 				}
 			}
-			return new OperatorExpr { Operands = operands, Operators = operators };
+			return new OperatorExpr { Operands = operands.ToArray(), Operators = operators.ToArray() };
 		}
 
 		protected Expression[] MapToExpressions(DataElement[] elements) {
@@ -279,14 +284,20 @@ namespace Yuka.Script {
 								// no else block
 								return new IfStmt { Function = callStatement, Body = body };
 
+							BlockStmt elseBody;
 							// skip else keyword
 							_currentInstructionOffset++;
-							if(!(Script.InstructionList[_currentInstructionOffset] is LabelInstruction elseStart) || elseStart.Name != "{")
-								throw new FormatException("Else keyword must be followed by an opening brace");
-
-							// skip opening brace
-							_currentInstructionOffset++;
-							var elseBody = ReadBlockStatement();
+							if(Script.InstructionList[_currentInstructionOffset] is LabelInstruction elseStart && elseStart.Name == "{") {
+								// skip opening brace
+								_currentInstructionOffset++;
+								elseBody = ReadBlockStatement();
+							}
+							else {
+								// "Kimi o Aogi Otome wa Hime ni" has these bodyless else keywords in data01:system/selectjumpstart.yks
+								Console.WriteLine("Warning: Loose else keyword without body");
+								elseBody = new BlockStmt();
+								//throw new FormatException("Else keyword must be followed by an opening brace");
+							}
 
 							return new IfStmt { Function = callStatement, Body = body, ElseBody = elseBody };
 						}

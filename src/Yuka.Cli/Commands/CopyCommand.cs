@@ -125,14 +125,16 @@ namespace Yuka.Cli.Commands {
 					_prefererredFormatType = FormatType.None;
 					_rawCopy = true;
 					break;
+				case "pack":
 				case "packed":
 					_prefererredFormatType = FormatType.Packed;
 					break;
+				case "unpack":
 				case "unpacked":
 					_prefererredFormatType = FormatType.Unpacked;
 					break;
 				default:
-					throw new ArgumentOutOfRangeException(nameof(format), format, "Format must be one of the following: keep, packed, unpacked");
+					throw new ArgumentOutOfRangeException(nameof(format), format, "Format must be one of the following: keep, pack, packed, unpack, unpacked");
 			}
 		}
 
