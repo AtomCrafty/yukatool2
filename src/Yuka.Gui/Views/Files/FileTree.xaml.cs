@@ -17,7 +17,7 @@ namespace Yuka.Gui.Views.Files {
 		}
 
 		private void TreeItem_OnDragEnter(object sender, DragEventArgs e) {
-			if(!(sender is TreeViewItem elem) || !(elem.DataContext is ShellItemViewModel item)) return;
+			if(!(sender is TreeViewItem elem) || !(elem.DataContext is ShellItemViewModel)) return;
 			if(!e.Data.GetFormats().Contains("FileDrop")) return;
 
 			e.Effects = DragDropEffects.Copy;

@@ -160,7 +160,7 @@ namespace Yuka.Gui.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Exported {0} files in {1:s\.ff} seconds ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Exported {0} files in {1:N2} seconds ähnelt.
         /// </summary>
         internal static string IO_ExportFinished {
             get {
@@ -268,7 +268,7 @@ namespace Yuka.Gui.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Imported {0} files in {1:s\.ff} seconds ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Imported {0} files in {1:N2} seconds ähnelt.
         /// </summary>
         internal static string IO_ImportFinished {
             get {

@@ -54,7 +54,7 @@ namespace Yuka.Gui.Jobs {
 					sw.Stop();
 
 					// TODO status bar
-					Status = string.Format(Resources.IO_ExportFinished, Files.Length, sw.Elapsed);
+					Status = string.Format(Resources.IO_ExportFinished, Files.Length, sw.Elapsed.TotalSeconds);
 					Log.Info(Status, Resources.Tag_IO);
 					Progress = 1;
 				}

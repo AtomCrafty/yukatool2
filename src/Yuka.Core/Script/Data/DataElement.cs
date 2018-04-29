@@ -61,7 +61,8 @@ namespace Yuka.Script.Data {
 
 			public override string DisplayInfo => $"{base.DisplayInfo} [{Name}]";
 
-			public override string ToString() => ':' + Name.StringValue;
+			// the # is interpreted as a comment, so replace it with _
+			public override string ToString() => ':' + Name.StringValue.Replace('#', '_');
 		}
 
 		public sealed class CInt : DataElement {

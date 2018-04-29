@@ -114,7 +114,8 @@ namespace Yuka.IO {
 		// The stream is expected to point to the end of the written data when this method returns.
 		public abstract void Write(T obj, Stream s);
 		public virtual void Write(T obj, string baseName, FileSystem fs) {
-			using(var s = fs.CreateFile(baseName.WithExtension(Format.Extension))) {
+			if(Format.Extension != null) baseName = baseName.WithExtension(Format.Extension);
+			using(var s = fs.CreateFile(baseName)) {
 				Write(obj, s);
 			}
 		}

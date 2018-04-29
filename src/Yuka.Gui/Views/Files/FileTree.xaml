@@ -18,9 +18,7 @@
 
     <TreeView.ItemTemplate>
         <HierarchicalDataTemplate x:Name="ItemTemplate" ItemsSource="{Binding Children, Converter={StaticResource SortConverter}, ConverterParameter=Name}" DataType="{x:Type vm:ShellItemViewModel}">
-            <StackPanel Orientation="Horizontal"
-                        DragEnter="TreeItem_OnDragEnter"
-                        Drop="TreeItem_OnDrop">
+            <StackPanel Orientation="Horizontal">
                 <Image Source="{Binding Icon, Converter={StaticResource IconNameToImageConverter}}" Height="24"/>
                 <TextBlock VerticalAlignment="Center" Padding="2 0 4 0" Text="{Binding Name}"/>
             </StackPanel>
@@ -29,8 +27,6 @@
 
     <TreeView.ItemContainerStyle>
         <Style TargetType="{x:Type TreeViewItem}">
-            <Setter Property="AllowDrop" Value="True"/>
-
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
             <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
 
@@ -44,6 +40,11 @@
                     </ContextMenu>
                 </Setter.Value>
             </Setter>
+
+            <Setter Property="AllowDrop" Value="True"/>
+            <EventSetter Event="DragEnter" Handler="TreeItem_OnDragEnter" HandledEventsToo="True"/>
+            <EventSetter Event="DragOver" Handler="TreeItem_OnDragEnter" HandledEventsToo="True"/>
+            <EventSetter Event="Drop" Handler="TreeItem_OnDrop" HandledEventsToo="True"/>
         </Style>
     </TreeView.ItemContainerStyle>
 </TreeView>

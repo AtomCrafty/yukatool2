@@ -16,7 +16,7 @@ namespace Yuka.Gui.Views {
 
 		private void MainWindow_OnLoaded(object sender, RoutedEventArgs e) {
 			// TODO temp
-			new LogWindow { WindowStartupLocation = WindowStartupLocation.Manual, Left = 10, Top = 50, Height = 1000 }.Show();
+			//new LogWindow { WindowStartupLocation = WindowStartupLocation.Manual, Left = 10, Top = 50, Height = 1000 }.Show();
 			Left = 550;
 			Top = 300;
 			Focus();

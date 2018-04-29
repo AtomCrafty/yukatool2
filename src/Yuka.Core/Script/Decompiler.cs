@@ -184,8 +184,6 @@ namespace Yuka.Script {
 		protected Expression ToExpression(DataElement[] parts) {
 			if(parts.Length == 1) return ToExpression(parts[0]);
 
-			// odd number of elements (one less operator than operands)
-			Debug.Assert(parts.Length % 2 == 1);
 			var operators = new List<string>();
 			var operands = new List<Expression>();
 
