@@ -11,6 +11,7 @@ List of known Yuka games:
 (2012) Smee: Dousei Lover Able											https://vndb.org/v7774
 (2012) PeasSoft: Zutto Tsukushite Ageru no!								https://vndb.org/v8439
 (2013) PeasSoft: Koisuru Shimai no Sextet								https://vndb.org/v13353
+(2013) PeasSoft: Shitsuji ga Aruji o Erabu Toki							https://vndb.org/v10932
 (2014) Caramel Box: Semiramis no Tenbin									https://vndb.org/v14760		[Yuka 2]
 (2015) Caramel Box: Semiramis no Tenbin - Fated Dolls					https://vndb.org/v16742		[Yuka 2]
 
@@ -20,6 +21,5 @@ Possible candidates I still have to check:
 (2010) Hooksoft: Sakura Bitmap											https://vndb.org/v3859
 (2011) Hooksoft: Strawberry Nauts										https://vndb.org/v7507
 (2012) Feng: Hoshizora e Kakaru Hashi AA								https://vndb.org/v8309
-(2013) PeasSoft: Shitsuji ga Aruji o Erabu Toki							https://vndb.org/v10932
 (2013) PeasSoft: Koi x Koi = Infinity ~Koisuru Otome ni Dekiru Koto~	https://vndb.org/v12377
 (2015) PeasSoft: Mainichi ga Harem Sugite Ore wa Yome o Kimerarenai!	https://vndb.org/v16068
