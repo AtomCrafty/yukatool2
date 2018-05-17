@@ -41,20 +41,23 @@ namespace Yuka.Util {
 		}
 
 		public override int Read(byte[] buffer, int offset, int count) {
-			long pos = _baseStream.Position;
-			try {
-				// seek to my position in base stream
-				_baseStream.Position = Position + _offset;
+			// prevent other threads from seeking
+			lock(_baseStream) {
+				long pos = _baseStream.Position;
+				try {
+					// seek to my position in base stream
+					_baseStream.Position = Position + _offset;
 
-				// make sure we stay in bounds
-				count = count.Clamp((int)(Length - Position));
-				return _baseStream.Read(buffer, offset, count);
-			}
-			finally {
-				// set my position to the new value
-				Position = _baseStream.Position - _offset;
-				// reset base stream position to where it was
-				_baseStream.Position = pos;
+					// make sure we stay in bounds
+					count = count.Clamp((int)(Length - Position));
+					return _baseStream.Read(buffer, offset, count);
+				}
+				finally {
+					// set my position to the new value
+					Position = _baseStream.Position - _offset;
+					// reset base stream position to where it was
+					_baseStream.Position = pos;
+				}
 			}
 		}
 

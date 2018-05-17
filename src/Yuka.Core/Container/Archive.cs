@@ -16,6 +16,7 @@ namespace Yuka.Container {
 		internal void MarkDirty() => IsDirty = true;
 
 		internal readonly ArchiveSaveMode SaveMode;
+		private readonly object _syncRoot = new object();
 
 		public Archive(string name, Stream stream, ArchiveSaveMode saveMode = ArchiveSaveMode.Explicit) {
 			Name = name;
@@ -23,7 +24,7 @@ namespace Yuka.Container {
 			SaveMode = saveMode;
 
 			if(saveMode == ArchiveSaveMode.Immediate) {
-				ArchiveHelpers.WriteHeader(Header, new BinaryWriter(stream));
+				lock(_syncRoot) ArchiveHelpers.WriteHeader(Header, new BinaryWriter(stream));
 			}
 		}
 
@@ -33,8 +34,10 @@ namespace Yuka.Container {
 
 			var reader = new BinaryReader(Stream);
 			Stream.Seek(0);
-			Header = ArchiveHelpers.ReadHeader(reader);
-			Files = ArchiveHelpers.ReadIndex(this, reader);
+			lock(_syncRoot) {
+				Header = ArchiveHelpers.ReadHeader(reader);
+				Files = ArchiveHelpers.ReadIndex(this, reader);
+			}
 		}
 
 		public string[] GetFiles(string filter = "*.*") {
@@ -89,130 +92,134 @@ namespace Yuka.Container {
 		}
 
 		internal bool SaveFile(ArchiveFile file, MemoryStream data) {
-			var w = new BinaryWriter(Stream);
-			switch(SaveMode) {
-				case ArchiveSaveMode.Explicit:
-					// mark file as dirty, but don't save to disk
-					MarkDirty();
-					file.MarkDirty();
-					file.NewData = data.ToArray();
-					file.DataLength = file.NewData.Length;
-					return true;
-				case ArchiveSaveMode.Flush:
-					MarkDirty();
+			lock(_syncRoot) {
+				var w = new BinaryWriter(Stream);
+				switch(SaveMode) {
+					case ArchiveSaveMode.Explicit:
+						// mark file as dirty, but don't save to disk
+						MarkDirty();
+						file.MarkDirty();
+						file.NewData = data.ToArray();
+						file.DataLength = file.NewData.Length;
+						return true;
+					case ArchiveSaveMode.Flush:
+						MarkDirty();
 
-					// if index and the old file data are in the back of the file (this file was last updated), overwrite them.
-					// otherwise, the old file data will be kept until Flush() is called and the entire archive is written again.
-					long newFileOffset = Stream.Length;
-					if(Header.IndexOffset + Header.IndexLength == newFileOffset) {
-						// Index is at the end of the file, overwrite it
-						newFileOffset = Header.IndexOffset;
-					}
-					if(file.DataOffset + file.DataLength == newFileOffset) {
-						// Old file data is at the end, overwrite it
-						newFileOffset = file.DataOffset;
-					}
-					file.DataOffset = newFileOffset;
-					file.DataLength = data.Length;
+						// if index and the old file data are in the back of the file (this file was last updated), overwrite them.
+						// otherwise, the old file data will be kept until Flush() is called and the entire archive is written again.
+						long newFileOffset = Stream.Length;
+						if(Header.IndexOffset + Header.IndexLength == newFileOffset) {
+							// Index is at the end of the file, overwrite it
+							newFileOffset = Header.IndexOffset;
+						}
+						if(file.DataOffset + file.DataLength == newFileOffset) {
+							// Old file data is at the end, overwrite it
+							newFileOffset = file.DataOffset;
+						}
+						file.DataOffset = newFileOffset;
+						file.DataLength = data.Length;
 
-					// write file data
-					Stream.SetLength(newFileOffset);
-					Stream.Seek(newFileOffset);
-					data.Seek(0).CopyTo(Stream);
+						// write file data
+						Stream.SetLength(newFileOffset);
+						Stream.Seek(newFileOffset);
+						data.Seek(0).CopyTo(Stream);
 
-					// write index
-					Header.IndexOffset = (uint)Stream.Position;
-					ArchiveHelpers.WriteIndex(Files, w);
+						// write index
+						Header.IndexOffset = (uint)Stream.Position;
+						ArchiveHelpers.WriteIndex(Files, w);
 
-					// update header
-					Stream.Seek(0);
-					ArchiveHelpers.WriteHeader(Header, w);
-					Stream.Flush();
+						// update header
+						Stream.Seek(0);
+						ArchiveHelpers.WriteHeader(Header, w);
+						Stream.Flush();
 
-					return true;
-				case ArchiveSaveMode.Immediate:
-					MarkDirty();
-					Stream.Seek(0, SeekOrigin.End);
-					// write file name
-					file.NameOffset = (uint)Stream.Position;
-					w.WriteNullTerminatedString(file.Name);
-					// write file data
-					file.DataOffset = (uint)Stream.Position;
-					data.Seek(0).CopyTo(Stream);
-					file.DataLength = (uint)(Stream.Position - file.DataOffset);
-					return true;
-				default:
-					return false;
+						return true;
+					case ArchiveSaveMode.Immediate:
+						MarkDirty();
+						Stream.Seek(0, SeekOrigin.End);
+						// write file name
+						file.NameOffset = (uint)Stream.Position;
+						w.WriteNullTerminatedString(file.Name);
+						// write file data
+						file.DataOffset = (uint)Stream.Position;
+						data.Seek(0).CopyTo(Stream);
+						file.DataLength = (uint)(Stream.Position - file.DataOffset);
+						return true;
+					default:
+						return false;
+				}
 			}
 		}
 
 		public void Flush() {
-			if(!IsDirty) return;
+			lock(_syncRoot) {
+				if(!IsDirty) return;
 
-			switch(SaveMode) {
-				case ArchiveSaveMode.Explicit:
-				case ArchiveSaveMode.Flush:
+				switch(SaveMode) {
+					case ArchiveSaveMode.Explicit:
+					case ArchiveSaveMode.Flush:
 
-					string tmpFile = Path.ChangeExtension(Name, ".ykc.tmp") ?? "";
-					var tmp = new FileStream(tmpFile, FileMode.Create);
-					var w = new BinaryWriter(tmp);
+						string tmpFile = Path.ChangeExtension(Name, ".ykc.tmp") ?? "";
+						var tmp = new FileStream(tmpFile, FileMode.Create);
+						var w = new BinaryWriter(tmp);
 
-					ArchiveHelpers.WriteHeader(Header, w);
+						ArchiveHelpers.WriteHeader(Header, w);
 
-					// write names
-					foreach(var file in Files.Values) {
-						file.NameOffset = tmp.Position;
-						w.WriteNullTerminatedString(file.Name);
-					}
-
-					// write data
-					foreach(var file in Files.Values) {
-						if(file.IsDirty && SaveMode == ArchiveSaveMode.Explicit) {
-							file.DataOffset = tmp.Position;
-							w.Write(file.NewData);
+						// write names
+						foreach(var file in Files.Values) {
+							file.NameOffset = tmp.Position;
+							w.WriteNullTerminatedString(file.Name);
 						}
-						else {
-							long dataOffset = tmp.Position;
-							Stream.CopyRangeTo(tmp, file.DataOffset, file.DataLength);
-							file.DataOffset = dataOffset;
+
+						// write data
+						foreach(var file in Files.Values) {
+							if(file.IsDirty && SaveMode == ArchiveSaveMode.Explicit) {
+								file.DataOffset = tmp.Position;
+								w.Write(file.NewData);
+							}
+							else {
+								long dataOffset = tmp.Position;
+								Stream.CopyRangeTo(tmp, file.DataOffset, file.DataLength);
+								file.DataOffset = dataOffset;
+							}
 						}
-					}
 
-					// write index
-					Header.IndexOffset = (uint)tmp.Position;
-					ArchiveHelpers.WriteIndex(Files, w);
-					Header.IndexLength = (uint)(tmp.Position - Header.IndexOffset);
+						// write index
+						Header.IndexOffset = (uint)tmp.Position;
+						ArchiveHelpers.WriteIndex(Files, w);
+						Header.IndexLength = (uint)(tmp.Position - Header.IndexOffset);
 
-					// update header
-					tmp.Seek(0);
-					ArchiveHelpers.WriteHeader(Header, w);
+						// update header
+						tmp.Seek(0);
+						ArchiveHelpers.WriteHeader(Header, w);
 
-					// swap files
-					tmp.Close();
-					Stream.Close();
-					File.Delete(Name ?? "");
-					File.Move(tmpFile, Name ?? "");
+						// swap files
+						tmp.Close();
+						Stream.Close();
+						File.Delete(Name ?? "");
+						File.Move(tmpFile, Name ?? "");
 
-					// reload
-					IsDirty = false;
-					Stream = new FileStream(Name ?? "", FileMode.Open);
-					Reload();
-					break;
-				case ArchiveSaveMode.Immediate:
-					Stream.Seek(0, SeekOrigin.End);
-					w = new BinaryWriter(Stream);
+						// reload
+						IsDirty = false;
+						Stream = new FileStream(Name ?? "", FileMode.Open);
+						Reload();
+						break;
+					case ArchiveSaveMode.Immediate:
+						Stream.Seek(0, SeekOrigin.End);
+						w = new BinaryWriter(Stream);
 
-					// write index
-					Header.IndexOffset = (uint)Stream.Position;
-					ArchiveHelpers.WriteIndex(Files, w);
-					Header.IndexLength = (uint)(Stream.Position - Header.IndexOffset);
+						// write index
+						Header.IndexOffset = (uint)Stream.Position;
+						ArchiveHelpers.WriteIndex(Files, w);
+						Header.IndexLength = (uint)(Stream.Position - Header.IndexOffset);
 
-					// update header
-					Stream.Seek(0);
-					ArchiveHelpers.WriteHeader(Header, w);
-					Stream.Flush();
-					break;
-				default: return;
+						// update header
+						Stream.Seek(0);
+						ArchiveHelpers.WriteHeader(Header, w);
+						Stream.Flush();
+						break;
+					default: return;
+				}
 			}
 		}
 

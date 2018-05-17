@@ -13,6 +13,8 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
+        <!-- Basic attributes -->
+
         <Grid Margin="10 0 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -32,6 +34,8 @@
                 <TextBlock Text="{Binding Format.Description}" FontWeight="Bold"/>
             </StackPanel>
         </Grid>
+
+        <!-- Dynamic extended attributes -->
 
         <Grid Column="1">
             <Grid.ColumnDefinitions>

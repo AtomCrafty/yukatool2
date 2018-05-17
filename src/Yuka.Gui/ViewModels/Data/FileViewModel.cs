@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Security.Policy;
 
 namespace Yuka.Gui.ViewModels.Data {
 	public class FileViewModel : ViewModel {
@@ -32,7 +32,11 @@ namespace Yuka.Gui.ViewModels.Data {
 	internal sealed class PendingFileViewModel : FileViewModel { }
 	internal sealed class ErrorFileViewModel : FileViewModel {
 		public Exception Exception { get; }
-		public string Message => "Failed to load preview: " + Environment.NewLine + Exception.Message;
+		public string Message => "Failed to load preview"
+								 + Environment.NewLine + Exception.GetType().Name + ": " + Exception.Message
+								 + Environment.NewLine
+								 + Environment.NewLine
+								 + string.Join(Environment.NewLine, new StackTrace(Exception).GetFrames()?.Select(f => f.GetMethod().DeclaringType + "." + f.GetMethod().Name) ?? Array.Empty<string>());
 
 		public ErrorFileViewModel(Exception exception) {
 			Exception = exception;
