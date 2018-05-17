@@ -2,27 +2,62 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:Yuka.Gui.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="300" DataContext="">
+             d:DesignHeight="50" d:DesignWidth="300" d:DataContext="{d:DesignInstance vm:ShellItemViewModel}">
 
-    <Grid Margin="10 0 0 0">
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="6"/>
+            <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0">
-            <TextBlock>Name:</TextBlock>
-            <TextBlock>Size:</TextBlock>
-            <TextBlock>Type:</TextBlock>
-        </StackPanel>
+        <Grid Margin="10 0 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="6"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="2">
-            <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
-            <TextBlock Text="{Binding Size, Converter={StaticResource FileSizeConverter}}" FontWeight="Bold"/>
-            <TextBlock Text="{Binding Format.Description}" FontWeight="Bold"/>
-        </StackPanel>
+            <StackPanel Grid.Column="0" Grid.Row="0">
+                <TextBlock>Name:</TextBlock>
+                <TextBlock>Size:</TextBlock>
+                <TextBlock>Type:</TextBlock>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Grid.Row="0">
+                <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                <TextBlock Text="{Binding Size, Converter={StaticResource FileSizeConverter}}" FontWeight="Bold"/>
+                <TextBlock Text="{Binding Format.Description}" FontWeight="Bold"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="6"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <ItemsControl Grid.Column="0" ItemsSource="{Binding Preview.AttributeNames}" BorderThickness="0" Background="{x:Null}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding}"/>
+                            <TextBlock Text=":"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <ItemsControl Grid.Column="2" ItemsSource="{Binding Preview.AttributeValues}" BorderThickness="0" Background="{x:Null}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" FontWeight="Bold"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
     </Grid>
 </UserControl>

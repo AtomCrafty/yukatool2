@@ -12,10 +12,7 @@ namespace Yuka.Gui.ViewModels.Data {
 			_script = script;
 			script.EnsureCompiled();
 			_instructionCount = script.InstructionList.Count;
+			Attributes.Add(new KeyValuePair<string, object>("Instructions", _instructionCount));
 		}
-
-		public override Dictionary<string, object> FileInfo => new Dictionary<string, object> {
-			{"Instructions", _instructionCount }
-		};
 	}
 }

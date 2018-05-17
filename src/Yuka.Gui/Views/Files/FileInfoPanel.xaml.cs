@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
+using Yuka.Gui.Configuration;
 
 namespace Yuka.Gui.Views.Files {
 	/// <summary>

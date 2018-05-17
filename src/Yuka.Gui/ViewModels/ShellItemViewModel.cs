@@ -55,6 +55,11 @@ namespace Yuka.Gui.ViewModels {
 				if(_previewViewModel != null) return _previewViewModel;
 				if(_previewLoading) return FileViewModel.Pending;
 
+				// handle special entries
+				if(Type != ShellItemType.File) {
+					return _previewViewModel = new DummyFileViewModel().WithAttribute("Children", Children.Count);
+				}
+
 				// don't even attempt to load a file that doesn't exist
 				if(!FileSystem.FileExists(FullPath)) return FileViewModel.Dummy;
 

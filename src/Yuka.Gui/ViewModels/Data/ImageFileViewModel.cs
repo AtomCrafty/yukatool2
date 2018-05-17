@@ -24,11 +24,6 @@ namespace Yuka.Gui.ViewModels.Data {
 			Graphic = graphic;
 		}
 
-		public override Dictionary<string, object> FileInfo => new Dictionary<string, object> {
-			{"Width", Width },
-			{"Height", Height }
-		};
-
 		public void UpdatePreviewImage() {
 			if(Graphic == null) return;
 
@@ -46,6 +41,14 @@ namespace Yuka.Gui.ViewModels.Data {
 				image.Freeze();
 			}
 			PreviewImage = image;
+
+			ClearAttributes();
+			AddAttribute("Width", Width + " px");
+			AddAttribute("Height", Height + " px");
+			if(Graphic.Animation != null) {
+				Graphic.Animation.Decode();
+				AddAttribute("States", Graphic.Animation.Frames.Count);
+			}
 		}
 	}
 }
