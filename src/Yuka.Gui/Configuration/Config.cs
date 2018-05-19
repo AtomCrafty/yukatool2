@@ -23,6 +23,7 @@ namespace Yuka.Gui.Configuration {
 		public bool NeverShowHexPreview { get; set; } = false;
 		public long HexPreviewMaxFileSize { get; set; } = 1024 * 1024; // 1 MB
 		public bool DeletePreviewOnItemDeselect { get; set; } = false;
+		public bool DisplayStackTraceOnPreviewError { get; set; } = true;
 
 		// logging settings
 		public bool EnableCollectorLogging { get; set; } = true;

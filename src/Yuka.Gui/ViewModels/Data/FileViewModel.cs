@@ -34,9 +34,11 @@ namespace Yuka.Gui.ViewModels.Data {
 		public Exception Exception { get; }
 		public string Message => "Failed to load preview"
 								 + Environment.NewLine + Exception.GetType().Name + ": " + Exception.Message
-								 + Environment.NewLine
-								 + Environment.NewLine
-								 + string.Join(Environment.NewLine, new StackTrace(Exception).GetFrames()?.Select(f => f.GetMethod().DeclaringType + "." + f.GetMethod().Name) ?? Array.Empty<string>());
+								 + (Configuration.Config.Current.DisplayStackTraceOnPreviewError
+									? Environment.NewLine
+									+ Environment.NewLine
+									+ string.Join(Environment.NewLine, new StackTrace(Exception).GetFrames()?.Select(f => f.GetMethod().DeclaringType + "." + f.GetMethod().Name) ?? Array.Empty<string>())
+								 : "");
 
 		public ErrorFileViewModel(Exception exception) {
 			Exception = exception;
