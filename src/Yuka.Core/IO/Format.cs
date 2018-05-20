@@ -9,6 +9,7 @@ using Yuka.Util;
 namespace Yuka.IO {
 	public abstract class Format {
 
+		public abstract string Id { get; }
 		public abstract string Extension { get; }
 		public abstract string Description { get; }
 		public abstract FormatType Type { get; }
@@ -48,6 +49,10 @@ namespace Yuka.IO {
 
 		public static Format[] GraphicsFormats = { Png, Bmp, Gnp, Ykg };
 		public static Format[] AnimationFormats = { Ani, Frm };
+
+		public static Format ById(string id) {
+			return RegisteredFormats.FirstOrDefault(f => f.Id == id);
+		}
 
 		public static Format ForFile(FileSystem fs, string fileName) {
 			using(var s = fs.OpenFile(fileName)) {

@@ -10,6 +10,7 @@ using static Yuka.IO.Format;
 namespace Yuka.IO.Formats {
 
 	public class PngFormat : Format {
+		public override string Id => "png";
 		public override string Extension => ".png";
 		public override string Description => "PNG image file format";
 		public override FormatType Type => FormatType.Unpacked;

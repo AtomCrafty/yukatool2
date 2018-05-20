@@ -11,6 +11,7 @@ using static Yuka.IO.Format;
 namespace Yuka.IO.Formats {
 
 	public class CsvFormat : Format {
+		public override string Id => "csv";
 		public override string Extension => ".csv";
 		public override string Description => "String table for a decompiled Yuka script";
 		public override FormatType Type => FormatType.Unpacked;

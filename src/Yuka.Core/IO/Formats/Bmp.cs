@@ -10,6 +10,7 @@ using static Yuka.IO.Format;
 namespace Yuka.IO.Formats {
 
 	public class BmpFormat : Format {
+		public override string Id => "bmp";
 		public override string Extension => ".bmp";
 		public override string Description => "Windows Bitmap image file format";
 		public override FormatType Type => FormatType.Unpacked;

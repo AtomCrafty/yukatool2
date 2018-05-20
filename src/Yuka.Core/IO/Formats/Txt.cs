@@ -4,6 +4,7 @@ using static Yuka.IO.Format;
 
 namespace Yuka.IO.Formats {
 	public class TxtFormat : Format {
+		public override string Id => "txt";
 		public override string Extension => null;
 		public override string Description => "Text data";
 		public override FormatType Type => FormatType.None;

@@ -8,6 +8,7 @@ using static Yuka.IO.Format;
 namespace Yuka.IO.Formats {
 
 	public class YkgFormat : Format {
+		public override string Id => "ykg";
 		public override string Extension => ".ykg";
 		public override string Description => "Packed Yuka graphic";
 		public override FormatType Type => FormatType.Packed;

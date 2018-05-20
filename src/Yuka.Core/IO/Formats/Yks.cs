@@ -8,6 +8,7 @@ using static Yuka.IO.Format;
 namespace Yuka.IO.Formats {
 
 	public class YksFormat : Format {
+		public override string Id => "yks";
 		public override string Extension => ".yks";
 		public override string Description => "Compiled Yuka script";
 		public override FormatType Type => FormatType.Packed;

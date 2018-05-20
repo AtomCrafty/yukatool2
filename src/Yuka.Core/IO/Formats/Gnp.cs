@@ -10,6 +10,7 @@ using static Yuka.IO.Format;
 namespace Yuka.IO.Formats {
 
 	public class GnpFormat : Format {
+		public override string Id => "gnp";
 		public override string Extension => ".gnp";
 		public override string Description => "PNG image file format with modified signature";
 		public override FormatType Type => FormatType.Unpacked;

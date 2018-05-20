@@ -5,6 +5,7 @@ using Yuka.Util;
 namespace Yuka.IO.Formats {
 
 	public class FrmFormat : Format {
+		public override string Id => "frm";
 		public override string Extension => ".frm";
 		public override string Description => "Binary frame animation data";
 		public readonly int FrameSize = 0x20;

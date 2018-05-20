@@ -4,6 +4,7 @@ using Yuka.Util;
 namespace Yuka.IO.Formats {
 
 	public class RawFormat : Format {
+		public override string Id => "raw";
 		public override string Extension => null;
 		public override string Description => "Arbitrary binary data";
 		public override FormatType Type => FormatType.None;
