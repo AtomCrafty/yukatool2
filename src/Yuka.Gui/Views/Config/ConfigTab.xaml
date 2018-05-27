@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="Yuka.Gui.Views.Config.ConfigTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Yuka.Gui.Views.Config"
+             xmlns:files="clr-namespace:Yuka.Gui.Views.Files"
+             xmlns:generic="clr-namespace:Yuka.Gui.Views.Generic"
+             xmlns:prop="clr-namespace:Yuka.Gui.Properties"
+             mc:Ignorable="d" DataContext="{StaticResource ConfigTabViewModel}"
+             d:DesignHeight="550" d:DesignWidth="900">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Button Width="100" Margin="5 5 5 5" Content="Export config" Command="{Binding ExportConfigCommand}"/>
+            <Button Width="100" Margin="0 5 5 5" Content="Import config" Command="{Binding ImportConfigCommand}"/>
+            <Button Width="100" Margin="0 5 5 5" Content="Reset config" Command="{Binding ResetConfigCommand}"/>
+        </StackPanel>
+
+        <!-- Options -->
+        <GroupBox Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Header="Config">
+            <StackPanel>
+                <CheckBox IsChecked="{Binding Config.AlwaysUseHexPreview}" Content="{x:Static prop:Resources.Config_AlwaysUseHexPreview}"/>
+                <CheckBox IsChecked="{Binding Config.DeletePreviewOnItemDeselect}" Content="{x:Static prop:Resources.Config_DeletePreviewOnItemDeselect}"/>
+                <CheckBox IsChecked="{Binding Config.ConvertOnExport}" Content="{x:Static prop:Resources.Config_ConvertOnExport}"/>
+                <CheckBox IsChecked="{Binding Config.ConvertOnImport}" Content="{x:Static prop:Resources.Config_ConvertOnImport}"/>
+                <CheckBox IsChecked="{Binding Config.DisplayStackTraceOnPreviewError}" Content="{x:Static prop:Resources.Config_DisplayStackTraceOnPreviewError}"/>
+                <CheckBox IsChecked="{Binding Config.EnableCollectorLogging}" Content="{x:Static prop:Resources.Config_EnableCollectorLogging}"/>
+                <CheckBox IsChecked="{Binding Config.EnableFileLogging}" Content="{x:Static prop:Resources.Config_EnableFileLogging}"/>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Name="Input" Width="100" Text="{Binding Config.HexPreviewMaxFileSize}" HorizontalAlignment="Left"/>
+                    <Label Height="{Binding ElementName=Input, Path=Height}" Padding="0" Content="{x:Static prop:Resources.Config_HexPreviewMaxFileSize}"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</UserControl>

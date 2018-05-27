@@ -269,4 +269,70 @@
   <data name="IO_ImportProgressUpdate" xml:space="preserve">
     <value>({0}/{1}) Importing {2}</value>
   </data>
+  <data name="Config_AlwaysUseHexPreview" xml:space="preserve">
+    <value>Always use hex preview</value>
+  </data>
+  <data name="Config_ConvertOnExport" xml:space="preserve">
+    <value>Convert files on export</value>
+  </data>
+  <data name="Config_ConvertOnImport" xml:space="preserve">
+    <value>Convert files on import</value>
+  </data>
+  <data name="Config_DeletePreviewOnItemDeselect" xml:space="preserve">
+    <value>Delete preview when deselecting a file</value>
+  </data>
+  <data name="Config_DisplayStackTraceOnPreviewError" xml:space="preserve">
+    <value>Display stacktrace in preview error message</value>
+  </data>
+  <data name="Config_EnableCollectorLogging" xml:space="preserve">
+    <value>Enable logging panel</value>
+  </data>
+  <data name="Config_EnableFileLogging" xml:space="preserve">
+    <value>Enable logging to file</value>
+  </data>
+  <data name="UI_ConfigFilter" xml:space="preserve">
+    <value>Config file (*.cfg)|*.cfg|All files (*.*)|*.*</value>
+  </data>
+  <data name="UI_ConfigImportDialogTitle" xml:space="preserve">
+    <value>Import configuration...</value>
+  </data>
+  <data name="UI_ConfigExportDialogTitle" xml:space="preserve">
+    <value>Export configuration...</value>
+  </data>
+  <data name="Config_Resetting" xml:space="preserve">
+    <value>Resetting configuration</value>
+  </data>
+  <data name="Config_Loading" xml:space="preserve">
+    <value>Loading configuration from {0}</value>
+    <comment>0: config file path</comment>
+  </data>
+  <data name="Config_Saving" xml:space="preserve">
+    <value>Saving configuration to {0}</value>
+    <comment>0: config file path</comment>
+  </data>
+  <data name="IO_FileSelectionEnded" xml:space="preserve">
+    <value>File selected: '{0}'</value>
+    <comment>0: file path</comment>
+  </data>
+  <data name="IO_FileSelectionStarted" xml:space="preserve">
+    <value>Selecting file...</value>
+  </data>
+  <data name="Tag_Config" xml:space="preserve">
+    <value>Config</value>
+  </data>
+  <data name="Config_HexPreviewMaxFileSize" xml:space="preserve">
+    <value>Maximum file size for hex preview (in bytes)</value>
+  </data>
+  <data name="UI_Confirmation_ImportConfiguration_Message" xml:space="preserve">
+    <value>You are about to overwrite your current config. Continue?</value>
+  </data>
+  <data name="UI_Confirmation_ImportConfiguration_Title" xml:space="preserve">
+    <value>Overwrite config?</value>
+  </data>
+  <data name="UI_Confirmation_ResetConfiguration_Message" xml:space="preserve">
+    <value>You are about to reset the current config. Continue?</value>
+  </data>
+  <data name="UI_Confirmation_ResetConfiguration_Title" xml:space="preserve">
+    <value>Reset config?</value>
+  </data>
 </root>

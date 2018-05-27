@@ -79,13 +79,13 @@ namespace Yuka.Gui.ViewModels {
 						}
 
 						// send PropertyChanged update to reload UI
-						_previewLoading = false;
 						Preview = GetPreviewViewModel(fileContent);
+						_previewLoading = false;
 					}
 					catch(Exception e) {
 						// send PropertyChanged update to reload UI
-						_previewLoading = false;
 						Preview = FileViewModel.Error(e);
+						_previewLoading = false;
 						Log.Fail(string.Format(Resources.UI_PreviewFailed, e.GetType().Name, e.Message), Resources.Tag_UI);
 						Log.Fail(e.StackTrace, Resources.Tag_UI);
 					}
@@ -96,6 +96,10 @@ namespace Yuka.Gui.ViewModels {
 				return _previewViewModel ?? FileViewModel.Pending;
 			}
 			protected set => _previewViewModel = value;
+		}
+
+		public void DeletePreview() {
+			Preview = null;
 		}
 
 		protected FileViewModel GetPreviewViewModel(object content) {

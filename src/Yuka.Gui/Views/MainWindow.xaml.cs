@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using Yuka.Gui.Services;
 using Yuka.Gui.ViewModels;
 using Yuka.Gui.Views.Log;
 using Yuka.IO;
@@ -15,6 +16,13 @@ namespace Yuka.Gui.Views {
 		}
 
 		private void MainWindow_OnLoaded(object sender, RoutedEventArgs e) {
+
+			// register application services
+			Service.Register(new FileService(this));
+			Service.Register(new ConfirmationService(this));
+			Service.Register(new JobService(this));
+
+
 			// TODO temp
 			//new LogWindow { WindowStartupLocation = WindowStartupLocation.Manual, Left = 10, Top = 50, Height = 1000 }.Show();
 			Left = 550;

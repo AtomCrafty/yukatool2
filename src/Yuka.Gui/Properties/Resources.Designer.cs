@@ -22,7 +22,7 @@ namespace Yuka.Gui.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Yuka.Gui.Properties {
         ///   Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Yuka.Gui.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace Yuka.Gui.Properties {
         ///   Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,108 @@ namespace Yuka.Gui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Always use hex preview ähnelt.
+        /// </summary>
+        public static string Config_AlwaysUseHexPreview {
+            get {
+                return ResourceManager.GetString("Config_AlwaysUseHexPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Convert files on export ähnelt.
+        /// </summary>
+        public static string Config_ConvertOnExport {
+            get {
+                return ResourceManager.GetString("Config_ConvertOnExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Convert files on import ähnelt.
+        /// </summary>
+        public static string Config_ConvertOnImport {
+            get {
+                return ResourceManager.GetString("Config_ConvertOnImport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete preview when deselecting a file ähnelt.
+        /// </summary>
+        public static string Config_DeletePreviewOnItemDeselect {
+            get {
+                return ResourceManager.GetString("Config_DeletePreviewOnItemDeselect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Display stacktrace in preview error message ähnelt.
+        /// </summary>
+        public static string Config_DisplayStackTraceOnPreviewError {
+            get {
+                return ResourceManager.GetString("Config_DisplayStackTraceOnPreviewError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Enable logging panel ähnelt.
+        /// </summary>
+        public static string Config_EnableCollectorLogging {
+            get {
+                return ResourceManager.GetString("Config_EnableCollectorLogging", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Enable logging to file ähnelt.
+        /// </summary>
+        public static string Config_EnableFileLogging {
+            get {
+                return ResourceManager.GetString("Config_EnableFileLogging", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Maximum file size for hex preview (in bytes) ähnelt.
+        /// </summary>
+        public static string Config_HexPreviewMaxFileSize {
+            get {
+                return ResourceManager.GetString("Config_HexPreviewMaxFileSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Loading configuration from {0} ähnelt.
+        /// </summary>
+        public static string Config_Loading {
+            get {
+                return ResourceManager.GetString("Config_Loading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Resetting configuration ähnelt.
+        /// </summary>
+        public static string Config_Resetting {
+            get {
+                return ResourceManager.GetString("Config_Resetting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Saving configuration to {0} ähnelt.
+        /// </summary>
+        public static string Config_Saving {
+            get {
+                return ResourceManager.GetString("Config_Saving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Closing archive &apos;{0}&apos; ähnelt.
         /// </summary>
-        internal static string IO_ArchiveClosing {
+        public static string IO_ArchiveClosing {
             get {
                 return ResourceManager.GetString("IO_ArchiveClosing", resourceCulture);
             }
@@ -72,7 +171,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Failed to load archive: [{0}] {1} ähnelt.
         /// </summary>
-        internal static string IO_ArchiveLoadFailed {
+        public static string IO_ArchiveLoadFailed {
             get {
                 return ResourceManager.GetString("IO_ArchiveLoadFailed", resourceCulture);
             }
@@ -81,7 +180,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Loading archive &apos;{0}&apos; ähnelt.
         /// </summary>
-        internal static string IO_ArchiveLoading {
+        public static string IO_ArchiveLoading {
             get {
                 return ResourceManager.GetString("IO_ArchiveLoading", resourceCulture);
             }
@@ -90,7 +189,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Archive selection aborted by user ähnelt.
         /// </summary>
-        internal static string IO_ArchiveSelectionAbortedByUser {
+        public static string IO_ArchiveSelectionAbortedByUser {
             get {
                 return ResourceManager.GetString("IO_ArchiveSelectionAbortedByUser", resourceCulture);
             }
@@ -99,7 +198,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Archive file selected: &apos;{0}&apos; ähnelt.
         /// </summary>
-        internal static string IO_ArchiveSelectionEnded {
+        public static string IO_ArchiveSelectionEnded {
             get {
                 return ResourceManager.GetString("IO_ArchiveSelectionEnded", resourceCulture);
             }
@@ -108,7 +207,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Selecting archive file... ähnelt.
         /// </summary>
-        internal static string IO_ArchiveSelectionStarted {
+        public static string IO_ArchiveSelectionStarted {
             get {
                 return ResourceManager.GetString("IO_ArchiveSelectionStarted", resourceCulture);
             }
@@ -117,7 +216,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Cannot delete root node ähnelt.
         /// </summary>
-        internal static string IO_CannotDeleteRootNode {
+        public static string IO_CannotDeleteRootNode {
             get {
                 return ResourceManager.GetString("IO_CannotDeleteRootNode", resourceCulture);
             }
@@ -126,7 +225,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Deleting directory &apos;{0}&apos; from archive ähnelt.
         /// </summary>
-        internal static string IO_DeletingDirectoryFromArchive {
+        public static string IO_DeletingDirectoryFromArchive {
             get {
                 return ResourceManager.GetString("IO_DeletingDirectoryFromArchive", resourceCulture);
             }
@@ -135,7 +234,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Deleting file &apos;{0}&apos; from archive ähnelt.
         /// </summary>
-        internal static string IO_DeletingFileFromArchive {
+        public static string IO_DeletingFileFromArchive {
             get {
                 return ResourceManager.GetString("IO_DeletingFileFromArchive", resourceCulture);
             }
@@ -144,7 +243,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Failed to perform drag&apos;n drop operation: [{0}] {1} ähnelt.
         /// </summary>
-        internal static string IO_DragNDropReceiveFailed {
+        public static string IO_DragNDropReceiveFailed {
             get {
                 return ResourceManager.GetString("IO_DragNDropReceiveFailed", resourceCulture);
             }
@@ -153,7 +252,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Failed to export entire archive: [{0}] {1} ähnelt.
         /// </summary>
-        internal static string IO_ExportAllFailed {
+        public static string IO_ExportAllFailed {
             get {
                 return ResourceManager.GetString("IO_ExportAllFailed", resourceCulture);
             }
@@ -162,7 +261,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Exported {0} files in {1:N2} seconds ähnelt.
         /// </summary>
-        internal static string IO_ExportFinished {
+        public static string IO_ExportFinished {
             get {
                 return ResourceManager.GetString("IO_ExportFinished", resourceCulture);
             }
@@ -171,7 +270,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Export folder selected: &apos;{0}&apos; ähnelt.
         /// </summary>
-        internal static string IO_ExportFolderSelectionEnded {
+        public static string IO_ExportFolderSelectionEnded {
             get {
                 return ResourceManager.GetString("IO_ExportFolderSelectionEnded", resourceCulture);
             }
@@ -180,7 +279,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Selecting folder for archive export... ähnelt.
         /// </summary>
-        internal static string IO_ExportFolderSelectionStarted {
+        public static string IO_ExportFolderSelectionStarted {
             get {
                 return ResourceManager.GetString("IO_ExportFolderSelectionStarted", resourceCulture);
             }
@@ -189,7 +288,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die ({0}/{1}) Exporting {2} ähnelt.
         /// </summary>
-        internal static string IO_ExportProgressUpdate {
+        public static string IO_ExportProgressUpdate {
             get {
                 return ResourceManager.GetString("IO_ExportProgressUpdate", resourceCulture);
             }
@@ -198,7 +297,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Select export destination ähnelt.
         /// </summary>
-        internal static string IO_ExportSelectFolderDescription {
+        public static string IO_ExportSelectFolderDescription {
             get {
                 return ResourceManager.GetString("IO_ExportSelectFolderDescription", resourceCulture);
             }
@@ -207,7 +306,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die No export folder selected; aborting ähnelt.
         /// </summary>
-        internal static string IO_ExportTargetNull {
+        public static string IO_ExportTargetNull {
             get {
                 return ResourceManager.GetString("IO_ExportTargetNull", resourceCulture);
             }
@@ -216,16 +315,34 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Waiting for user confirmation ähnelt.
         /// </summary>
-        internal static string IO_ExportWaitingForConfirmation {
+        public static string IO_ExportWaitingForConfirmation {
             get {
                 return ResourceManager.GetString("IO_ExportWaitingForConfirmation", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die File selected: &apos;{0}&apos; ähnelt.
+        /// </summary>
+        public static string IO_FileSelectionEnded {
+            get {
+                return ResourceManager.GetString("IO_FileSelectionEnded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Selecting file... ähnelt.
+        /// </summary>
+        public static string IO_FileSelectionStarted {
+            get {
+                return ResourceManager.GetString("IO_FileSelectionStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Export aborted by user ähnelt.
         /// </summary>
-        internal static string IO_FolderSelectionAbortedByUser {
+        public static string IO_FolderSelectionAbortedByUser {
             get {
                 return ResourceManager.GetString("IO_FolderSelectionAbortedByUser", resourceCulture);
             }
@@ -234,7 +351,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Imported files must have a common base directory ähnelt.
         /// </summary>
-        internal static string IO_ImportBaseDirectoryMismatch {
+        public static string IO_ImportBaseDirectoryMismatch {
             get {
                 return ResourceManager.GetString("IO_ImportBaseDirectoryMismatch", resourceCulture);
             }
@@ -243,7 +360,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Failed to import file: [{0}] {1} ähnelt.
         /// </summary>
-        internal static string IO_ImportFileFailed {
+        public static string IO_ImportFileFailed {
             get {
                 return ResourceManager.GetString("IO_ImportFileFailed", resourceCulture);
             }
@@ -252,7 +369,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Imported file &apos;{0}&apos; to &apos;{1}&apos; ähnelt.
         /// </summary>
-        internal static string IO_ImportFileFinished {
+        public static string IO_ImportFileFinished {
             get {
                 return ResourceManager.GetString("IO_ImportFileFinished", resourceCulture);
             }
@@ -261,7 +378,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Unable to import file &apos;{0}&apos;: File not found ähnelt.
         /// </summary>
-        internal static string IO_ImportFileNotFound {
+        public static string IO_ImportFileNotFound {
             get {
                 return ResourceManager.GetString("IO_ImportFileNotFound", resourceCulture);
             }
@@ -270,7 +387,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Imported {0} files in {1:N2} seconds ähnelt.
         /// </summary>
-        internal static string IO_ImportFinished {
+        public static string IO_ImportFinished {
             get {
                 return ResourceManager.GetString("IO_ImportFinished", resourceCulture);
             }
@@ -279,7 +396,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Failed to import folder: [{0}] {1} ähnelt.
         /// </summary>
-        internal static string IO_ImportFolderFailed {
+        public static string IO_ImportFolderFailed {
             get {
                 return ResourceManager.GetString("IO_ImportFolderFailed", resourceCulture);
             }
@@ -288,7 +405,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Imported {0} files from &apos;{1}&apos; to &apos;{2}&apos; ähnelt.
         /// </summary>
-        internal static string IO_ImportFolderFinished {
+        public static string IO_ImportFolderFinished {
             get {
                 return ResourceManager.GetString("IO_ImportFolderFinished", resourceCulture);
             }
@@ -297,7 +414,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die ({0}/{1}) Importing {2} ähnelt.
         /// </summary>
-        internal static string IO_ImportProgressUpdate {
+        public static string IO_ImportProgressUpdate {
             get {
                 return ResourceManager.GetString("IO_ImportProgressUpdate", resourceCulture);
             }
@@ -306,7 +423,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Chache miss; loading icon &apos;{0}&apos; ähnelt.
         /// </summary>
-        internal static string System_IconLoadCacheMiss {
+        public static string System_IconLoadCacheMiss {
             get {
                 return ResourceManager.GetString("System_IconLoadCacheMiss", resourceCulture);
             }
@@ -315,7 +432,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Log cleared ähnelt.
         /// </summary>
-        internal static string System_LogCleared {
+        public static string System_LogCleared {
             get {
                 return ResourceManager.GetString("System_LogCleared", resourceCulture);
             }
@@ -324,7 +441,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Failed to open log file: [{0}] {1} ähnelt.
         /// </summary>
-        internal static string System_LogFileCannotBeOpened {
+        public static string System_LogFileCannotBeOpened {
             get {
                 return ResourceManager.GetString("System_LogFileCannotBeOpened", resourceCulture);
             }
@@ -333,16 +450,25 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Started logging session ähnelt.
         /// </summary>
-        internal static string System_LoggingSessionStarted {
+        public static string System_LoggingSessionStarted {
             get {
                 return ResourceManager.GetString("System_LoggingSessionStarted", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Config ähnelt.
+        /// </summary>
+        public static string Tag_Config {
+            get {
+                return ResourceManager.GetString("Tag_Config", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die General ähnelt.
         /// </summary>
-        internal static string Tag_General {
+        public static string Tag_General {
             get {
                 return ResourceManager.GetString("Tag_General", resourceCulture);
             }
@@ -351,7 +477,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die IO ähnelt.
         /// </summary>
-        internal static string Tag_IO {
+        public static string Tag_IO {
             get {
                 return ResourceManager.GetString("Tag_IO", resourceCulture);
             }
@@ -360,7 +486,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die System ähnelt.
         /// </summary>
-        internal static string Tag_System {
+        public static string Tag_System {
             get {
                 return ResourceManager.GetString("Tag_System", resourceCulture);
             }
@@ -369,7 +495,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die UI ähnelt.
         /// </summary>
-        internal static string Tag_UI {
+        public static string Tag_UI {
             get {
                 return ResourceManager.GetString("Tag_UI", resourceCulture);
             }
@@ -378,25 +504,88 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Yuka container (*.ykc)|*.ykc|All files (*.*)|*.* ähnelt.
         /// </summary>
-        internal static string UI_ArchiveFilter {
+        public static string UI_ArchiveFilter {
             get {
                 return ResourceManager.GetString("UI_ArchiveFilter", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Export configuration... ähnelt.
+        /// </summary>
+        public static string UI_ConfigExportDialogTitle {
+            get {
+                return ResourceManager.GetString("UI_ConfigExportDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Config file (*.cfg)|*.cfg|All files (*.*)|*.* ähnelt.
+        /// </summary>
+        public static string UI_ConfigFilter {
+            get {
+                return ResourceManager.GetString("UI_ConfigFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Import configuration... ähnelt.
+        /// </summary>
+        public static string UI_ConfigImportDialogTitle {
+            get {
+                return ResourceManager.GetString("UI_ConfigImportDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die You are about to export into an existing folder. Continue? ähnelt.
         /// </summary>
-        internal static string UI_Confirmation_ExportIntoNonEmptyFolder_Message {
+        public static string UI_Confirmation_ExportIntoNonEmptyFolder_Message {
             get {
                 return ResourceManager.GetString("UI_Confirmation_ExportIntoNonEmptyFolder_Message", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die You are about to overwrite your current config. Continue? ähnelt.
+        /// </summary>
+        public static string UI_Confirmation_ImportConfiguration_Message {
+            get {
+                return ResourceManager.GetString("UI_Confirmation_ImportConfiguration_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Overwrite config? ähnelt.
+        /// </summary>
+        public static string UI_Confirmation_ImportConfiguration_Title {
+            get {
+                return ResourceManager.GetString("UI_Confirmation_ImportConfiguration_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die You are about to reset the current config. Continue? ähnelt.
+        /// </summary>
+        public static string UI_Confirmation_ResetConfiguration_Message {
+            get {
+                return ResourceManager.GetString("UI_Confirmation_ResetConfiguration_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Reset config? ähnelt.
+        /// </summary>
+        public static string UI_Confirmation_ResetConfiguration_Title {
+            get {
+                return ResourceManager.GetString("UI_Confirmation_ResetConfiguration_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Confirm action ähnelt.
         /// </summary>
-        internal static string UI_ConfirmationDefaultWindowTitle {
+        public static string UI_ConfirmationDefaultWindowTitle {
             get {
                 return ResourceManager.GetString("UI_ConfirmationDefaultWindowTitle", resourceCulture);
             }
@@ -405,7 +594,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Remember selection ähnelt.
         /// </summary>
-        internal static string UI_ConfirmationRememberSelection {
+        public static string UI_ConfirmationRememberSelection {
             get {
                 return ResourceManager.GetString("UI_ConfirmationRememberSelection", resourceCulture);
             }
@@ -414,7 +603,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Remembered selection &apos;{0}&apos; for confirmation &apos;{1}&apos; ähnelt.
         /// </summary>
-        internal static string UI_ConfirmationUsingRememberedValue {
+        public static string UI_ConfirmationUsingRememberedValue {
             get {
                 return ResourceManager.GetString("UI_ConfirmationUsingRememberedValue", resourceCulture);
             }
@@ -423,7 +612,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Deleting preview because &apos;{0}&apos; was deselected ähnelt.
         /// </summary>
-        internal static string UI_DeletingPreviewOnDeselect {
+        public static string UI_DeletingPreviewOnDeselect {
             get {
                 return ResourceManager.GetString("UI_DeletingPreviewOnDeselect", resourceCulture);
             }
@@ -432,7 +621,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die File too long for hex preview ähnelt.
         /// </summary>
-        internal static string UI_FileTooLongForHexPreview {
+        public static string UI_FileTooLongForHexPreview {
             get {
                 return ResourceManager.GetString("UI_FileTooLongForHexPreview", resourceCulture);
             }
@@ -441,7 +630,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Select an archive file ähnelt.
         /// </summary>
-        internal static string UI_OpenArchiveDialogTitle {
+        public static string UI_OpenArchiveDialogTitle {
             get {
                 return ResourceManager.GetString("UI_OpenArchiveDialogTitle", resourceCulture);
             }
@@ -450,7 +639,7 @@ namespace Yuka.Gui.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Failed to generate preview: [{0}] {1} ähnelt.
         /// </summary>
-        internal static string UI_PreviewFailed {
+        public static string UI_PreviewFailed {
             get {
                 return ResourceManager.GetString("UI_PreviewFailed", resourceCulture);
             }

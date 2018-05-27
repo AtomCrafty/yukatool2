@@ -99,7 +99,11 @@
     <Compile Include="Services\Abstract\IConfirmationService.cs" />
     <Compile Include="Services\JobService.cs" />
     <Compile Include="Util\Extensions.cs" />
+    <Compile Include="ViewModels\ConfigTabViewModel.cs" />
     <Compile Include="ViewModels\Data\HexFileViewModel.cs" />
+    <Compile Include="Views\Config\ConfigTab.xaml.cs">
+      <DependentUpon>ConfigTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Files\FileTree.xaml.cs">
       <DependentUpon>FileTree.xaml</DependentUpon>
     </Compile>
@@ -129,6 +133,10 @@
     <Compile Include="Views\Files\Preview\ImageFilePreview.xaml.cs">
       <DependentUpon>ImageFilePreview.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\Config\ConfigTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Files\FileTree.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -217,7 +225,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -288,9 +296,7 @@
     <Resource Include="res\images\double-down.png" />
     <Resource Include="res\images\double-up.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Config\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

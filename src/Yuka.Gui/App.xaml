@@ -3,13 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:viewmodels="clr-namespace:Yuka.Gui.ViewModels"
              xmlns:converters="clr-namespace:Yuka.Gui.Converters"
-             StartupUri="Views/MainWindow.xaml" Startup="App_OnStartup">
+             StartupUri="Views/MainWindow.xaml">
 
     <Application.Resources>
         <ResourceDictionary>
 
             <!-- static view models -->
             <viewmodels:FilesTabViewModel x:Key="FilesTabViewModel"/>
+            <viewmodels:ConfigTabViewModel x:Key="ConfigTabViewModel"/>
 
             <!-- converters -->
             <BooleanToVisibilityConverter x:Key="VisibilityConverter"/>

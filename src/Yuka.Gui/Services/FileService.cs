@@ -24,8 +24,47 @@ namespace Yuka.Gui.Services {
 			return dialog.ShowDialog(ParentWindow) != true ? null : dialog.SelectedPath;
 		}
 
-		public string SelectFile(string initialDirectory, string[] filters = null) {
-			throw new NotImplementedException();
+		public string OpenFile(string filter, string ext, string title, string initialDirectory) {
+			var dialog = new OpenFileDialog {
+				InitialDirectory = initialDirectory,
+				Filter = filter,
+				FilterIndex = 0,
+				DefaultExt = ext,
+				Title = title,
+				DereferenceLinks = true,
+				CheckFileExists = true
+			};
+
+			Log.Note(Resources.IO_FileSelectionStarted, Resources.Tag_IO);
+			if(dialog.ShowDialog(ParentWindow) == true) {
+				string path = dialog.FileName;
+				Log.Note(string.Format(Resources.IO_FileSelectionEnded, path), Resources.Tag_IO);
+				return path;
+			}
+
+			Log.Note(Resources.IO_FolderSelectionAbortedByUser, Resources.Tag_IO);
+			return null;
+		}
+
+		public string SaveFile(string filter, string ext, string title, string initialDirectory) {
+			var dialog = new SaveFileDialog {
+				InitialDirectory = initialDirectory,
+				Filter = filter,
+				FilterIndex = 0,
+				DefaultExt = ext,
+				Title = title,
+				DereferenceLinks = true
+			};
+
+			Log.Note(Resources.IO_FileSelectionStarted, Resources.Tag_IO);
+			if(dialog.ShowDialog(ParentWindow) == true) {
+				string path = dialog.FileName;
+				Log.Note(string.Format(Resources.IO_FileSelectionEnded, path), Resources.Tag_IO);
+				return path;
+			}
+
+			Log.Note(Resources.IO_FolderSelectionAbortedByUser, Resources.Tag_IO);
+			return null;
 		}
 
 		public string SelectArchiveFile(string initialDirectory) {
