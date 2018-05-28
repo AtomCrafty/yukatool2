@@ -8,7 +8,7 @@ using Yuka.Util;
 namespace Yuka.Script.Source {
 	public class Lexer : IDisposable {
 
-		protected static readonly char[] OperatorChars = { '+', '-', '*', '/', '=', '<', '>' };
+		protected static readonly char[] OperatorChars = { '+', '-', '*', '/', '%', '=', '<', '>' };
 		protected static readonly Dictionary<char, TokenKind> SingleCharTokens = new Dictionary<char, TokenKind> {
 			{ '$', TokenKind.Dollar       },
 			{ '&', TokenKind.Ampersand    },

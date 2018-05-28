@@ -1,4 +1,6 @@
-﻿namespace Yuka.Script.Data {
+﻿using System.Linq;
+
+namespace Yuka.Script.Data {
 	public abstract class ScriptValue {
 		public class Int : ScriptValue {
 			public int IntValue;
@@ -19,6 +21,7 @@
 			public Str(string value) {
 				StringValue = value;
 			}
+
 			public override string ToString() => StringValue;
 		}
 	}

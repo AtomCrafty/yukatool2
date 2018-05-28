@@ -94,7 +94,7 @@ namespace Yuka.Script.Source {
 
 		public JumpLabelStmt ParseJumpLabelStatement() {
 			return new JumpLabelStmt {
-				Name = ConsumeToken(TokenKind.LabelLiteral).Source.TrimStart(':')
+				Name = ConsumeToken(TokenKind.LabelLiteral).Source.TrimStart(':').EscapeIdentifier()
 			};
 		}
 

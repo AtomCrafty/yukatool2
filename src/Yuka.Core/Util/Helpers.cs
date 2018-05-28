@@ -137,6 +137,10 @@ namespace Yuka.Util {
 			return val.CompareTo(min) < 0 ? min : val.CompareTo(max) > 0 ? max : val;
 		}
 
+		public static string EscapeIdentifier(this string value) {
+			return string.Concat(value.Select(ch => char.IsLetterOrDigit(ch) ? ch : '_'));
+		}
+
 		public static string Escape(this string value) {
 			return value.Replace(@"\", @"\\").Replace(@"""", @"\""").Replace("\n", @"\n").Replace("\r", @"\r").Replace("\t", @"\t");
 		}

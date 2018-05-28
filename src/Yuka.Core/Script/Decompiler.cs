@@ -8,6 +8,7 @@ using Yuka.Script.Instructions;
 using Yuka.Script.Syntax;
 using Yuka.Script.Syntax.Expr;
 using Yuka.Script.Syntax.Stmt;
+using Yuka.Util;
 
 namespace Yuka.Script {
 
@@ -143,7 +144,7 @@ namespace Yuka.Script {
 			switch(element) {
 
 				case DataElement.Ctrl ctrl:
-					return new JumpLabelExpr { LabelStmt = new JumpLabelStmt { Name = ctrl.Name.StringValue } };
+					return new JumpLabelExpr { LabelStmt = new JumpLabelStmt { Name = ctrl.Name.StringValue.EscapeIdentifier() } };
 
 				case DataElement.CInt cint when cint.Value.IsPointer:
 					return new PointerLiteral { PointerId = cint.Value.PointerId };
@@ -228,7 +229,7 @@ namespace Yuka.Script {
 					if(label.Name == "{") {
 						return ReadBlockStatement();
 					}
-					return new JumpLabelStmt { Name = label.Name };
+					return new JumpLabelStmt { Name = label.Name.EscapeIdentifier() };
 
 				case CallInstruction func:
 
