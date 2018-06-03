@@ -66,7 +66,18 @@ namespace Yuka.Cli {
 		public static Command[] AvailableCommands => CommandFactories.Values.Select(factory => factory(CommandParameters.Empty)).ToArray();
 
 		public static Command CreateFromName(string name, CommandParameters parameters) {
-			return CommandFactories.TryGet(name, param => null)(parameters);
+			return CommandFactories.TryGet(name, _ => null)(parameters);
+		}
+
+		public static bool TryRun(string[] cliArgs) {
+			var commandLine = CommandParameters.ParseArguments(cliArgs);
+			if(commandLine.Arguments.Count == 0) return false;
+
+			var command = CreateFromName(commandLine.Arguments[0], commandLine);
+			if(command == null) return false;
+
+			command.Execute();
+			return true;
 		}
 
 		#endregion

@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Yuka.IO.Formats;
 using Yuka.Util;
 
 namespace Yuka.IO {
+
+	[JsonConverter(typeof(FormatConverter))]
 	public abstract class Format {
 
 		public abstract string Id { get; }
@@ -134,5 +138,18 @@ namespace Yuka.IO {
 
 	public enum FileCategory {
 		Primary, Secondary, Ignore
+	}
+
+	public sealed class FormatConverter : JsonConverter<Format> {
+
+		public override void WriteJson(JsonWriter writer, Format value, JsonSerializer serializer) {
+			var token = JToken.FromObject(value.Id);
+			Debug.Assert(token.Type == JTokenType.String);
+			token.WriteTo(writer);
+		}
+
+		public override Format ReadJson(JsonReader reader, Type objectType, Format existingValue, bool hasExistingValue, JsonSerializer serializer) {
+			return Format.ById(reader.Value as string);
+		}
 	}
 }

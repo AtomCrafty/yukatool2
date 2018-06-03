@@ -7,7 +7,7 @@ namespace Yuka.Cli {
 		public readonly List<string> Arguments = new List<string>();
 		public readonly Dictionary<string, string> Flags = new Dictionary<string, string>();
 
-		public CommandParameters(string[] cliArgs) {
+		public CommandParameters(IEnumerable<string> cliArgs) {
 			foreach(string argument in cliArgs) {
 				if(argument.StartsWith("-")) {
 					ParseFlag(argument);
@@ -114,7 +114,7 @@ namespace Yuka.Cli {
 
 		public static CommandParameters Empty => new CommandParameters(Array.Empty<string>());
 
-		public static CommandParameters ParseArguments(string[] args) {
+		public static CommandParameters ParseArguments(IEnumerable<string> args) {
 			return new CommandParameters(args);
 		}
 

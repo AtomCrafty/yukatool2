@@ -196,7 +196,6 @@ namespace Yuka.IO {
 
 		public SingleFileSystem(string path) : base(Path.GetDirectoryName(path)) {
 			// add files with same base name to path
-			string name = Path.GetFileName(path);
 			string baseName = Path.GetFileNameWithoutExtension(path) ?? throw new ArgumentNullException(nameof(path));
 			foreach(string file in base.GetFiles()) {
 				if(file.StartsWith(baseName + '.') || file == baseName /* extensionless files */) {

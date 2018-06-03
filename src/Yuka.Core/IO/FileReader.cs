@@ -9,7 +9,7 @@ namespace Yuka.IO {
 	public abstract class FileReader {
 		public abstract Format Format { get; }
 		public abstract object ReadObject(string name, Stream s);
-		public abstract object ReadObject(string name, FileSystem fs);
+		public abstract object ReadObject(string name, FileSystem fs, FileList files);
 
 		// CanWrite must reset the stream position to where it was!
 		public abstract bool CanRead(string name, BinaryReader r);
@@ -55,14 +55,14 @@ namespace Yuka.IO {
 			return FindReaders(name, s.NewReader(), reader => reader is FileReader<T>).Cast<FileReader<T>>().ToList();
 		}
 
-		public static T Decode<T>(string name, FileSystem fs) where T : class {
+		public static T Decode<T>(string name, FileSystem fs, FileList files) where T : class {
 			List<FileReader<T>> readers;
 			using(var s = fs.OpenFile(name)) {
 				readers = FindReaders<T>(name, s);
 			}
 			if(!readers.Any()) throw new InvalidOperationException("No reader found for type " + typeof(T));
 
-			return readers.First().Read(name, fs);
+			return readers.First().Read(name, fs, files);
 		}
 
 		public static T Decode<T>(string name, Stream s) where T : class {
@@ -78,7 +78,7 @@ namespace Yuka.IO {
 			}
 		}
 
-		public static (object, Format) DecodeObject(string name, FileSystem fs, bool ignoreSecondary = false) {
+		public static (object data, Format format) DecodeObject(string name, FileSystem fs, FileList files, bool ignoreSecondary = false) {
 			List<FileReader> readers;
 			using(var s = fs.OpenFile(name)) {
 				readers = FindReaders(name, s.NewReader()).ToList();
@@ -94,10 +94,10 @@ namespace Yuka.IO {
 				return (null, fileFormat);
 			}
 
-			return (fileReader.ReadObject(name, fs), fileFormat);
+			return (fileReader.ReadObject(name, fs, files), fileFormat);
 		}
 
-		public static (object, Format) DecodeObject(string name, Stream s) {
+		public static (object data, Format format) DecodeObject(string name, Stream s) {
 			var readers = FindReaders(name, s.NewReader()).ToList();
 			if(!readers.Any()) throw new InvalidOperationException("No reader found for object");
 
@@ -105,7 +105,7 @@ namespace Yuka.IO {
 			return (fileReader.ReadObject(name, s), fileReader.Format);
 		}
 
-		public static (object, Format) DecodeObject(string name, byte[] data) {
+		public static (object data, Format format) DecodeObject(string name, byte[] data) {
 			using(var ms = new MemoryStream(data)) {
 				return DecodeObject(name, ms);
 			}
@@ -117,14 +117,15 @@ namespace Yuka.IO {
 	public abstract class FileReader<T> : FileReader where T : class {
 
 		public abstract T Read(string name, Stream s);
-		public virtual T Read(string name, FileSystem fs) {
+		public virtual T Read(string name, FileSystem fs, FileList files) {
 			using(var s = fs.OpenFile(name)) {
+				files?.Add(name, Format);
 				return Read(name, s);
 			}
 		}
 
 		public override object ReadObject(string name, Stream s) => Read(name, s);
-		public override object ReadObject(string name, FileSystem fs) => Read(name, fs);
+		public override object ReadObject(string name, FileSystem fs, FileList files) => Read(name, fs, files);
 	}
 }
 
@@ -134,9 +135,10 @@ namespace Yuka.IO {
  *   RawFileReader : FileReader<byte[]>
  *   GraphicReader : FileReader<Graphic>
  *     YkgGraphicReader : GraphicReader
- *     Reader : GraphicReader
- *     BmpReader : GraphicReader
+ *     PngGraphicReader : GraphicReader
+ *     BmpGraphicReader : GraphicReader
  *   ScriptReader : FileReader<YukaScript>
- *     YksReader : GraphicReader
- *     YkdReader : GraphicReader
+ *     YksReader : ScriptReader
+ *     YkdReader : ScriptReader
+ *   ...
  */

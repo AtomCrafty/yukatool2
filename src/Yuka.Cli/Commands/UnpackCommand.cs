@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using Newtonsoft.Json;
 using Yuka.IO;
 using Yuka.Util;
 
@@ -21,14 +23,15 @@ namespace Yuka.Cli.Commands {
 		};
 
 		public override (char shorthand, string name, string fallback, string description)[] Flags => new[] {
-			('s', "source", null, "Source archive"),
-			('d', "destination", null, "Destination folder"),
-			('f', "format", "unpacked", "The preferred output format (valid values: \abkeep\a-, \abpacked\a-, \abunpacked\a-)"),
-			('r', "raw", null, "Short form of \ac--format=keep\a-, overwrites the format flag if set"),
-			('o', "overwrite", "false", "Delete existing destination folder"),
-			('q', "quiet", null, "Disable user-friendly output"),
-			('v', "verbose", null, "Whether to enable detailed output"),
-			('w', "wait", null, "Whether to wait after the command finished")
+			('s', "source",         null,       "Source archive"),
+			('d', "destination",    null,       "Destination folder"),
+			('f', "format",         "unpacked", "The preferred output format (valid values: \abkeep\a-, \abpacked\a-, \abunpacked\a-)"),
+			('r', "raw",            null,       "Short form of \ac--format=keep\a-, overwrites the format flag if set"),
+			('m', "manifest",       "true",     "Generate a manifest file"), // -m shadows the --move flag, which is not available for the unpack command
+			('o', "overwrite",      "false",    "Delete existing destination folder"),
+			('q', "quiet",          null,       "Disable user-friendly output"),
+			('v', "verbose",        null,       "Whether to enable detailed output"),
+			('w', "wait",           null,       "Whether to wait after the command finished")
 		};
 
 		protected override string DeriveDestinationPath(string sourcePath) {
@@ -51,6 +54,8 @@ namespace Yuka.Cli.Commands {
 
 			// --move flag always false
 			_deleteAfterCopy = false;
+			_ignoreManifest = true;
+			_generateManifest = Parameters.GetBool("manifest", 'm', true);
 		}
 	}
 }

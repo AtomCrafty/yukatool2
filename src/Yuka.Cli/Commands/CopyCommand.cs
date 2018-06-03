@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 using Yuka.Cli.Util;
 using Yuka.IO;
 
@@ -13,7 +15,7 @@ namespace Yuka.Cli.Commands {
 
 		public override string[] Description => new[] {
 			"Copies files from one place to another while optionally converting them in some way.",
-			"\aacopy\a- forms the basis of most other commands."
+			"Most other commands use copy internally."
 		};
 
 		public override (string syntax, string description)[] Usage => new[] {
@@ -25,20 +27,23 @@ namespace Yuka.Cli.Commands {
 
 		// reminder: when changing these, also change all inheriting classes
 		public override (char shorthand, string name, string fallback, string description)[] Flags => new[] {
-			('s', "source", null, "Source location"),
-			('d', "destination", null, "Destination location"),
-			('f', "format", "keep", "The preferred output format (valid values: \abkeep\a-, \abpacked\a-, \abunpacked\a-)"),
-			('r', "raw", null, "Short form of \ac--format=keep\a-, overwrites the format flag if set"),
-			('m', "move", "false", "Delete each fileName after successfully copying it"),
-			('o', "overwrite", "false", "Delete existing destination archive/folder"),
-			('q', "quiet", null, "Disable user-friendly output"),
-			('v', "verbose", null, "Whether to enable detailed output"),
-			('w', "wait", null, "Whether to wait after the command finished")
+			('s', "source",         null,       "Source location"),
+			('d', "destination",    null,       "Destination location"),
+			('f', "format",         "keep",     "The preferred output format (valid values: \abkeep\a-, \abpacked\a-, \abunpacked\a-)"),
+			('r', "raw",            null,       "Short form of \ac--format=keep\a-, overwrites the format flag if set"),
+			('m', "move",           "false",    "Delete each fileName after successfully copying it"),
+			(' ', "manifest",       "false",    "Generate a manifest file"),
+			('i', "ignoremanifest", "false",    "Ignore the manifest, if it exists"),
+			('o', "overwrite",      "false",    "Delete existing destination archive/folder"),
+			('q', "quiet",          null,       "Disable user-friendly output"),
+			('v', "verbose",        null,       "Whether to enable detailed output"),
+			('w', "wait",           null,       "Whether to wait after the command finished")
 		};
 
 		// copy modes
 		protected FormatType _prefererredFormatType;
-		protected bool _rawCopy, _deleteAfterCopy, _overwriteExisting;
+		protected bool _rawCopy, _deleteAfterCopy, _overwriteExisting, _generateManifest, _ignoreManifest;
+		protected Manifest _inputManifest;
 
 		public override bool Execute() {
 			try {
@@ -47,8 +52,10 @@ namespace Yuka.Cli.Commands {
 
 				CheckPaths(sourcePath, destinationPath);
 
-				int fileCount;
+				Manifest outputManifest;
 				using(var sourceFs = FileSystem.OpenExisting(sourcePath)) {
+					_inputManifest = _ignoreManifest ? null : ReadManifest(sourceFs);
+
 					using(var destinationFs = FileSystem.OpenOrCreate(destinationPath, sourceFs is SingleFileSystem, _overwriteExisting)) {
 						// collect files
 						var files = new List<string>();
@@ -57,11 +64,12 @@ namespace Yuka.Cli.Commands {
 						}
 
 						// call copy loop
-						fileCount = CopyFiles(sourceFs, destinationFs, files.Distinct(), _rawCopy, _deleteAfterCopy);
+						outputManifest = CopyFiles(sourceFs, destinationFs, files.Distinct(), _rawCopy, _deleteAfterCopy);
+						if(_generateManifest) WriteManifest(outputManifest, destinationFs);
 					}
 				}
 
-				Success($"Successfully copied {fileCount} files");
+				Success($"Successfully copied {outputManifest.Count} files");
 			}
 			catch(Exception e) when(!System.Diagnostics.Debugger.IsAttached) {
 				Error($"{e.GetType().Name}: {e.Message}");
@@ -69,6 +77,19 @@ namespace Yuka.Cli.Commands {
 
 			Wait(false);
 			return true;
+		}
+
+		protected virtual void WriteManifest(Manifest manifest, FileSystem fs) {
+			using(var writer = new JsonTextWriter(new StreamWriter(fs.CreateFile(".manifest")))) {
+				new JsonSerializer { Formatting = Formatting.Indented }.Serialize(writer, manifest);
+			}
+		}
+
+		protected virtual Manifest ReadManifest(FileSystem fs) {
+			if(!fs.FileExists(".manifest")) return null;
+			using(var reader = new JsonTextReader(new StreamReader(fs.OpenFile(".manifest")))) {
+				return new JsonSerializer { Formatting = Formatting.Indented }.Deserialize<Manifest>(reader);
+			}
 		}
 
 		protected virtual (string sourcePath, string destinationPath, string[] filters) GetPaths() {
@@ -118,6 +139,8 @@ namespace Yuka.Cli.Commands {
 			string format = Parameters.GetString("format", 'f', FormatTypeFallback).ToLower();
 			_rawCopy = Parameters.GetBool("raw", 'r', false);
 			_deleteAfterCopy = Parameters.GetBool("move", 'm', false);
+			_generateManifest = Parameters.GetBool("manifest", false);
+			_ignoreManifest = Parameters.GetBool("ignoremanifest", 'i', false);
 			_overwriteExisting = Parameters.GetBool("overwrite", 'o', false);
 
 			switch(format) {
@@ -139,46 +162,67 @@ namespace Yuka.Cli.Commands {
 		}
 
 		protected virtual FormatPreference GetOutputFormat(object obj, string fileName, Format fileFormat) {
+			if(_inputManifest != null) {
+				foreach(var (source, target) in _inputManifest) {
+					// find the entry that produced this file
+					if(target.Any(pair => pair.Name == fileName)) {
+						// return the original format
+						return new FormatPreference(source[0].Format, _prefererredFormatType);
+					}
+				}
+			}
 			return new FormatPreference(null, _prefererredFormatType);
 		}
 
-		protected virtual (object obj, Format fileFormat) ReadFile(FileSystem sourceFs, string fileName) {
-			return FileReader.DecodeObject(fileName, sourceFs, true);
+		protected virtual (object obj, Format fileFormat) ReadFile(FileSystem sourceFs, string fileName, FileList files) {
+			return FileReader.DecodeObject(fileName, sourceFs, files, true);
 		}
 
-		protected virtual Format WriteFile(object obj, Format inputFormat, FileSystem destinationFs, string fileName) {
-			return FileWriter.EncodeObject(obj, fileName, destinationFs, GetOutputFormat(obj, fileName, inputFormat));
+		protected virtual void WriteFile(object obj, Format inputFormat, FileSystem destinationFs, string fileName, FileList files) {
+			FileWriter.EncodeObject(obj, fileName, destinationFs, GetOutputFormat(obj, fileName, inputFormat), files);
 		}
 
-		protected virtual int CopyFiles(FileSystem sourceFs, FileSystem destinationFs, IEnumerable<string> files, bool rawCopy, bool deleteAfterCopy) {
+		protected virtual Manifest CopyFiles(FileSystem sourceFs, FileSystem destinationFs, IEnumerable<string> files, bool rawCopy, bool deleteAfterCopy) {
 			bool verbose = Parameters.GetBool("verbose", 'v', false);
-			int fileCount = 0;
+
+			var manifest = new Manifest();
 
 			// main loop
 			foreach(string fileName in files) {
+				if(fileName == ".manifest") continue;
+
 				if(rawCopy) {
 					Log($"Copying \ae{fileName}");
 					using(var sourceStream = sourceFs.OpenFile(fileName)) {
 						using(var destinationStream = destinationFs.CreateFile(fileName)) {
 							sourceStream.CopyTo(destinationStream);
-							fileCount++;
+
+							manifest.Add(
+								new FileList { (fileName, Format.Raw) },
+								new FileList { (fileName, Format.Raw) }
+							);
 						}
 					}
 				}
 				else {
 
-					var (obj, fileFormat) = ReadFile(sourceFs, fileName);
+					var readFiles = new FileList();
+					var writtenFiles = new FileList();
+
+					var (obj, fileFormat) = ReadFile(sourceFs, fileName, readFiles);
 
 					if(obj == null) {
-						if(verbose) Output.WriteLine($"Skipping {fileName}", ConsoleColor.Yellow);
+						//if(verbose) Output.WriteLine($"Skipping {fileName}", ConsoleColor.Yellow);
 						continue;
 					}
+					//if(verbose) Output.WriteLine($"Processing {fileName}", ConsoleColor.Yellow);
 
-					Log($"Decoded \ae{fileName}\a- to \ab{obj.GetType().Name}");
+					Log($"Decoded [{string.Join(", ", readFiles.Select(pair => $"\ab{pair.Format.Name} \ae{pair.Name}\a-"))}] to \ab{obj.GetType().Name}");
 
-					var outputFormat = WriteFile(obj, fileFormat, destinationFs, fileName);
+					WriteFile(obj, fileFormat, destinationFs, fileName, writtenFiles);
 
-					Log($"Encoded \ab{obj.GetType().Name}\a- ({outputFormat.GetType().Name})");
+					Log($"Encoded [{string.Join(", ", writtenFiles.Select(pair => $"\ab{pair.Format.Name} \ae{pair.Name}\a-"))}]");
+					Log("");
 
 					if(deleteAfterCopy) {
 						// delete auxiliary files (csv, frm, ani, etc...)
@@ -191,11 +235,11 @@ namespace Yuka.Cli.Commands {
 						sourceFs.DeleteFile(fileName);
 					}
 
-					fileCount++;
+					manifest.Add(readFiles, writtenFiles);
 				}
 			}
 
-			return fileCount;
+			return manifest;
 		}
 	}
 }

@@ -22,22 +22,10 @@ namespace Yuka.Cli {
 
 	public class Program {
 		public static void Main(string[] args) {
-			var commandLine = CommandParameters.ParseArguments(args);
-			string commandName = GetCommandName(commandLine);
-			var command = Command.CreateFromName(commandName, commandLine);
-
-			if(command != null) {
-				command.Execute();
-			}
-			else {
+			if(!Command.TryRun(args)) {
 				new HelpCommand(CommandParameters.Empty).Execute();
 			}
-
 			Output.Flush();
-		}
-
-		public static string GetCommandName(CommandParameters parameters) {
-			return parameters.Arguments.Count > 0 ? parameters.Arguments[0] : "help";
 		}
 	}
 

@@ -13,7 +13,7 @@ namespace Yuka.IO {
 
 		// Write to stream or write to file
 		public abstract void WriteObject(object obj, Stream s);
-		public abstract void WriteObject(object obj, string name, FileSystem fs);
+		public abstract void WriteObject(object obj, string name, FileSystem fs, FileList files);
 
 		#region Static methods
 
@@ -77,12 +77,12 @@ namespace Yuka.IO {
 			writers.First().Write(obj, s);
 		}
 
-		public static void Encode<T>(T obj, string baseName, FileSystem fs, FormatPreference pref) where T : class {
+		public static void Encode<T>(T obj, string baseName, FileSystem fs, FormatPreference pref, FileList files) where T : class {
 			pref = pref ?? FormatPreference.Default;
 			var writers = FindWriters<T>(obj, pref).ToList();
 			if(!writers.Any()) throw new InvalidOperationException("No writer found for type " + typeof(T).Name);
 
-			writers.First().Write(obj, baseName, fs);
+			writers.First().Write(obj, baseName, fs, files);
 		}
 
 		public static Format EncodeObject(object obj, Stream s, FormatPreference pref) {
@@ -95,27 +95,26 @@ namespace Yuka.IO {
 			return fileWriter.Format;
 		}
 
-		public static Format EncodeObject(object obj, string baseName, FileSystem fs, FormatPreference pref) {
+		public static void EncodeObject(object obj, string baseName, FileSystem fs, FormatPreference pref, FileList files) {
 			pref = pref ?? FormatPreference.Default;
 			var writers = FindWriters(obj, pref);
 			if(!writers.Any()) throw new InvalidOperationException("No writer found for object");
 
-			var fileWriter = writers.First();
-			fileWriter.WriteObject(obj, baseName, fs);
-			return fileWriter.Format;
+			writers.First().WriteObject(obj, baseName, fs, files);
 		}
 		#endregion
 	}
 
 	public abstract class FileWriter<T> : FileWriter {
 		public override void WriteObject(object obj, Stream s) => Write((T)obj, s);
-		public override void WriteObject(object obj, string name, FileSystem fs) => Write((T)obj, name, fs);
+		public override void WriteObject(object obj, string name, FileSystem fs, FileList files) => Write((T)obj, name, fs, files);
 
 		// The stream is expected to point to the end of the written data when this method returns.
 		public abstract void Write(T obj, Stream s);
-		public virtual void Write(T obj, string baseName, FileSystem fs) {
+		public virtual void Write(T obj, string baseName, FileSystem fs, FileList files) {
 			if(Format.Extension != null) baseName = baseName.WithExtension(Format.Extension);
 			using(var s = fs.CreateFile(baseName)) {
+				files?.Add(baseName, Format);
 				Write(obj, s);
 			}
 		}

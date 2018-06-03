@@ -35,7 +35,7 @@ namespace Yuka.IO.Formats {
 			throw new InvalidOperationException("Cannot read graphic from gnp stream");
 		}
 
-		public override YukaGraphic Read(string name, FileSystem fs) {
+		public override YukaGraphic Read(string name, FileSystem fs, FileList files) {
 			// TODO handle pure alpha files
 			if(name.EndsWith(Gnp.AlphaExtension) && fs.FileExists(name.Substring(0, name.Length - Gnp.AlphaExtension.Length))) return null;
 
@@ -44,6 +44,7 @@ namespace Yuka.IO.Formats {
 			using(var r = fs.OpenFile(name).NewReader()) {
 				colorData = r.ReadToEnd();
 			}
+			files?.Add(name, Gnp);
 
 			Debug.Assert(colorData.Length >= Gnp.Signature.Length);
 
@@ -59,6 +60,7 @@ namespace Yuka.IO.Formats {
 				using(var r = fs.OpenFile(alphaFileName).NewReader()) {
 					alphaData = r.ReadToEnd();
 				}
+				files?.Add(alphaFileName, Gnp);
 			}
 
 			// load animation file if there is one
@@ -66,9 +68,9 @@ namespace Yuka.IO.Formats {
 			string frmFileName = name.WithExtension(Frm.Extension);
 			var animation =
 				fs.FileExists(aniFileName)
-					? Decode<Animation>(aniFileName, fs)
+					? Decode<Animation>(aniFileName, fs, files)
 					: fs.FileExists(frmFileName)
-						? Decode<Animation>(frmFileName, fs)
+						? Decode<Animation>(frmFileName, fs, files)
 						: null;
 
 			return new YukaGraphic { ColorData = colorData, AlphaData = alphaData, Animation = animation };
@@ -88,10 +90,10 @@ namespace Yuka.IO.Formats {
 			throw new InvalidOperationException("Cannot write graphic to gnp stream");
 		}
 
-		public override void Write(YukaGraphic ykg, string baseName, FileSystem fs) {
+		public override void Write(YukaGraphic ykg, string baseName, FileSystem fs, FileList files) {
 
 			if(ykg.Animation != null) {
-				Encode(ykg.Animation, baseName, fs, ykg.AnimationExportFormat);
+				Encode(ykg.Animation, baseName, fs, ykg.AnimationExportFormat, files);
 			}
 
 			if(!ykg.IsDecoded) {
@@ -105,7 +107,9 @@ namespace Yuka.IO.Formats {
 					if(ykg.ColorData.StartsWith(Gnp.Signature)) {
 
 						// data is already in the correct format, so no re-encoding is needed
-						using(var s = fs.CreateFile(baseName.WithExtension(Gnp.Extension))) {
+						string fileName = baseName.WithExtension(Gnp.Extension);
+						using(var s = fs.CreateFile(fileName)) {
+							files?.Add(fileName, Gnp);
 							s.WriteBytes(ykg.ColorData);
 						}
 
@@ -119,13 +123,15 @@ namespace Yuka.IO.Formats {
 							}
 						}
 						if(ykg.AlphaData.StartsWith(Gnp.Signature)) {
-							using(var s = fs.CreateFile(baseName.WithExtension(Gnp.AlphaExtension))) {
+							string alphaFileName = baseName.WithExtension(Gnp.AlphaExtension);
+							using(var s = fs.CreateFile(alphaFileName)) {
+								files?.Add(alphaFileName, Gnp);
 								s.WriteBytes(ykg.AlphaData);
 							}
 						}
 						else {
 							using(var bitmap = FileReader.Decode<Bitmap>("?" + nameof(ykg.AlphaBitmap), ykg.AlphaData)) {
-								Encode(bitmap, baseName.WithExtension(Gnp.AlphaExtension), fs, new FormatPreference(Gnp));
+								Encode(bitmap, baseName.WithExtension(Gnp.AlphaExtension), fs, new FormatPreference(Gnp), files);
 							}
 						}
 
@@ -152,12 +158,12 @@ namespace Yuka.IO.Formats {
 				}
 				else {
 					// save alpha channel on its own
-					Encode(ykg.AlphaBitmap, baseName.WithExtension(Gnp.AlphaExtension), fs, new FormatPreference(Gnp));
+					Encode(ykg.AlphaBitmap, baseName.WithExtension(Gnp.AlphaExtension), fs, new FormatPreference(Gnp), files);
 				}
 			}
 
 			if(ykg.ColorBitmap != null) {
-				Encode(ykg.ColorBitmap, baseName, fs, new FormatPreference(Gnp));
+				Encode(ykg.ColorBitmap, baseName, fs, new FormatPreference(Gnp), files);
 			}
 		}
 	}

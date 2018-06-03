@@ -41,15 +41,16 @@ namespace Yuka.IO.Formats {
 			throw new InvalidOperationException("Reading from stream is not supported by " + nameof(YkdScriptReader));
 		}
 
-		public override YukaScript Read(string baseName, FileSystem fs) {
+		public override YukaScript Read(string baseName, FileSystem fs, FileList files) {
 			StringTable stringTable = null;
 
 			string csvFileName = baseName.WithExtension(Csv.Extension);
 			if(fs.FileExists(csvFileName)) {
-				stringTable = Decode<StringTable>(csvFileName, fs);
+				stringTable = Decode<StringTable>(csvFileName, fs, files);
 			}
 
 			using(var stream = fs.OpenFile(baseName)) {
+				files?.Add(baseName, Ykd);
 				var lexer = new Lexer(new StreamReader(stream), baseName);
 				return new Parser(baseName, stringTable, lexer).ParseScript();
 			}
@@ -68,8 +69,10 @@ namespace Yuka.IO.Formats {
 			throw new InvalidOperationException("Writing to stream is not supported by " + nameof(YkdScriptWriter));
 		}
 
-		public override void Write(YukaScript script, string baseName, FileSystem fs) {
-			using(var stream = fs.CreateFile(baseName.WithExtension(Ykd.Extension))) {
+		public override void Write(YukaScript script, string baseName, FileSystem fs, FileList files) {
+			string scriptName = baseName.WithExtension(Ykd.Extension);
+			using(var stream = fs.CreateFile(scriptName)) {
+				files?.Add(scriptName, Ykd);
 				var writer = new StreamWriter(stream);
 
 				script.EnsureDecompiled();
@@ -82,7 +85,7 @@ namespace Yuka.IO.Formats {
 			}
 
 			if(script.Strings != null && script.Strings.Any()) {
-				Encode(script.Strings, baseName, fs, new FormatPreference(Csv));
+				Encode(script.Strings, baseName, fs, new FormatPreference(Csv), files);
 			}
 		}
 	}

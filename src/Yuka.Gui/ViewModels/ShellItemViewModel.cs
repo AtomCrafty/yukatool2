@@ -75,7 +75,7 @@ namespace Yuka.Gui.ViewModels {
 							}
 						}
 						else {
-							fileContent = FileReader.DecodeObject(FullPath, FileSystem).Item1;
+							fileContent = FileReader.DecodeObject(FullPath, FileSystem, null).data;
 						}
 
 						// send PropertyChanged update to reload UI
