@@ -19,9 +19,9 @@ namespace Yuka.Cli.Commands {
 		};
 
 		public override (string syntax, string description)[] Usage => new[] {
-			("source", "Applies the selected conversion too the \abspecified files\a-"),
+			("source", "Applies the selected conversion to the \abspecified files\a-"),
 			("source destination", "Copies all files from \absource\a- to \abdestination\a- while applying the selected conversion"),
-			("source destination filter1 filter2 ...", "Copies all files matching at least one \abfilter\a- from \absource\a- to \abdestination\a- while applying the selected conversion"),
+			("source destination filter1 filter2 ...", "Copies all files matching at least one \abfilter\a- from \absource\a- to\n\abdestination\a- while applying the selected conversion"),
 			("", "Specify all parameters with flags")
 		};
 
@@ -191,18 +191,10 @@ namespace Yuka.Cli.Commands {
 			foreach(string fileName in files) {
 				if(fileName == ".manifest") continue;
 
-				if(rawCopy) {
+				if(rawCopy)
+				{
 					Log($"Copying \ae{fileName}");
-					using(var sourceStream = sourceFs.OpenFile(fileName)) {
-						using(var destinationStream = destinationFs.CreateFile(fileName)) {
-							sourceStream.CopyTo(destinationStream);
-
-							manifest.Add(
-								new FileList { (fileName, Format.Raw) },
-								new FileList { (fileName, Format.Raw) }
-							);
-						}
-					}
+					PerformRawCopy(sourceFs, destinationFs, fileName, manifest);
 				}
 				else {
 
@@ -219,27 +211,46 @@ namespace Yuka.Cli.Commands {
 
 					Log($"Decoded [{string.Join(", ", readFiles.Select(pair => $"\ab{pair.Format.Name} \ae{pair.Name}\a-"))}] to \ab{obj.GetType().Name}");
 
-					WriteFile(obj, fileFormat, destinationFs, fileName, writtenFiles);
+					try {
+						WriteFile(obj, fileFormat, destinationFs, fileName, writtenFiles);
+						manifest.Add(readFiles, writtenFiles);
 
-					Log($"Encoded [{string.Join(", ", writtenFiles.Select(pair => $"\ab{pair.Format.Name} \ae{pair.Name}\a-"))}]");
-					Log("");
+						Log($"Encoded [{string.Join(", ", writtenFiles.Select(pair => $"\ab{pair.Format.Name} \ae{pair.Name}\a-"))}]");
+						Log("");
 
-					if(deleteAfterCopy) {
-						// delete auxiliary files (csv, frm, ani, etc...)
-						foreach(string secondaryFile in fileFormat.GetSecondaryFiles(sourceFs, fileName)) {
-							if(verbose) Output.WriteLine($"Deleting {secondaryFile}", ConsoleColor.Red);
-							sourceFs.DeleteFile(secondaryFile);
+						if(deleteAfterCopy) {
+							// delete auxiliary files (csv, frm, ani, etc...)
+							foreach(string secondaryFile in fileFormat.GetSecondaryFiles(sourceFs, fileName)) {
+								if(verbose) Output.WriteLine($"Deleting {secondaryFile}", ConsoleColor.Red);
+								sourceFs.DeleteFile(secondaryFile);
+							}
+
+							if(verbose) Output.WriteLine($"Deleting {fileName}", ConsoleColor.Red);
+							sourceFs.DeleteFile(fileName);
 						}
-
-						if(verbose) Output.WriteLine($"Deleting {fileName}", ConsoleColor.Red);
-						sourceFs.DeleteFile(fileName);
 					}
-
-					manifest.Add(readFiles, writtenFiles);
+					catch(Exception e) {
+						Error($"Encountered {e.GetType().Name} while encoding: {e.Message}");
+						Log("Falling back to raw copy");
+						PerformRawCopy(sourceFs, destinationFs, fileName, manifest);
+					}
 				}
 			}
 
 			return manifest;
+		}
+
+		private static void PerformRawCopy(FileSystem sourceFs, FileSystem destinationFs, string fileName, Manifest manifest) {
+			using(var sourceStream = sourceFs.OpenFile(fileName)) {
+				using(var destinationStream = destinationFs.CreateFile(fileName)) {
+					sourceStream.CopyTo(destinationStream);
+
+					manifest.Add(
+						new FileList {(fileName, Format.Raw)},
+						new FileList {(fileName, Format.Raw)}
+					);
+				}
+			}
 		}
 	}
 }
