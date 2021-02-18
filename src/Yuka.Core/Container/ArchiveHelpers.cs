@@ -71,7 +71,7 @@ namespace Yuka.Container {
 			foreach(var file in files.Values) {
 				WriteIndexEntry(
 					(uint)file.NameOffset,
-					(uint)file.Name.Length + 1,
+					(uint)Helpers.GetNullTerminatedStringLength(file.Name),
 					(uint)file.DataOffset,
 					(uint)file.DataLength, w
 				);

@@ -84,6 +84,10 @@ namespace Yuka.Util {
 			w.Write((byte)0);
 		}
 
+		public static int GetNullTerminatedStringLength(string str, Encoding encoding = null) {
+			return (encoding ?? ShiftJis).GetByteCount(str) + 1;
+		}
+
 		public static string ReadString(this BinaryReader r, uint length, Encoding encoding = null) {
 			var bytes = r.ReadBytes((int)length);
 			return (encoding ?? ShiftJis).GetString(bytes).TrimEnd('\0');
