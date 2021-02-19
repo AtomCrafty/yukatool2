@@ -23,7 +23,7 @@ namespace Yuka.IO.Formats {
 		public override Format Format => Format.Frm;
 
 		public override bool CanRead(string name, BinaryReader r) {
-			return ('.' + name.ToLower()).EndsWith(".frm");
+			return Path.GetExtension(name)?.ToLower() == ".frm";
 		}
 
 		public override Animation Read(string name, Stream s) {

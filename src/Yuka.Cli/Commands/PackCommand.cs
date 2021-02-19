@@ -21,16 +21,17 @@ namespace Yuka.Cli.Commands {
 		};
 
 		public override (char shorthand, string name, string fallback, string description)[] Flags => new[] {
-			('s', "source",         null,       "Source folder"),
-			('d', "destination",    null,       "Destination archive"),
-			('f', "format",         "packed",   "The preferred output format (valid values: \abkeep\a-, \abpacked\a-, \abunpacked\a-)"),
-			('r', "raw",            null,       "Short form of \ac--format=keep\a-, overwrites the format flag if set"),
-			('o', "overwrite",      "true",     "Delete existing destination archive"),
-			('a', "append",         null,       "Appends files to an existing archive, equal to \ac--overwrite=false"),
-			('i', "ignoremanifest", null,       "Ignore the manifest, if it exists"),
-			('q', "quiet",          null,       "Disable user-friendly output"),
-			('v', "verbose",        null,       "Whether to enable detailed output"),
-			('w', "wait",           null,       "Whether to wait after the command finished")
+			('s', "source",          null,       "Source folder"),
+			('d', "destination",     null,       "Destination archive"),
+			('f', "format",          "packed",   "The preferred output format (valid values: \abkeep\a-, \abpacked\a-, \abunpacked\a-)"),
+			('r', "raw",             null,       "Short form of \ac--format=keep\a-, overwrites the format flag if set"),
+			('o', "overwrite",       "true",     "Delete existing destination archive"),
+			('a', "append",          null,       "Appends files to an existing archive, equal to \ac--overwrite=false"),
+			('i', "ignore-manifest", null,       "Ignore the manifest, if it exists"),
+			(' ', "normalize-case",  "true",     "Convert all file names to lower case"),
+			('q', "quiet",           null,       "Disable user-friendly output"),
+			('v', "verbose",         null,       "Whether to enable detailed output"),
+			('w', "wait",            null,       "Whether to wait after the command finished")
 		};
 
 		protected override string DeriveDestinationPath(string sourcePath) {

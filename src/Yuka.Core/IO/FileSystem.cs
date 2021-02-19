@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Yuka.Container;
 
 namespace Yuka.IO {
@@ -209,7 +210,7 @@ namespace Yuka.IO {
 		}
 
 		public override bool FileExists(string name) {
-			return Files.Contains(name.ToLower());
+			return Files.Contains(name, StringComparer.InvariantCultureIgnoreCase);
 		}
 
 		public override Stream OpenFile(string name, bool writable = false) {
@@ -219,8 +220,15 @@ namespace Yuka.IO {
 
 		public override Stream CreateFile(string name) {
 			var stream = base.CreateFile(name);
-			if(stream != null) Files.Add(name.ToLower());
+			if(stream != null) Files.Add(name);
 			return stream;
+		}
+
+		public override bool DeleteFile(string name) {
+			if(!FileExists(name)) return false;
+			if(!base.DeleteFile(name)) return false;
+			Files.RemoveAll(file => file.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+			return true;
 		}
 	}
 

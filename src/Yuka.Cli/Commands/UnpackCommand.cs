@@ -28,6 +28,7 @@ namespace Yuka.Cli.Commands {
 			('f', "format",         "unpacked", "The preferred output format (valid values: \abkeep\a-, \abpacked\a-, \abunpacked\a-)"),
 			('r', "raw",            null,       "Short form of \ac--format=keep\a-, overwrites the format flag if set"),
 			('m', "manifest",       "true",     "Generate a manifest file"), // -m shadows the --move flag, which is not available for the unpack command
+			(' ', "normalize-case", "true",     "Convert all file names to lower case"),
 			('o', "overwrite",      "false",    "Delete existing destination folder"),
 			('q', "quiet",          null,       "Disable user-friendly output"),
 			('v', "verbose",        null,       "Whether to enable detailed output"),

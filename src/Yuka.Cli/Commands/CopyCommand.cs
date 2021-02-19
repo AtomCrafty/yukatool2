@@ -27,22 +27,23 @@ namespace Yuka.Cli.Commands {
 
 		// reminder: when changing these, also change all inheriting classes
 		public override (char shorthand, string name, string fallback, string description)[] Flags => new[] {
-			('s', "source",         null,       "Source location"),
-			('d', "destination",    null,       "Destination location"),
-			('f', "format",         "keep",     "The preferred output format (valid values: \abkeep\a-, \abpacked\a-, \abunpacked\a-)"),
-			('r', "raw",            null,       "Short form of \ac--format=keep\a-, overwrites the format flag if set"),
-			('m', "move",           "false",    "Delete each fileName after successfully copying it"),
-			(' ', "manifest",       "false",    "Generate a manifest file"),
-			('i', "ignoremanifest", "false",    "Ignore the manifest, if it exists"),
-			('o', "overwrite",      "false",    "Delete existing destination archive/folder"),
-			('q', "quiet",          null,       "Disable user-friendly output"),
-			('v', "verbose",        null,       "Whether to enable detailed output"),
-			('w', "wait",           null,       "Whether to wait after the command finished")
+			('s', "source",          null,       "Source location"),
+			('d', "destination",     null,       "Destination location"),
+			('f', "format",          "keep",     "The preferred output format (valid values: \abkeep\a-, \abpacked\a-, \abunpacked\a-)"),
+			('r', "raw",             null,       "Short form of \ac--format=keep\a-, overwrites the format flag if set"),
+			('m', "move",            "false",    "Delete each fileName after successfully copying it"),
+			(' ', "manifest",        "false",    "Generate a manifest file"),
+			('i', "ignore-manifest", "false",    "Ignore the manifest, if it exists"),
+			(' ', "normalize-case",  "true",     "Convert all file names to lower case"),
+			('o', "overwrite",       "false",    "Delete existing destination archive/folder"),
+			('q', "quiet",           null,       "Disable user-friendly output"),
+			('v', "verbose",         null,       "Whether to enable detailed output"),
+			('w', "wait",            null,       "Whether to wait after the command finished")
 		};
 
 		// copy modes
 		protected FormatType _prefererredFormatType;
-		protected bool _rawCopy, _deleteAfterCopy, _overwriteExisting, _generateManifest, _ignoreManifest;
+		protected bool _rawCopy, _deleteAfterCopy, _overwriteExisting, _generateManifest, _ignoreManifest, _normalizeCase;
 		protected Manifest _inputManifest;
 
 		public override bool Execute() {
@@ -140,7 +141,8 @@ namespace Yuka.Cli.Commands {
 			_rawCopy = Parameters.GetBool("raw", 'r', false);
 			_deleteAfterCopy = Parameters.GetBool("move", 'm', false);
 			_generateManifest = Parameters.GetBool("manifest", false);
-			_ignoreManifest = Parameters.GetBool("ignoremanifest", 'i', false);
+			_ignoreManifest = Parameters.GetBool("ignore-manifest", 'i', false);
+			_normalizeCase = Parameters.GetBool("normalize-case", ' ', false);
 			_overwriteExisting = Parameters.GetBool("overwrite", 'o', false);
 
 			switch(format) {
@@ -188,8 +190,9 @@ namespace Yuka.Cli.Commands {
 			var manifest = new Manifest();
 
 			// main loop
-			foreach(string fileName in files) {
-				if(fileName == ".manifest") continue;
+			foreach(string file in files) {
+				if(file == ".manifest") continue;
+				string fileName = _normalizeCase ? file.ToLower() : file;
 
 				if(rawCopy)
 				{

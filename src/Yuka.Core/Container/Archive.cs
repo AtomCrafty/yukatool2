@@ -9,7 +9,7 @@ namespace Yuka.Container {
 	public class Archive : IDisposable {
 		public readonly string Name;
 		internal ArchiveHeader Header = ArchiveHelpers.DummyHeader;
-		internal Dictionary<string, ArchiveFile> Files = new Dictionary<string, ArchiveFile>();
+		internal Dictionary<string, ArchiveFile> Files = new Dictionary<string, ArchiveFile>(StringComparer.InvariantCultureIgnoreCase);
 
 		internal Stream Stream;
 		internal bool IsDirty { get; private set; }
@@ -46,11 +46,10 @@ namespace Yuka.Container {
 		}
 
 		public bool FileExists(string name) {
-			return Files.ContainsKey(name.ToLower());
+			return Files.ContainsKey(name);
 		}
 
 		public long GetFileSize(string name) {
-			name = name.ToLower();
 			return Files.ContainsKey(name) ? Files[name].DataLength : -1;
 		}
 
@@ -59,34 +58,31 @@ namespace Yuka.Container {
 				throw new InvalidOperationException("Archive opened in read only mode");
 			}
 
-			if(!Files.ContainsKey(name.ToLower())) throw new FileNotFoundException(name);
+			if(!Files.ContainsKey(name)) throw new FileNotFoundException(name);
 
-			return Files[name.ToLower()].Open(writable);
+			return Files[name].Open(writable);
 		}
 
 		public ArchiveFileStream CreateFile(string name, bool deleteExisting = false) {
-			string lower = name.ToLower();
-
-			if(Files.ContainsKey(lower)) {
+			if(Files.ContainsKey(name)) {
 				if(!deleteExisting) return OpenFile(name, true);
 
-				Files[lower].CloseAll();
-				Files.Remove(lower);
+				Files[name].CloseAll();
+				Files.Remove(name);
 				return OpenFile(name, true);
 			}
 
 			var file = new ArchiveFile(this, name, 0, 0);
 			file.MarkDirty();
-			Files[lower] = file;
+			Files[name] = file;
 			return file.Open(true);
 		}
 
 		public bool DeleteFile(string name) {
-			string lower = name.ToLower();
-			if(!Files.ContainsKey(lower)) return false;
+			if(!Files.ContainsKey(name)) return false;
 
-			Files[lower].CloseAll();
-			Files.Remove(lower);
+			Files[name].CloseAll();
+			Files.Remove(name);
 			IsDirty = true;
 			return true;
 		}

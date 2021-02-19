@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -38,11 +39,11 @@ namespace Yuka.Container {
 				index.Add(ReadIndexEntry(r));
 			}
 
-			var dict = new Dictionary<string, ArchiveFile>(count);
+			var dict = new Dictionary<string, ArchiveFile>(count, StringComparer.InvariantCultureIgnoreCase);
 			foreach(var entry in index) {
 				var name = r.Seek(entry.NameOffset).ReadString(entry.NameLength);
 				var file = new ArchiveFile(archive, name, entry.DataOffset, entry.DataLength);
-				dict[name.ToLower()] = file;
+				dict[name] = file;
 			}
 
 			return dict;

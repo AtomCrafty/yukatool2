@@ -26,7 +26,7 @@ namespace Yuka.IO.Formats {
 		private readonly JsonSerializer _serializer = new JsonSerializer();
 
 		public override bool CanRead(string name, BinaryReader r) {
-			return ('.' + name.ToLower()).EndsWith(".ani");
+			return Path.GetExtension(name)?.ToLower() == ".ani";
 		}
 
 		public override Animation Read(string name, Stream s) {
