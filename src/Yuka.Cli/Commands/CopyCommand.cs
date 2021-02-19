@@ -59,13 +59,10 @@ namespace Yuka.Cli.Commands {
 
 					using(var destinationFs = FileSystem.OpenOrCreate(destinationPath, sourceFs is SingleFileSystem, _overwriteExisting)) {
 						// collect files
-						var files = new List<string>();
-						foreach(string filter in filters) {
-							files.AddRange(sourceFs.GetFiles(filter));
-						}
+						var files = filters.SelectMany(sourceFs.GetFiles).Distinct();
 
 						// call copy loop
-						outputManifest = CopyFiles(sourceFs, destinationFs, files.Distinct(), _rawCopy, _deleteAfterCopy);
+						outputManifest = CopyFiles(sourceFs, destinationFs, files, _rawCopy, _deleteAfterCopy);
 						if(_generateManifest) WriteManifest(outputManifest, destinationFs);
 					}
 				}
@@ -121,7 +118,7 @@ namespace Yuka.Cli.Commands {
 		}
 
 		protected virtual string DeriveDestinationPath(string sourcePath) {
-			return sourcePath;
+			return sourcePath + "-copy";
 		}
 
 		protected virtual void CheckPaths(string sourcePath, string destinationPath) {

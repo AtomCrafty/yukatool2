@@ -77,7 +77,7 @@ namespace Yuka.Cli.Commands {
 		}
 
 		public static void DisplayCommandHelp(Command command) {
-			Output.WriteLineColored($"Command: \aa{command.Name}");
+			Output.WriteLineColored($"\aeCommand \aa{command.Name}");
 			foreach(string desc in command.Description) {
 				Output.WriteLineColored("  " + desc);
 			}

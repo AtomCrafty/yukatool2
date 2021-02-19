@@ -58,6 +58,7 @@ namespace Yuka.Cli {
 
 		private static readonly Dictionary<string, Func<CommandParameters, Command>> CommandFactories = new Dictionary<string, Func<CommandParameters, Command>> {
 			{"help", parameters => new HelpCommand(parameters) },
+			{"list", parameters => new ListCommand(parameters) },
 			{"copy", parameters => new CopyCommand(parameters) },
 			{"pack", parameters => new PackCommand(parameters) },
 			{"unpack", parameters => new UnpackCommand(parameters) },
