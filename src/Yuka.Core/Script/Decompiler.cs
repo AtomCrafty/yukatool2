@@ -91,7 +91,7 @@ namespace Yuka.Script {
 					if(vint.FlagId.IntValue >= LocalFlagTableSize && vint.FlagType.StringValue == YksFormat.Flag)
 						throw new ArgumentOutOfRangeException(nameof(vint.FlagId.IntValue), vint.FlagId.IntValue, "Local flag index must be smaller than " + LocalFlagTableSize);
 
-					_currentAssignmentTarget = new AssignmentTarget.Variable(YksFormat.Flag, vint.FlagId.IntValue);
+					_currentAssignmentTarget = new AssignmentTarget.Variable(vint.FlagType.StringValue, vint.FlagId.IntValue);
 					break;
 
 
@@ -107,12 +107,12 @@ namespace Yuka.Script {
 				case DataElement.VStr vstr:
 					// range checks
 					if(vstr.FlagId.IntValue < 0) throw new ArgumentOutOfRangeException(nameof(vstr.FlagId.IntValue), vstr.FlagId.IntValue, "String index must be positive");
-					if(vstr.FlagId.IntValue >= GlobalStringTableSize && vstr.FlagType.StringValue == YksFormat.GlobalFlag)
+					if(vstr.FlagId.IntValue >= GlobalStringTableSize && vstr.FlagType.StringValue == YksFormat.GlobalString)
 						throw new ArgumentOutOfRangeException(nameof(vstr.FlagId.IntValue), vstr.FlagId.IntValue, "String flag index must be smaller than " + GlobalStringTableSize);
-					if(vstr.FlagId.IntValue >= LocalStringTableSize && vstr.FlagType.StringValue == YksFormat.Flag)
+					if(vstr.FlagId.IntValue >= LocalStringTableSize && vstr.FlagType.StringValue == YksFormat.String)
 						throw new ArgumentOutOfRangeException(nameof(vstr.FlagId.IntValue), vstr.FlagId.IntValue, "String flag index must be smaller than " + LocalStringTableSize);
 
-					_currentAssignmentTarget = new AssignmentTarget.Variable(YksFormat.Flag, vstr.FlagId.IntValue);
+					_currentAssignmentTarget = new AssignmentTarget.Variable(vstr.FlagType.StringValue, vstr.FlagId.IntValue);
 					break;
 
 
