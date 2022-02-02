@@ -135,11 +135,12 @@ namespace Yuka.IO {
 		public override string Name => Path.GetFileName(BasePath);
 
 		public override string[] GetFiles(string filter = "*.*") {
-			var files = Directory.GetFiles(BasePath, filter, SearchOption.AllDirectories);
-			for(int i = 0; i < files.Length; i++) {
-				files[i] = files[i].Substring(BasePath.Length).TrimStart('\\', '/');
-			}
-			return files;
+			return Directory.GetFiles(BasePath, filter, SearchOption.AllDirectories)
+				.Select(file => file
+					.Substring(BasePath.Length)
+					.TrimStart('\\', '/'))
+				.Where(file => !file.Contains(".git"))
+				.ToArray();
 		}
 
 		public override bool FileExists(string name) {
