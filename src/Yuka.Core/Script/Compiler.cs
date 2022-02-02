@@ -137,6 +137,7 @@ namespace Yuka.Script {
 			}
 		}
 
+		protected DataElement.Ctrl BlockStart;
 		public void Visit(BlockStmt stmt) {
 			var start = EmitBlockStart();
 
@@ -149,6 +150,7 @@ namespace Yuka.Script {
 			}
 
 			EmitBlockEnd(start);
+			BlockStart = start;
 		}
 
 		public void Visit(BodyFunctionStmt stmt) {
@@ -164,11 +166,14 @@ namespace Yuka.Script {
 		public void Visit(IfStmt stmt) {
 			stmt.Function.Accept(this);
 			stmt.Body.Accept(this);
+			var thenStart = BlockStart;
 
 			if(stmt.ElseBody != null) {
 				// else label remains unlinked
 				EmitLabel("else");
 				stmt.ElseBody.Accept(this);
+				var elseStart = BlockStart;
+				thenStart.LinkedElement = elseStart;
 			}
 		}
 

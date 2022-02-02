@@ -7,7 +7,7 @@ namespace Yuka.IO {
 		public static bool YkgMergeAlphaChannelOnExport = true;
 
 		public static byte YksScriptDataXorKey = 0xAA;
-		public static bool YksEncryptScriptDataOnExport = false;
+		public static bool YksEncryptScriptDataOnExport = true;
 
 		public static bool YkdExternalizeStrings = true;
 		public static string[] YkdLineMethods = { "StrOut", "StrOutNW" };
