@@ -30,7 +30,7 @@ namespace Yuka.Gui.ViewModels {
 			// select archive file
 			// TODO default path
 			Log.Note(Resources.IO_ArchiveSelectionStarted, Resources.Tag_IO);
-			string path = Service.Get<IFileService>().SelectArchiveFile(@"S:\Games\Visual Novels\Lover Able\");
+			string path = Service.Get<IFileService>().SelectArchiveFile(@"C:\");
 			if(string.IsNullOrWhiteSpace(path)) {
 				Log.Warn(Resources.IO_ArchiveSelectionAbortedByUser, Resources.Tag_IO);
 				return;
