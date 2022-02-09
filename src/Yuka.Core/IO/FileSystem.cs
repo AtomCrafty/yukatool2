@@ -139,7 +139,7 @@ namespace Yuka.IO {
 				.Select(file => file
 					.Substring(BasePath.Length)
 					.TrimStart('\\', '/'))
-				.Where(file => !file.Contains(".git"))
+				.Where(file => !file.Contains(".git") && !file.EndsWith(".psd"))
 				.ToArray();
 		}
 
