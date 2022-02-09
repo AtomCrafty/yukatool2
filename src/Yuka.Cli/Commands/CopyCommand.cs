@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Newtonsoft.Json;
 using Yuka.Cli.Util;
 using Yuka.IO;
+using Yuka.Util;
 
 namespace Yuka.Cli.Commands {
 	public class CopyCommand : Command {
@@ -142,6 +144,8 @@ namespace Yuka.Cli.Commands {
 			_normalizeCase = Parameters.GetBool("normalize-case", ' ', false);
 			_overwriteExisting = Parameters.GetBool("overwrite", 'o', false);
 
+			EncodingUtils.SetShiftJisTunnelFile(Parameters.GetString("tunnel-file", 't', null));
+
 			switch(format) {
 				case "keep":
 					_prefererredFormatType = FormatType.None;
@@ -191,8 +195,7 @@ namespace Yuka.Cli.Commands {
 				if(file == ".manifest") continue;
 				string fileName = _normalizeCase ? file.ToLower() : file;
 
-				if(rawCopy)
-				{
+				if(rawCopy) {
 					Log($"Copying \ae{fileName}");
 					PerformRawCopy(sourceFs, destinationFs, fileName, manifest);
 				}
@@ -237,6 +240,8 @@ namespace Yuka.Cli.Commands {
 				}
 			}
 
+			EncodingUtils.WriteShiftJisTunnelFile();
+
 			return manifest;
 		}
 
@@ -246,8 +251,8 @@ namespace Yuka.Cli.Commands {
 					sourceStream.CopyTo(destinationStream);
 
 					manifest.Add(
-						new FileList {(fileName, Format.Raw)},
-						new FileList {(fileName, Format.Raw)}
+						new FileList { (fileName, Format.Raw) },
+						new FileList { (fileName, Format.Raw) }
 					);
 				}
 			}

@@ -7,7 +7,6 @@ using System.Text.RegularExpressions;
 
 namespace Yuka.Util {
 	public static class Helpers {
-		public static readonly Encoding ShiftJis = Encoding.GetEncoding("Shift-JIS");
 
 		public static bool IsOneOf<T>(this T value, params T[] options) {
 			return options.Contains(value);
@@ -76,21 +75,21 @@ namespace Yuka.Util {
 				bytes.Add(b);
 			}
 
-			return (encoding ?? ShiftJis).GetString(bytes.ToArray());
+			return (encoding ?? EncodingUtils.ShiftJis).GetString(bytes.ToArray());
 		}
 
 		public static void WriteNullTerminatedString(this BinaryWriter w, string str, Encoding encoding = null) {
-			w.Write((encoding ?? ShiftJis).GetBytes(str));
+			w.Write((encoding ?? EncodingUtils.ShiftJis).GetBytes(str));
 			w.Write((byte)0);
 		}
 
 		public static int GetNullTerminatedStringLength(string str, Encoding encoding = null) {
-			return (encoding ?? ShiftJis).GetByteCount(str) + 1;
+			return (encoding ?? EncodingUtils.ShiftJis).GetByteCount(str) + 1;
 		}
 
 		public static string ReadString(this BinaryReader r, uint length, Encoding encoding = null) {
 			var bytes = r.ReadBytes((int)length);
-			return (encoding ?? ShiftJis).GetString(bytes).TrimEnd('\0');
+			return (encoding ?? EncodingUtils.ShiftJis).GetString(bytes).TrimEnd('\0');
 		}
 
 		public static bool IsNullOrEmpty<T>(this T[] array) {

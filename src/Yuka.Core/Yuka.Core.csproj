@@ -110,6 +110,7 @@
     <Compile Include="Script\Decompiler.cs" />
     <Compile Include="Script\Syntax\SyntaxNode.cs" />
     <Compile Include="Util\BitmapUtils.cs" />
+    <Compile Include="Util\EncodingUtils.cs" />
     <Compile Include="Util\Helpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\ReadOnlySubStream.cs" />

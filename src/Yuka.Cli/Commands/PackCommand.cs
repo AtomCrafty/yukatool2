@@ -25,6 +25,7 @@ namespace Yuka.Cli.Commands {
 			('d', "destination",     null,       "Destination archive"),
 			('f', "format",          "packed",   "The preferred output format (valid values: \abkeep\a-, \abpacked\a-, \abunpacked\a-)"),
 			('r', "raw",             null,       "Short form of \ac--format=keep\a-, overwrites the format flag if set"),
+			('t', "tunnel-file",    null,       "Enable shift-jis tunneling and specify a file to hold the char mapping"),
 			('o', "overwrite",       "true",     "Delete existing destination archive"),
 			('a', "append",          null,       "Appends files to an existing archive, equal to \ac--overwrite=false"),
 			('i', "ignore-manifest", null,       "Ignore the manifest, if it exists"),
