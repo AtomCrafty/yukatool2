@@ -42,6 +42,11 @@ namespace Yuka.Cli {
 			}
 		}
 
+		public bool HasFlag(string name) => Flags.ContainsKey("--" + name);
+		public bool HasFlag(char shorthand) => Flags.ContainsKey("-" + shorthand);
+		public bool HasFlag(string name, char shorthand) => HasFlag(name) || HasFlag(shorthand);
+
+
 		#region Getters
 
 		#region Booleans
