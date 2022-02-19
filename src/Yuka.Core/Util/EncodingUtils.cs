@@ -55,7 +55,10 @@ namespace Yuka.Util {
 			get => new string(_charTable.ToArray());
 			set {
 				_charTable.Clear();
-				_charTable.AddRange(value);
+				_mappings.Clear();
+				foreach(char c in value) {
+					GetTunnelChar(c);
+				}
 			}
 		}
 
