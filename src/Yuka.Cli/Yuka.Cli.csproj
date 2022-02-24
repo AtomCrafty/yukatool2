@@ -73,6 +73,7 @@
     <Compile Include="Command.cs" />
     <Compile Include="CommandParameters.cs" />
     <Compile Include="Commands\CopyCommand.cs" />
+    <Compile Include="Commands\ListCommand.cs" />
     <Compile Include="Commands\PackCommand.cs" />
     <Compile Include="Commands\UnpackCommand.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
