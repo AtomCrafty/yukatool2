@@ -7,20 +7,32 @@ namespace Yuka.Script.Data {
 	public class StringTable : Dictionary<string, StringTableEntry> {
 		public List<string> Stages;
 
-		public IEnumerable<StringTableEntry> Names => Values.Where(e => e.Key.StartsWith(Options.CsvNamePrefix));
-		public IEnumerable<StringTableEntry> NonNames => Values.Where(e => !e.Key.StartsWith(Options.CsvNamePrefix));
+		public IEnumerable<StringTableEntry> Names => Values.Where(e => e.Category == StringCategory.N);
+		public IEnumerable<StringTableEntry> NonNames => Values.Where(e => e.Category != StringCategory.N);
 	}
 
 	public class StringTableEntry {
+		public StringCategory Category;
 		public string Key;
 		public string Speaker;
 		public string Comment;
 		public string Fallback;
 		public string[] Text;
 
-		internal StringTableEntry() { }
+		public static StringCategory? GetCategoryForKey(string key) {
+			if(key.StartsWith("L")) return StringCategory.L;
+			if(key.StartsWith("N")) return StringCategory.N;
+			if(key.StartsWith("S")) return StringCategory.S;
+			return null;
+		}
 
-		public StringTableEntry(string key, string fallback, string speaker = null) {
+		internal StringTableEntry(StringCategory category, string key) {
+			Category = category;
+			Key = key;
+		}
+
+		public StringTableEntry(StringCategory category, string key, string fallback, string speaker = null) {
+			Category = category;
 			Key = key;
 			Fallback = fallback;
 			Speaker = speaker;

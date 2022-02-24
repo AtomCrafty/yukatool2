@@ -19,7 +19,7 @@ namespace Yuka.Script.Data {
 		}
 
 		// TODO make this configurable
-		public static readonly Regex InternalStringRegex = new Regex(@".*\\.*|.*\.(?:png|bmp|ogg|yk.)$|^\s*$");
+		public static readonly Regex InternalStringRegex = new Regex(@".*\\.*|.*\.(?:png|bmp|ogg|yk.)$|^[\s\d]*$", RegexOptions.IgnoreCase);
 
 		public static bool IsExternalizableString(string value) {
 			return !InternalStringRegex.IsMatch(value);
@@ -38,7 +38,7 @@ namespace Yuka.Script.Data {
 		public void ExternalizeStringLiteral(StringLiteral literal, StringCategory category, bool includeSpeaker = false) {
 			string key = GetUniqueId(category, literal.Value);
 
-			StringTable[key] = new StringTableEntry(key, literal.Value, includeSpeaker ? _currentSpeaker : null);
+			StringTable[key] = new StringTableEntry(category, key, literal.Value, includeSpeaker ? _currentSpeaker : null);
 
 			literal.StringTable = StringTable;
 			literal.ExternalKey = key;
