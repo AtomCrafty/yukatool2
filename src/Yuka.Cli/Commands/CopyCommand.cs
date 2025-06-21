@@ -232,7 +232,7 @@ namespace Yuka.Cli.Commands {
 							sourceFs.DeleteFile(fileName);
 						}
 					}
-					catch(Exception e) {
+					catch(Exception e) when(!System.Diagnostics.Debugger.IsAttached) {
 						Error($"Encountered {e.GetType().Name} while encoding: {e.Message}");
 						Log("Falling back to raw copy");
 						PerformRawCopy(sourceFs, destinationFs, fileName, manifest);
