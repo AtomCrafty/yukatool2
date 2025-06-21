@@ -93,8 +93,14 @@ namespace Yuka.Script.Binary {
 
 							// link the label
 							int link = dataSector.GetInteger(ctrl.LinkOffset).IntValue;
-							if(link != -1) {
-								ctrl.LinkedElement = index[code[link]] as DataElement.Ctrl;
+							if(link >= 0) {
+								if(link < code.Length && code[link] < index.Length &&
+								   index[code[link]] is DataElement.Ctrl other) {
+									ctrl.LinkedElement = other;
+								}
+								else {
+									Console.WriteLine("Invalid control element link: " + ctrl);
+								}
 							}
 							//else Console.WriteLine("Unlinked control element: " + ctrl);
 
